@@ -10,24 +10,24 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 1.1 Install Required Shadcn Components
 
-- [ ] Card (for wallet cards)
-- [ ] Button
-- [ ] Tabs (for visualization tabs)
-- [ ] Badge (for status indicators)
-- [ ] Input (for connection strings)
-- [ ] Alert (for warnings/errors)
-- [ ] Sidebar (for scenario navigation)
-- [ ] Separator
-- [ ] Tooltip
-- [ ] Sheet (for mobile drawer)
-- [ ] Skeleton (for loading states)
+- [x] Card (for wallet cards)
+- [x] Button
+- [x] Tabs (for visualization tabs)
+- [x] Badge (for status indicators)
+- [x] Input (for connection strings)
+- [x] Alert (for warnings/errors)
+- [x] Sidebar (for scenario navigation)
+- [x] Separator
+- [x] Tooltip
+- [x] Sheet (for mobile drawer)
+- [x] Skeleton (for loading states)
+- [x] Chart (for balance visualization)
 
 ### 1.2 Create App Layout Structure
 
-- [ ] Create `Layout.tsx` - Main app shell with sidebar + content area
-- [ ] Create `Sidebar.tsx` - Scenario navigation per `docs/design/sidebar.md`
-- [ ] Create `Header.tsx` - App header with title/branding
-- [ ] Implement responsive behavior (hamburger menu on mobile)
+- [x] Create `Layout.tsx` - Main app shell with sidebar + content area
+- [x] Create `app-sidebar.tsx` - Scenario navigation per `docs/design/sidebar.md`
+- [x] Implement responsive behavior (hamburger menu on mobile via Shadcn Sidebar)
 
 ---
 
@@ -35,27 +35,29 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 2.1 Wallet Types & State Management
 
-- [ ] Create `types/wallet.ts` - Define Wallet interface (id, name, emoji, balance, connectionString, status)
-- [ ] Create `types/scenario.ts` - Define Scenario interface (id, title, description, education, complexity, requiredWallets)
-- [ ] Create `types/transaction.ts` - Define Transaction/Event types for logging
-- [ ] Create `hooks/useWallets.ts` - Wallet state management with localStorage persistence
-- [ ] Create `hooks/useScenario.ts` - Current scenario state management
+- [x] Create `types/wallet.ts` - Define Wallet interface (id, name, emoji, balance, connectionString, status)
+- [x] Create `types/scenario.ts` - Define Scenario interface (id, title, description, education, complexity, requiredWallets)
+- [x] Create `types/transaction.ts` - Define Transaction/Event types for logging
+- [x] Create `stores/wallet-store.ts` - Zustand wallet state management with localStorage persistence
+- [x] Create `stores/scenario-store.ts` - Current scenario state management
+- [x] Create `stores/transaction-store.ts` - Transaction and visualization state
 
 ### 2.2 Wallet Card Components
 
-- [ ] Create `components/WalletCard.tsx` - Individual wallet display per `docs/design/main-ui.md`
-  - Connection status indicator
-  - Balance display (sats + USD conversion)
-  - Action buttons (connect/disconnect)
-  - Create Test Wallet button
-- [ ] Create `components/WalletGrid.tsx` - Container for 2-4 wallet cards
-- [ ] Implement wallet states: disconnected → connecting → connected → error
+- [x] Create `components/wallet-card.tsx` - Individual wallet display per `docs/design/main-ui.md`
+  - [x] Connection status indicator (badge)
+  - [x] Balance display (sats + USD conversion)
+  - [x] Action buttons (connect/disconnect)
+  - [x] Create Test Wallet button
+- [x] Create `components/wallet-grid.tsx` - Container for 2-4 wallet cards
+- [x] Implement wallet states: disconnected → connecting → connected → error
 
 ### 2.3 Wallet Connection Logic (via Alby Agent Skill)
 
-- [ ] Use Alby agent skill to integrate wallet functionality
-- [ ] Create `lib/create-test-wallet.ts` - Test wallet creation API call (POST to create instant test wallet from the faucet, and return the connection secret)
-- [ ] Implement localStorage persistence (wallet-1, wallet-2, etc.)
+- [x] Basic test wallet creation via faucet API (POST to `https://nwc.getalby.com/api/v1/faucet`)
+- [ ] Use Alby agent skill to integrate full NWC wallet functionality
+- [ ] Implement actual NWC connection and balance fetching
+- [x] Implement localStorage persistence for wallet configs
 
 ---
 
@@ -63,35 +65,36 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 3.1 Transaction Log
 
-- [ ] Create `components/visualizations/TransactionLog.tsx`
-  - Chronological event list
-  - Status icons (pending, success, error)
-  - Timestamps
-  - From/to wallet indicators
-  - Amount and description
+- [x] Create `components/visualizations/transaction-log.tsx`
+  - [x] Chronological event list
+  - [x] Status icons (pending, success, error)
+  - [x] Timestamps
+  - [x] From/to wallet indicators
+  - [x] Amount and description
+  - [x] Clear button
 
 ### 3.2 Flow Diagram
 
-- [ ] Create `components/visualizations/FlowDiagram.tsx`
-  - Step-by-step visual sequence
-  - Wallet columns with arrows between them
-  - Balance change indicators
-  - Message/action labels
+- [x] Create `components/visualizations/flow-diagram.tsx`
+  - [x] Step-by-step visual sequence
+  - [x] Wallet avatars with names and balances
+  - [x] Numbered flow steps with labels
+  - [x] Status indicators per step
 
 ### 3.3 Balance Chart
 
-- [ ] Install charting library (recharts recommended for React)
-- [ ] Create `components/visualizations/BalanceChart.tsx`
-  - Line graph with time on X-axis
-  - Multiple lines (one per wallet)
-  - Real-time updates as transactions occur
+- [x] Using Shadcn Chart component (Recharts-based)
+- [x] Create `components/visualizations/balance-chart.tsx`
+  - [x] Line graph with transactions on X-axis
+  - [x] Multiple lines (one per wallet, color-coded)
+  - [x] Tooltip and legend
 
 ### 3.4 Visualization Container
 
-- [ ] Create `components/VisualizationPanel.tsx`
-  - Tabs: Log | Flow Diagram | Balance Chart
-  - Default to Log view
-  - Shared transaction/event data source
+- [x] Create `components/visualization-panel.tsx`
+  - [x] Tabs: Log | Flow Diagram | Balance Chart
+  - [x] Default to Log view
+  - [x] Shared transaction/event data source via Zustand store
 
 ---
 
@@ -99,16 +102,16 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 4.1 Scenario Data
 
-- [ ] Create `data/scenarios.ts` - Define all scenarios with metadata
-  - Simple Invoice Payment (simplest)
-  - Lightning Address (simple)
-  - Notifications (medium)
-  - Hold Invoice (medium)
-  - Proof of Payment (medium)
-  - Transaction History (medium)
-  - Nostr Zap (advanced)
-  - Fiat Conversion (advanced)
-- [ ] Create `components/ScenarioInfo.tsx` - Display scenario education content
+- [x] Create `data/scenarios.ts` - Define all scenarios with metadata
+  - [x] Simple Invoice Payment (simplest)
+  - [x] Lightning Address (simple)
+  - [x] Notifications (medium)
+  - [x] Hold Invoice (medium)
+  - [x] Proof of Payment (medium)
+  - [x] Transaction History (medium)
+  - [x] Nostr Zap (advanced)
+  - [x] Fiat Conversion (advanced)
+- [x] Create `components/scenario-info.tsx` - Display scenario education content
 
 ### 4.2 Scenario Execution Engine
 
@@ -122,13 +125,15 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 5.1 Simple Invoice Payment (per `docs/scenarios/simple-payment.md`)
 
-- [ ] Implement Bob creates invoice flow
-- [ ] Implement Alice pays invoice flow
-- [ ] Wire up all visualizations
+- [ ] Create scenario-specific UI panel for Bob (amount input, description, create invoice button)
+- [ ] Create scenario-specific UI panel for Alice (invoice input, pay button)
+- [ ] Implement Bob creates invoice flow (NWC `make_invoice`)
+- [ ] Implement Alice pays invoice flow (NWC `pay_invoice`)
+- [ ] Wire up all visualizations with real transaction data
 
 ### 5.2 Lightning Address (per `docs/scenarios/lightning-address.md`)
 
-- [ ] Implement Lightning Address lookup
+- [ ] Implement Lightning Address lookup (LNURL-pay)
 - [ ] Implement payment to address
 - [ ] Add educational content about addresses
 
@@ -138,6 +143,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 6.1 Core NWC Operations
 
+- [ ] Create `lib/nwc-client.ts` - NWC client wrapper
 - [ ] Implement `make_invoice` - Create BOLT-11 invoice
 - [ ] Implement `pay_invoice` - Pay a BOLT-11 invoice
 - [ ] Implement `get_balance` - Fetch wallet balance
@@ -158,7 +164,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 - [ ] Add skeleton loaders during wallet connection
 - [ ] Implement error boundaries
-- [ ] Add toast notifications for actions
+- [ ] Add toast notifications for actions (install Shadcn Sonner)
 
 ### 7.2 Educational Enhancements
 
@@ -175,25 +181,68 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ---
 
-## Suggested Implementation Order
+## Progress Summary
 
-1. **Week 1**: Phases 1-2 (Layout + Wallet System)
-2. **Week 2**: Phase 3 (Visualizations)
-3. **Week 3**: Phases 4-5 (Scenarios)
-4. **Week 4**: Phases 6-7 (NWC Integration + Polish)
+| Phase | Status |
+|-------|--------|
+| Phase 1: Foundation & Layout | ✅ Complete |
+| Phase 2: Wallet System | 🟡 UI complete, NWC integration pending |
+| Phase 3: Visualization Components | ✅ Complete |
+| Phase 4: Scenario System | 🟡 Data & UI complete, execution engine pending |
+| Phase 5: Core Scenarios | ⬜ Not started |
+| Phase 6: NWC Integration | ⬜ Not started |
+| Phase 7: Polish & UX | ⬜ Not started |
 
 ---
 
 ## Key Technical Decisions
 
-```
 | Decision | Recommendation |
 |----------|----------------|
-| Package Manager | yarn (but npx for shadcn) |
+| Package Manager | Yarn (npx for shadcn CLI) |
 | State Management | Zustand (lightweight, simple API) |
-| Charting | Recharts (via Shadcn) (React-native, good for line charts) |
-| Flow Diagrams | Custom SVG or react-flow-renderer |
+| Charting | Shadcn Chart (Recharts wrapper) |
+| Flow Diagrams | Custom React component |
 | NWC Library | Use Alby skill guidance for implementation |
 | Persistence | localStorage for wallet configs |
 | Styling | Tailwind + Shadcn (already configured) |
+
+---
+
+## File Structure (Current)
+
+```
+src/
+├── App.tsx                          # Main app component
+├── main.tsx                         # Entry point
+├── index.css                        # Global styles + Tailwind
+├── components/
+│   ├── app-sidebar.tsx              # Scenario navigation sidebar
+│   ├── layout.tsx                   # Main layout shell
+│   ├── scenario-info.tsx            # Scenario title, description, education
+│   ├── visualization-panel.tsx      # Tabbed visualization container
+│   ├── wallet-card.tsx              # Individual wallet card
+│   ├── wallet-grid.tsx              # Grid of wallet cards
+│   ├── ui/                          # Shadcn UI components
+│   └── visualizations/
+│       ├── balance-chart.tsx        # Line chart
+│       ├── flow-diagram.tsx         # Step sequence diagram
+│       ├── transaction-log.tsx      # Event log
+│       └── index.ts
+├── data/
+│   └── scenarios.ts                 # Scenario definitions
+├── hooks/
+│   └── use-mobile.ts                # Mobile detection (Shadcn)
+├── lib/
+│   └── utils.ts                     # Utility functions (cn helper)
+├── stores/
+│   ├── index.ts
+│   ├── scenario-store.ts            # Current scenario state
+│   ├── transaction-store.ts         # Transaction/flow/balance state
+│   └── wallet-store.ts              # Wallet state with persistence
+└── types/
+    ├── index.ts
+    ├── scenario.ts                  # Scenario type definitions
+    ├── transaction.ts               # Transaction/FlowStep types
+    └── wallet.ts                    # Wallet type definitions
 ```
