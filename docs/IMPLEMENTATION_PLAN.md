@@ -137,9 +137,9 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 5.2 Lightning Address (per `docs/scenarios/lightning-address.md`)
 
-- [ ] Implement Lightning Address lookup (LNURL-pay via `@getalby/lightning-tools`)
-- [ ] Implement payment to address
-- [ ] Add educational content about addresses
+- [x] Implement Lightning Address lookup (LNURL-pay via `@getalby/lightning-tools`)
+- [x] Implement payment to address
+- [x] Add educational content about addresses
 
 ---
 
