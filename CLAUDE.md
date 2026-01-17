@@ -35,6 +35,8 @@ Wallets are saved to local storage under key wallet-N (wallet-1, etc).
 3. **Balance Chart** - Line graph showing balance changes over time
 4. **Network Graph** - Topology view of wallet connections and payment paths
 
+Visualization should update in real-time.
+
 ### Design Goals
 
 - Fast demo starts
@@ -62,6 +64,12 @@ Wallets are saved to local storage under key wallet-N (wallet-1, etc).
 ## Scenarios
 
 Each scenario has a title, description, education (content for the user to be displayed), and complexity. More complex scenarios should be lower in the list.
+
+## User Flow
+
+When user first opens app they will be presented with the first scenario.
+
+Before they can execute the scenario they must connect the wallets required by the scenario.
 
 ## Referenced documentation
 
