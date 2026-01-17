@@ -35,7 +35,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 2.1 Wallet Types & State Management
 
-- [x] Create `types/wallet.ts` - Define Wallet interface (id, name, emoji, balance, connectionString, status)
+- [x] Create `types/wallet.ts` - Define Wallet interface (id, name, emoji, balance, connectionString, lightningAddress, status)
 - [x] Create `types/scenario.ts` - Define Scenario interface (id, title, description, education, complexity, requiredWallets)
 - [x] Create `types/transaction.ts` - Define Transaction/Event types for logging
 - [x] Create `stores/wallet-store.ts` - Zustand wallet state management with localStorage persistence
@@ -46,18 +46,22 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 - [x] Create `components/wallet-card.tsx` - Individual wallet display per `docs/design/main-ui.md`
   - [x] Connection status indicator (badge)
-  - [x] Balance display (sats + USD conversion)
+  - [x] Balance display (sats + USD conversion via `@getalby/lightning-tools`)
+  - [x] Lightning address display
   - [x] Action buttons (connect/disconnect)
   - [x] Create Test Wallet button
 - [x] Create `components/wallet-grid.tsx` - Container for 2-4 wallet cards
 - [x] Implement wallet states: disconnected → connecting → connected → error
 
-### 2.3 Wallet Connection Logic (via Alby Agent Skill)
+### 2.3 Wallet Connection Logic (via Alby SDK)
 
-- [x] Basic test wallet creation via faucet API (POST to `https://nwc.getalby.com/api/v1/faucet`)
-- [ ] Use Alby agent skill to integrate full NWC wallet functionality
-- [ ] Implement actual NWC connection and balance fetching
+- [x] Install `@getalby/sdk` and `@getalby/lightning-tools`
+- [x] Test wallet creation via faucet API (POST to `https://faucet.nwc.dev?balance=10000`)
+- [x] Use `NWCClient` from `@getalby/sdk/nwc` for wallet connections
+- [x] Implement real NWC connection and balance fetching (`getBalance()`)
+- [x] Extract lightning address from connection string (`lud16` parameter)
 - [x] Implement localStorage persistence for wallet configs
+- [x] Create `hooks/use-fiat.ts` for USD conversion using `@getalby/lightning-tools/fiat`
 
 ---
 
@@ -115,8 +119,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 4.2 Scenario Execution Engine
 
-- [ ] Create `hooks/useScenarioRunner.ts` - Orchestrates scenario steps
-- [ ] Create `lib/scenario-executor.ts` - Executes individual scenario actions
+- [ ] Create scenario-specific UI components for each wallet role
 - [ ] Implement event emitter for real-time visualization updates
 
 ---
@@ -127,32 +130,31 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 - [ ] Create scenario-specific UI panel for Bob (amount input, description, create invoice button)
 - [ ] Create scenario-specific UI panel for Alice (invoice input, pay button)
-- [ ] Implement Bob creates invoice flow (NWC `make_invoice`)
-- [ ] Implement Alice pays invoice flow (NWC `pay_invoice`)
+- [ ] Implement Bob creates invoice flow (NWC `makeInvoice`)
+- [ ] Implement Alice pays invoice flow (NWC `payInvoice`)
 - [ ] Wire up all visualizations with real transaction data
 
 ### 5.2 Lightning Address (per `docs/scenarios/lightning-address.md`)
 
-- [ ] Implement Lightning Address lookup (LNURL-pay)
+- [ ] Implement Lightning Address lookup (LNURL-pay via `@getalby/lightning-tools`)
 - [ ] Implement payment to address
 - [ ] Add educational content about addresses
 
 ---
 
-## Phase 6: NWC Integration (via Alby Skill)
+## Phase 6: Advanced NWC Features
 
-### 6.1 Core NWC Operations
+### 6.1 Core NWC Operations (via `@getalby/sdk`)
 
-- [ ] Create `lib/nwc-client.ts` - NWC client wrapper
-- [ ] Implement `make_invoice` - Create BOLT-11 invoice
-- [ ] Implement `pay_invoice` - Pay a BOLT-11 invoice
-- [ ] Implement `get_balance` - Fetch wallet balance
-- [ ] Implement `lookup_invoice` - Check invoice status
-- [ ] Implement `list_transactions` - Get transaction history
+- [x] `getBalance()` - Fetch wallet balance (millisats → sats conversion)
+- [ ] `makeInvoice()` - Create BOLT-11 invoice
+- [ ] `payInvoice()` - Pay a BOLT-11 invoice
+- [ ] `lookupInvoice()` - Check invoice status
+- [ ] `listTransactions()` - Get transaction history
 
 ### 6.2 Real-time Updates
 
-- [ ] Implement NWC notification subscriptions
+- [ ] Implement NWC notification subscriptions (`subscribeNotifications`)
 - [ ] Update visualizations on payment events
 - [ ] Handle connection drops gracefully
 
@@ -190,11 +192,11 @@ While implementing, if there is something missing from the documentation (CLAUDE
 | Phase                             | Status                                          |
 | --------------------------------- | ----------------------------------------------- |
 | Phase 1: Foundation & Layout      | ✅ Complete                                     |
-| Phase 2: Wallet System            | 🟡 UI complete, NWC integration pending         |
+| Phase 2: Wallet System            | ✅ Complete                                     |
 | Phase 3: Visualization Components | ✅ Complete                                     |
 | Phase 4: Scenario System          | 🟡 Data & UI complete, execution engine pending |
 | Phase 5: Core Scenarios           | ⬜ Not started                                  |
-| Phase 6: NWC Integration          | ⬜ Not started                                  |
+| Phase 6: Advanced NWC Features    | 🟡 Balance done, other operations pending       |
 | Phase 7: Polish & UX              | ⬜ Not started                                  |
 | Phase 8: Github Pages             | ⬜ Not started                                  |
 
@@ -202,15 +204,16 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ## Key Technical Decisions
 
-| Decision         | Recommendation                             |
-| ---------------- | ------------------------------------------ |
-| Package Manager  | Yarn (npx for shadcn CLI)                  |
-| State Management | Zustand (lightweight, simple API)          |
-| Charting         | Shadcn Chart (Recharts wrapper)            |
-| Flow Diagrams    | Custom React component                     |
-| NWC Library      | Use Alby skill guidance for implementation |
-| Persistence      | localStorage for wallet configs            |
-| Styling          | Tailwind + Shadcn (already configured)     |
+| Decision         | Recommendation                                   |
+| ---------------- | ------------------------------------------------ |
+| Package Manager  | Yarn (npx for shadcn CLI)                        |
+| State Management | Zustand (lightweight, simple API)                |
+| Charting         | Shadcn Chart (Recharts wrapper)                  |
+| Flow Diagrams    | Custom React component                           |
+| NWC Library      | `@getalby/sdk` (NWCClient used directly)         |
+| Fiat Conversion  | `@getalby/lightning-tools/fiat`                  |
+| Persistence      | localStorage for wallet configs                  |
+| Styling          | Tailwind + Shadcn (already configured)           |
 
 ---
 
@@ -226,7 +229,7 @@ src/
 │   ├── layout.tsx                   # Main layout shell
 │   ├── scenario-info.tsx            # Scenario title, description, education
 │   ├── visualization-panel.tsx      # Tabbed visualization container
-│   ├── wallet-card.tsx              # Individual wallet card
+│   ├── wallet-card.tsx              # Individual wallet card (NWC integration)
 │   ├── wallet-grid.tsx              # Grid of wallet cards
 │   ├── ui/                          # Shadcn UI components
 │   └── visualizations/
@@ -237,14 +240,15 @@ src/
 ├── data/
 │   └── scenarios.ts                 # Scenario definitions
 ├── hooks/
-│   └── use-mobile.ts                # Mobile detection (Shadcn)
+│   ├── use-mobile.ts                # Mobile detection (Shadcn)
+│   └── use-fiat.ts                  # Fiat conversion hook
 ├── lib/
 │   └── utils.ts                     # Utility functions (cn helper)
 ├── stores/
 │   ├── index.ts
 │   ├── scenario-store.ts            # Current scenario state
 │   ├── transaction-store.ts         # Transaction/flow/balance state
-│   └── wallet-store.ts              # Wallet state with persistence
+│   └── wallet-store.ts              # Wallet state with NWCClient instances
 └── types/
     ├── index.ts
     ├── scenario.ts                  # Scenario type definitions
