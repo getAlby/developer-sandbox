@@ -27,7 +27,7 @@ export const scenarios: Scenario[] = [
     id: "notifications",
     title: "Notifications",
     description:
-      "Subscribe to real-time payment notifications and react to incoming payments.",
+      "Subscribe to real-time payment notifications and react to incoming and outgoing payments.",
     education:
       "NWC supports subscribing to payment notifications, allowing your app to react instantly when payments are received.",
     complexity: "medium",
@@ -63,7 +63,7 @@ export const scenarios: Scenario[] = [
     education:
       "NWC allows you to query the transaction history of a wallet, useful for displaying past payments and receipts in your application.",
     complexity: "medium",
-    requiredWallets: ["alice"],
+    requiredWallets: ["alice", "bob", "charlie", "david"],
     icon: "📜",
   },
   {

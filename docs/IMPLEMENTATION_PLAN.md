@@ -151,13 +151,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [x] `makeInvoice()` - Create BOLT-11 invoice
 - [x] `payInvoice()` - Pay a BOLT-11 invoice
 - [ ] `lookupInvoice()` - Check invoice status
-- [ ] `listTransactions()` - Get transaction history
-
-### 6.2 Real-time Updates
-
-- [ ] Implement NWC notification subscriptions (`subscribeNotifications`)
-- [ ] Update visualizations on payment events
-- [ ] Handle connection drops gracefully
+- [x] `listTransactions()` - Get transaction history
 
 ---
 
@@ -190,31 +184,31 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ## Progress Summary
 
-| Phase                             | Status                                          |
-| --------------------------------- | ----------------------------------------------- |
-| Phase 1: Foundation & Layout      | ✅ Complete                                     |
-| Phase 2: Wallet System            | ✅ Complete                                     |
-| Phase 3: Visualization Components | ✅ Complete                                     |
-| Phase 4: Scenario System          | ✅ Complete                                     |
-| Phase 5: Core Scenarios           | 🟡 Simple Payment done, Lightning Address pending |
-| Phase 6: Advanced NWC Features    | 🟡 Core operations done, notifications pending  |
-| Phase 7: Polish & UX              | ⬜ Not started                                  |
-| Phase 8: Github Pages             | ⬜ Not started                                  |
+| Phase                             | Status                                         |
+| --------------------------------- | ---------------------------------------------- |
+| Phase 1: Foundation & Layout      | ✅ Complete                                    |
+| Phase 2: Wallet System            | ✅ Complete                                    |
+| Phase 3: Visualization Components | ✅ Complete                                    |
+| Phase 4: Scenario System          | ✅ Complete                                    |
+| Phase 5: Core Scenarios           | ✅ Complete                                    |
+| Phase 6: Advanced NWC Features    | 🟡 Core operations done, notifications pending |
+| Phase 7: Polish & UX              | ⬜ Not started                                 |
+| Phase 8: Github Pages             | ⬜ Not started                                 |
 
 ---
 
 ## Key Technical Decisions
 
-| Decision         | Recommendation                                   |
-| ---------------- | ------------------------------------------------ |
-| Package Manager  | Yarn (npx for shadcn CLI)                        |
-| State Management | Zustand (lightweight, simple API)                |
-| Charting         | Shadcn Chart (Recharts wrapper)                  |
-| Flow Diagrams    | Custom React component                           |
-| NWC Library      | `@getalby/sdk` (NWCClient used directly)         |
-| Fiat Conversion  | `@getalby/lightning-tools/fiat`                  |
-| Persistence      | localStorage for wallet configs                  |
-| Styling          | Tailwind + Shadcn (already configured)           |
+| Decision         | Recommendation                           |
+| ---------------- | ---------------------------------------- |
+| Package Manager  | Yarn (npx for shadcn CLI)                |
+| State Management | Zustand (lightweight, simple API)        |
+| Charting         | Shadcn Chart (Recharts wrapper)          |
+| Flow Diagrams    | Custom React component                   |
+| NWC Library      | `@getalby/sdk` (NWCClient used directly) |
+| Fiat Conversion  | `@getalby/lightning-tools/fiat`          |
+| Persistence      | localStorage for wallet configs          |
+| Styling          | Tailwind + Shadcn (already configured)   |
 
 ---
 
