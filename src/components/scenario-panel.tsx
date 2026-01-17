@@ -1,5 +1,5 @@
 import { useScenarioStore } from '@/stores';
-import { SimplePaymentScenario } from './scenarios';
+import { SimplePaymentScenario, LightningAddressScenario } from './scenarios';
 
 export function ScenarioPanel() {
   const { currentScenario } = useScenarioStore();
@@ -7,7 +7,8 @@ export function ScenarioPanel() {
   switch (currentScenario.id) {
     case 'simple-payment':
       return <SimplePaymentScenario />;
-    // Add more scenarios here as they're implemented
+    case 'lightning-address':
+      return <LightningAddressScenario />;
     default:
       return null;
   }
