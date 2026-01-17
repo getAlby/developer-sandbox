@@ -1,10 +1,25 @@
-function App() {
+import { Layout } from '@/components/layout';
+import { ScenarioInfo } from '@/components/scenario-info';
+import { WalletGrid } from '@/components/wallet-grid';
+import { VisualizationPanel } from '@/components/visualization-panel';
 
+function App() {
   return (
-    <>
-      TODO
-    </>
-  )
+    <Layout>
+      <div className="flex h-full flex-col">
+        {/* Top section: Scenario info and wallets */}
+        <div className="flex-shrink-0 space-y-6 border-b p-6">
+          <ScenarioInfo />
+          <WalletGrid />
+        </div>
+
+        {/* Bottom section: Visualizations */}
+        <div className="min-h-0 flex-1">
+          <VisualizationPanel />
+        </div>
+      </div>
+    </Layout>
+  );
 }
 
-export default App
+export default App;
