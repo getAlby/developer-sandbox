@@ -74,5 +74,6 @@ Before they can execute the scenario they must connect the wallets required by t
 
 ## Referenced documentation
 
+- Make sure to use the Alby Agent Skill.
 - Read the [design docs folder](./docs/design/) when working on the design
 - Read the [scenarios docs folder](./docs/scenarios/) when working on payment scenarios

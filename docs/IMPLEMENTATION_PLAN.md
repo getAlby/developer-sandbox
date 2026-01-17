@@ -179,33 +179,38 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [ ] Performance optimization
 - [ ] Accessibility review (keyboard navigation, screen readers)
 
+## Phase 8: Github Pages
+
+- [ ] Make necessary changes so the app is automatically deployed. The repository name is developer-sandbox and the organization is getAlby.
+
 ---
 
 ## Progress Summary
 
-| Phase | Status |
-|-------|--------|
-| Phase 1: Foundation & Layout | ✅ Complete |
-| Phase 2: Wallet System | 🟡 UI complete, NWC integration pending |
-| Phase 3: Visualization Components | ✅ Complete |
-| Phase 4: Scenario System | 🟡 Data & UI complete, execution engine pending |
-| Phase 5: Core Scenarios | ⬜ Not started |
-| Phase 6: NWC Integration | ⬜ Not started |
-| Phase 7: Polish & UX | ⬜ Not started |
+| Phase                             | Status                                          |
+| --------------------------------- | ----------------------------------------------- |
+| Phase 1: Foundation & Layout      | ✅ Complete                                     |
+| Phase 2: Wallet System            | 🟡 UI complete, NWC integration pending         |
+| Phase 3: Visualization Components | ✅ Complete                                     |
+| Phase 4: Scenario System          | 🟡 Data & UI complete, execution engine pending |
+| Phase 5: Core Scenarios           | ⬜ Not started                                  |
+| Phase 6: NWC Integration          | ⬜ Not started                                  |
+| Phase 7: Polish & UX              | ⬜ Not started                                  |
+| Phase 8: Github Pages             | ⬜ Not started                                  |
 
 ---
 
 ## Key Technical Decisions
 
-| Decision | Recommendation |
-|----------|----------------|
-| Package Manager | Yarn (npx for shadcn CLI) |
-| State Management | Zustand (lightweight, simple API) |
-| Charting | Shadcn Chart (Recharts wrapper) |
-| Flow Diagrams | Custom React component |
-| NWC Library | Use Alby skill guidance for implementation |
-| Persistence | localStorage for wallet configs |
-| Styling | Tailwind + Shadcn (already configured) |
+| Decision         | Recommendation                             |
+| ---------------- | ------------------------------------------ |
+| Package Manager  | Yarn (npx for shadcn CLI)                  |
+| State Management | Zustand (lightweight, simple API)          |
+| Charting         | Shadcn Chart (Recharts wrapper)            |
+| Flow Diagrams    | Custom React component                     |
+| NWC Library      | Use Alby skill guidance for implementation |
+| Persistence      | localStorage for wallet configs            |
+| Styling          | Tailwind + Shadcn (already configured)     |
 
 ---
 
