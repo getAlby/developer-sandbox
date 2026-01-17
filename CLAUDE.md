@@ -9,6 +9,7 @@ and understand Lightning payment flows and capabilities.
 
 ## Architecture
 
+- Package Manager: Yarn
 - Frontend: React + TypeScript
 - UI Components: Shadcn
 - Lightning: Nostr Wallet Connect (NWC) protocol

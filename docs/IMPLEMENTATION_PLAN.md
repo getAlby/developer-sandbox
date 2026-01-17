@@ -189,6 +189,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 ```
 | Decision | Recommendation |
 |----------|----------------|
+| Package Manager | yarn (but npx for shadcn) |
 | State Management | Zustand (lightweight, simple API) |
 | Charting | Recharts (via Shadcn) (React-native, good for line charts) |
 | Flow Diagrams | Custom SVG or react-flow-renderer |
