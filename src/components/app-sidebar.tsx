@@ -1,4 +1,4 @@
-import { ExternalLink, Zap } from 'lucide-react';
+import { ExternalLink, Zap } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -10,13 +10,22 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
-} from '@/components/ui/sidebar';
-import { scenarios } from '@/data/scenarios';
-import { useScenarioStore } from '@/stores';
+} from "@/components/ui/sidebar";
+import { scenarios } from "@/data/scenarios";
+import { useScenarioStore } from "@/stores";
 
 const externalLinks = [
-  { title: 'Alby Hub', url: 'https://getalby.com/alby-hub', icon: '⚡' },
-  { title: 'Alby SDK Docs', url: 'https://github.com/getalby/js-sdk', icon: '📚' },
+  { title: "Alby Hub", url: "https://getalby.com/alby-hub", icon: "⚡" },
+  {
+    title: "Alby Agent Skill",
+    url: "https://github.com/getalby/alby-agent-skill",
+    icon: "🤖",
+  },
+  {
+    title: "Sandbox Source Code",
+    url: "https://github.com/getAlby/developer-sandbox",
+    icon: "💻",
+  },
 ];
 
 export function AppSidebar() {
@@ -24,17 +33,19 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarHeader className="p-4">
+      <SidebarHeader className="">
         <div className="flex items-center gap-2">
           <Zap className="h-6 w-6 text-yellow-500" />
           <div>
             <h1 className="font-semibold">Alby Developer Sandbox</h1>
-            <p className="text-xs text-muted-foreground">Learn & Build with NWC</p>
+            <p className="text-xs text-muted-foreground">
+              Explore Lightning App Scenarios
+            </p>
           </div>
         </div>
       </SidebarHeader>
 
-      <SidebarSeparator />
+      <SidebarSeparator className="mx-0" />
 
       <SidebarContent>
         <SidebarGroup>
@@ -56,7 +67,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarSeparator />
+      <SidebarSeparator className="mx-0" />
 
       <SidebarFooter>
         <SidebarMenu>
