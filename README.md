@@ -1,0 +1,6 @@
+# Alby Developer Sandbox
+
+Educational Lightning Network payment demo application that allows users to try scenarios that simulate
+Lightning payments between wallets and learn about usecases supported by Alby
+development tools and NWC wallets such as Alby Hub. Helps developers explore
+and understand Lightning payment flows and capabilities.
