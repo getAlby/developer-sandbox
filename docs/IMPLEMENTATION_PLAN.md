@@ -119,8 +119,8 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 4.2 Scenario Execution Engine
 
-- [ ] Create scenario-specific UI components for each wallet role
-- [ ] Implement event emitter for real-time visualization updates
+- [x] Create scenario-specific UI components for each wallet role
+- [x] Wire up transaction store for real-time visualization updates
 
 ---
 
@@ -128,11 +128,12 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 5.1 Simple Invoice Payment (per `docs/scenarios/simple-payment.md`)
 
-- [ ] Create scenario-specific UI panel for Bob (amount input, description, create invoice button)
-- [ ] Create scenario-specific UI panel for Alice (invoice input, pay button)
-- [ ] Implement Bob creates invoice flow (NWC `makeInvoice`)
-- [ ] Implement Alice pays invoice flow (NWC `payInvoice`)
-- [ ] Wire up all visualizations with real transaction data
+- [x] Create scenario-specific UI panel for Bob (amount input, description, create invoice button)
+- [x] Create scenario-specific UI panel for Alice (invoice input, pay button)
+- [x] Implement Bob creates invoice flow (NWC `makeInvoice`)
+- [x] Implement Alice pays invoice flow (NWC `payInvoice`)
+- [x] Wire up all visualizations with real transaction data
+- [x] Auto-share invoice from Bob to Alice
 
 ### 5.2 Lightning Address (per `docs/scenarios/lightning-address.md`)
 
@@ -147,8 +148,8 @@ While implementing, if there is something missing from the documentation (CLAUDE
 ### 6.1 Core NWC Operations (via `@getalby/sdk`)
 
 - [x] `getBalance()` - Fetch wallet balance (millisats → sats conversion)
-- [ ] `makeInvoice()` - Create BOLT-11 invoice
-- [ ] `payInvoice()` - Pay a BOLT-11 invoice
+- [x] `makeInvoice()` - Create BOLT-11 invoice
+- [x] `payInvoice()` - Pay a BOLT-11 invoice
 - [ ] `lookupInvoice()` - Check invoice status
 - [ ] `listTransactions()` - Get transaction history
 
@@ -194,9 +195,9 @@ While implementing, if there is something missing from the documentation (CLAUDE
 | Phase 1: Foundation & Layout      | ✅ Complete                                     |
 | Phase 2: Wallet System            | ✅ Complete                                     |
 | Phase 3: Visualization Components | ✅ Complete                                     |
-| Phase 4: Scenario System          | 🟡 Data & UI complete, execution engine pending |
-| Phase 5: Core Scenarios           | ⬜ Not started                                  |
-| Phase 6: Advanced NWC Features    | 🟡 Balance done, other operations pending       |
+| Phase 4: Scenario System          | ✅ Complete                                     |
+| Phase 5: Core Scenarios           | 🟡 Simple Payment done, Lightning Address pending |
+| Phase 6: Advanced NWC Features    | 🟡 Core operations done, notifications pending  |
 | Phase 7: Polish & UX              | ⬜ Not started                                  |
 | Phase 8: Github Pages             | ⬜ Not started                                  |
 
@@ -228,9 +229,13 @@ src/
 │   ├── app-sidebar.tsx              # Scenario navigation sidebar
 │   ├── layout.tsx                   # Main layout shell
 │   ├── scenario-info.tsx            # Scenario title, description, education
+│   ├── scenario-panel.tsx           # Scenario-specific controls container
 │   ├── visualization-panel.tsx      # Tabbed visualization container
 │   ├── wallet-card.tsx              # Individual wallet card (NWC integration)
 │   ├── wallet-grid.tsx              # Grid of wallet cards
+│   ├── scenarios/
+│   │   ├── index.ts
+│   │   └── simple-payment.tsx       # Simple Invoice Payment scenario UI
 │   ├── ui/                          # Shadcn UI components
 │   └── visualizations/
 │       ├── balance-chart.tsx        # Line chart
