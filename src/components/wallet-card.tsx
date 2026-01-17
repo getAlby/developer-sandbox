@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Loader2, Wallet, Unplug, Rocket, Mail } from 'lucide-react';
 import { NWCClient } from '@getalby/sdk/nwc';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,12 +16,14 @@ interface WalletCardProps {
 export function WalletCard({ wallet }: WalletCardProps) {
   const [connectionInput, setConnectionInput] = useState('');
   const [isCreatingWallet, setIsCreatingWallet] = useState(false);
+  const reconnectAttempted = useRef(false);
   const {
     setWalletConnection,
     setWalletStatus,
     disconnectWallet,
     setWalletBalance,
     setNWCClient,
+    getNWCClient,
   } = useWalletStore();
   const { addBalanceSnapshot } = useTransactionStore();
 
@@ -55,6 +57,22 @@ export function WalletCard({ wallet }: WalletCardProps) {
       throw error;
     }
   };
+
+  // Auto-reconnect wallets that have a stored connection string but no active client
+  useEffect(() => {
+    if (
+      wallet.connectionString &&
+      wallet.status === 'disconnected' &&
+      !getNWCClient(wallet.id) &&
+      !reconnectAttempted.current
+    ) {
+      reconnectAttempted.current = true;
+      setWalletStatus(wallet.id, 'connecting');
+      connectWithNWC(wallet.connectionString).catch(() => {
+        setWalletStatus(wallet.id, 'error', 'Failed to reconnect wallet');
+      });
+    }
+  }, [wallet.id, wallet.connectionString, wallet.status]);
 
   const handleConnect = async (connectionString: string) => {
     if (!connectionString.trim()) return;
