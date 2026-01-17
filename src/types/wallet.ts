@@ -6,6 +6,7 @@ export interface Wallet {
   emoji: string;
   balance: number | null;
   connectionString: string | null;
+  lightningAddress: string | null;
   status: WalletStatus;
   error?: string;
 }
@@ -25,6 +26,7 @@ export function createWallet(id: string): Wallet {
     emoji: persona.emoji,
     balance: null,
     connectionString: null,
+    lightningAddress: null,
     status: 'disconnected',
   };
 }

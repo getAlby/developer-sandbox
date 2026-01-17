@@ -1,17 +1,23 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { NWCClient } from '@getalby/sdk/nwc';
 import type { Wallet, WalletStatus } from '@/types';
 import { createWallet } from '@/types';
+
+// Store NWC clients separately (not persisted)
+const nwcClients = new Map<string, NWCClient>();
 
 interface WalletState {
   wallets: Record<string, Wallet>;
   initializeWallets: (walletIds: string[]) => void;
   setWalletStatus: (walletId: string, status: WalletStatus, error?: string) => void;
-  setWalletConnection: (walletId: string, connectionString: string) => void;
+  setWalletConnection: (walletId: string, connectionString: string, lightningAddress?: string) => void;
   setWalletBalance: (walletId: string, balance: number) => void;
   disconnectWallet: (walletId: string) => void;
   getWallet: (walletId: string) => Wallet | undefined;
   areAllWalletsConnected: (walletIds: string[]) => boolean;
+  setNWCClient: (walletId: string, client: NWCClient) => void;
+  getNWCClient: (walletId: string) => NWCClient | undefined;
 }
 
 export const useWalletStore = create<WalletState>()(
@@ -44,7 +50,7 @@ export const useWalletStore = create<WalletState>()(
         });
       },
 
-      setWalletConnection: (walletId: string, connectionString: string) => {
+      setWalletConnection: (walletId: string, connectionString: string, lightningAddress?: string) => {
         set((state) => {
           const wallet = state.wallets[walletId];
           if (!wallet) return state;
@@ -54,6 +60,7 @@ export const useWalletStore = create<WalletState>()(
               [walletId]: {
                 ...wallet,
                 connectionString,
+                lightningAddress: lightningAddress ?? null,
                 status: 'connected',
                 error: undefined,
               },
@@ -76,6 +83,13 @@ export const useWalletStore = create<WalletState>()(
       },
 
       disconnectWallet: (walletId: string) => {
+        // Close and remove the NWC client
+        const client = nwcClients.get(walletId);
+        if (client) {
+          client.close();
+          nwcClients.delete(walletId);
+        }
+
         set((state) => {
           const wallet = state.wallets[walletId];
           if (!wallet) return state;
@@ -85,6 +99,7 @@ export const useWalletStore = create<WalletState>()(
               [walletId]: {
                 ...wallet,
                 connectionString: null,
+                lightningAddress: null,
                 balance: null,
                 status: 'disconnected',
                 error: undefined,
@@ -102,6 +117,14 @@ export const useWalletStore = create<WalletState>()(
         const { wallets } = get();
         return walletIds.every((id) => wallets[id]?.status === 'connected');
       },
+
+      setNWCClient: (walletId: string, client: NWCClient) => {
+        nwcClients.set(walletId, client);
+      },
+
+      getNWCClient: (walletId: string) => {
+        return nwcClients.get(walletId);
+      },
     }),
     {
       name: 'wallet-storage',
@@ -111,6 +134,7 @@ export const useWalletStore = create<WalletState>()(
             id,
             {
               ...wallet,
+              // Reset status on reload - will need to reconnect
               status: wallet.connectionString ? 'disconnected' : 'disconnected',
             },
           ])

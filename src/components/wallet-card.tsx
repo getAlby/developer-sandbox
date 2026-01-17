@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Loader2, Wallet, Unplug, Rocket } from 'lucide-react';
+import { Loader2, Wallet, Unplug, Rocket, Mail } from 'lucide-react';
+import { NWCClient } from '@getalby/sdk/nwc';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import type { Wallet as WalletType } from '@/types';
-import { useWalletStore } from '@/stores';
+import { useWalletStore, useTransactionStore } from '@/stores';
+import { useFiatValue } from '@/hooks/use-fiat';
 
 interface WalletCardProps {
   wallet: WalletType;
@@ -14,7 +16,45 @@ interface WalletCardProps {
 export function WalletCard({ wallet }: WalletCardProps) {
   const [connectionInput, setConnectionInput] = useState('');
   const [isCreatingWallet, setIsCreatingWallet] = useState(false);
-  const { setWalletConnection, setWalletStatus, disconnectWallet, setWalletBalance } = useWalletStore();
+  const {
+    setWalletConnection,
+    setWalletStatus,
+    disconnectWallet,
+    setWalletBalance,
+    setNWCClient,
+  } = useWalletStore();
+  const { addBalanceSnapshot } = useTransactionStore();
+
+  const connectWithNWC = async (connectionSecret: string) => {
+    try {
+      // Create NWC client
+      const client = new NWCClient({
+        nostrWalletConnectUrl: connectionSecret,
+      });
+
+      // Store the client
+      setNWCClient(wallet.id, client);
+
+      // Get balance (returns millisats, convert to sats)
+      const { balance: balanceMillisats } = await client.getBalance();
+      const balanceSats = Math.floor(balanceMillisats / 1000);
+
+      // Extract lightning address from connection string
+      const lightningAddress = client.lud16 || null;
+
+      // Update wallet state
+      setWalletConnection(wallet.id, connectionSecret, lightningAddress ?? undefined);
+      setWalletBalance(wallet.id, balanceSats);
+
+      // Record initial balance for visualizations
+      addBalanceSnapshot({ walletId: wallet.id, balance: balanceSats });
+
+      setConnectionInput('');
+    } catch (error) {
+      console.error('Failed to connect wallet:', error);
+      throw error;
+    }
+  };
 
   const handleConnect = async (connectionString: string) => {
     if (!connectionString.trim()) return;
@@ -22,12 +62,7 @@ export function WalletCard({ wallet }: WalletCardProps) {
     setWalletStatus(wallet.id, 'connecting');
 
     try {
-      // TODO: Implement actual NWC connection via Alby SDK
-      // For now, simulate connection
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setWalletConnection(wallet.id, connectionString.trim());
-      setWalletBalance(wallet.id, 10000); // Simulated balance
-      setConnectionInput('');
+      await connectWithNWC(connectionString.trim());
     } catch {
       setWalletStatus(wallet.id, 'error', 'Failed to connect wallet');
     }
@@ -39,24 +74,23 @@ export function WalletCard({ wallet }: WalletCardProps) {
 
     try {
       // Create test wallet via faucet API
-      const response = await fetch('https://nwc.getalby.com/api/v1/faucet', {
+      // Returns plaintext NWC connection secret with lud16 parameter
+      const response = await fetch('https://faucet.nwc.dev?balance=10000', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
       });
 
       if (!response.ok) {
         throw new Error('Failed to create test wallet');
       }
 
-      const data = await response.json();
-      const connectionSecret = data.connection_secret || data.connectionSecret;
+      // Response is plaintext connection secret
+      const connectionSecret = await response.text();
 
-      if (connectionSecret) {
-        setWalletConnection(wallet.id, connectionSecret);
-        setWalletBalance(wallet.id, 10000); // Faucet typically provides some sats
-      } else {
-        throw new Error('No connection secret received');
+      if (!connectionSecret || !connectionSecret.startsWith('nostr+walletconnect://')) {
+        throw new Error('Invalid connection secret received');
       }
+
+      await connectWithNWC(connectionSecret.trim());
     } catch (error) {
       console.error('Failed to create test wallet:', error);
       setWalletStatus(wallet.id, 'error', 'Failed to create test wallet');
@@ -87,10 +121,7 @@ export function WalletCard({ wallet }: WalletCardProps) {
 
       <CardContent className="flex-1 space-y-4">
         {isConnected ? (
-          <ConnectedState
-            wallet={wallet}
-            onDisconnect={handleDisconnect}
-          />
+          <ConnectedState wallet={wallet} onDisconnect={handleDisconnect} />
         ) : (
           <DisconnectedState
             wallet={wallet}
@@ -111,7 +142,11 @@ export function WalletCard({ wallet }: WalletCardProps) {
 function StatusBadge({ status }: { status: WalletType['status'] }) {
   switch (status) {
     case 'connected':
-      return <Badge variant="default" className="bg-green-500">Connected</Badge>;
+      return (
+        <Badge variant="default" className="bg-green-500">
+          Connected
+        </Badge>
+      );
     case 'connecting':
       return <Badge variant="secondary">Connecting...</Badge>;
     case 'error':
@@ -127,6 +162,8 @@ interface ConnectedStateProps {
 }
 
 function ConnectedState({ wallet, onDisconnect }: ConnectedStateProps) {
+  const fiatValue = useFiatValue(wallet.balance ?? 0);
+
   return (
     <>
       <div className="space-y-1">
@@ -137,17 +174,16 @@ function ConnectedState({ wallet, onDisconnect }: ConnectedStateProps) {
         <div className="text-2xl font-bold">
           {wallet.balance?.toLocaleString() ?? '—'} sats
         </div>
-        <div className="text-sm text-muted-foreground">
-          ≈ ${((wallet.balance ?? 0) * 0.00095).toFixed(2)}
-        </div>
+        <div className="text-sm text-muted-foreground">{fiatValue}</div>
+        {wallet.lightningAddress && (
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <Mail className="h-3 w-3" />
+            <span className="truncate">{wallet.lightningAddress}</span>
+          </div>
+        )}
       </div>
 
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={onDisconnect}
-        className="w-full"
-      >
+      <Button variant="outline" size="sm" onClick={onDisconnect} className="w-full">
         <Unplug className="mr-2 h-4 w-4" />
         Disconnect Wallet
       </Button>
