@@ -25,7 +25,7 @@ export const scenarios: Scenario[] = [
   },
   {
     id: "notifications",
-    title: "Notifications",
+    title: "Payment Notifications",
     description:
       "Subscribe to real-time payment notifications and react to incoming and outgoing payments.",
     education:
@@ -40,7 +40,24 @@ export const scenarios: Scenario[] = [
     description:
       "Create an invoice that can be conditionally settled or cancelled.",
     education:
-      "Hold invoices allow you to accept a payment but delay the final settlement. This is useful for escrow-like scenarios where you want to verify something before completing the payment.",
+      "Hold invoices allow you to accept a payment but delay the final settlement. This is useful for escrow-like scenarios where you want to verify something before completing the payment. The invoice must be settled before the specified block time.",
+    howItWorks: [
+      {
+        title: "Create",
+        description:
+          "Bob generates a preimage and its hash. The hash is included in the invoice.",
+      },
+      {
+        title: "Hold",
+        description:
+          "Alice pays, but funds are locked. Only Bob has the preimage to claim them.",
+      },
+      {
+        title: "Settle/Cancel",
+        description:
+          "Bob reveals preimage to receive funds, or cancels to refund Alice.",
+      },
+    ],
     complexity: "medium",
     requiredWallets: ["alice", "bob"],
     icon: "🔒",

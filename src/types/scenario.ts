@@ -1,4 +1,4 @@
-export type ScenarioComplexity = 'simplest' | 'simple' | 'medium' | 'advanced';
+export type ScenarioComplexity = "simplest" | "simple" | "medium" | "advanced";
 
 export interface Scenario {
   id: string;
@@ -8,4 +8,5 @@ export interface Scenario {
   complexity: ScenarioComplexity;
   requiredWallets: string[];
   icon: string;
+  howItWorks?: { title: string; description: string }[];
 }

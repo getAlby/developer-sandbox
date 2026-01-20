@@ -3,6 +3,7 @@ import {
   SimplePaymentScenario,
   LightningAddressScenario,
   NotificationsScenario,
+  HoldInvoiceScenario,
   TransactionHistoryScenario,
 } from './scenarios';
 
@@ -16,6 +17,8 @@ export function ScenarioPanel() {
       return <LightningAddressScenario />;
     case 'notifications':
       return <NotificationsScenario />;
+    case 'hold-invoice':
+      return <HoldInvoiceScenario />;
     case 'transaction-history':
       return <TransactionHistoryScenario />;
     default:
