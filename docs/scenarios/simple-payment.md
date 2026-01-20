@@ -1,6 +1,6 @@
 Title: Simple Invoice Payment
 Description: Bob creates a BOLT-11 invoice, Alice pays it. The fundamental Lightning payment flow.
-Education: invoices can be shared as text or displayed as a QR code, or opened as a link in a lightning wallet. See [BIP-321](https://bips.dev/321/) for more info
+Education: invoices can be shared as text or displayed as a QR code, or opened as a link in a lightning wallet.
 Complexity: Simplest
 
 ## Flow
@@ -23,5 +23,3 @@ Initial state
 │                                 │  [Create Invoice]                          │
 │                                 │                                            │
 ```
-
-After invoice creation, the RHS

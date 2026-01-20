@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { Loader2, Send, Bell, BellOff, Zap, Mail } from 'lucide-react';
-import { LightningAddress } from '@getalby/lightning-tools';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useWalletStore, useTransactionStore } from '@/stores';
-import { WALLET_PERSONAS } from '@/types';
-import type { Nip47Notification } from '@getalby/sdk/nwc';
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Loader2, Bell, BellOff, Zap, Mail } from "lucide-react";
+import { LightningAddress } from "@getalby/lightning-tools";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useWalletStore, useTransactionStore } from "@/stores";
+import { WALLET_PERSONAS } from "@/types";
+import type { Nip47Notification } from "@getalby/sdk/nwc";
 
 interface ReceivedPayment {
   id: string;
@@ -17,7 +17,7 @@ interface ReceivedPayment {
 
 export function NotificationsScenario() {
   const { areAllWalletsConnected } = useWalletStore();
-  const allConnected = areAllWalletsConnected(['alice', 'bob']);
+  const allConnected = areAllWalletsConnected(["alice", "bob"]);
 
   if (!allConnected) {
     return null;
@@ -32,20 +32,21 @@ export function NotificationsScenario() {
 }
 
 function AlicePanel() {
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState("");
   const [isPaying, setIsPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const { getNWCClient, setWalletBalance, getWallet } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } = useTransactionStore();
+  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+    useTransactionStore();
 
-  const bobWallet = getWallet('bob');
-  const addressToUse = address || bobWallet?.lightningAddress || '';
+  const bobWallet = getWallet("bob");
+  const addressToUse = address || bobWallet?.lightningAddress || "";
 
   const handleQuickPay = async (satoshi: number) => {
     if (!addressToUse) return;
 
-    const client = getNWCClient('alice');
+    const client = getNWCClient("alice");
     if (!client) return;
 
     setIsPaying(true);
@@ -53,20 +54,20 @@ function AlicePanel() {
 
     try {
       addTransaction({
-        type: 'payment_sent',
-        status: 'pending',
-        fromWallet: 'alice',
-        toWallet: 'bob',
+        type: "payment_sent",
+        status: "pending",
+        fromWallet: "alice",
+        toWallet: "bob",
         amount: satoshi,
         description: `Paying ${satoshi} sats to ${addressToUse}...`,
       });
 
       addFlowStep({
-        fromWallet: 'alice',
-        toWallet: 'bob',
+        fromWallet: "alice",
+        toWallet: "bob",
         label: `Requesting invoice for ${satoshi} sats...`,
-        direction: 'right',
-        status: 'pending',
+        direction: "right",
+        status: "pending",
       });
 
       // Lookup the lightning address and request an invoice
@@ -76,19 +77,19 @@ function AlicePanel() {
       const invoice = await ln.requestInvoice({ satoshi });
 
       addFlowStep({
-        fromWallet: 'bob',
-        toWallet: 'alice',
+        fromWallet: "bob",
+        toWallet: "alice",
         label: `Invoice: ${satoshi} sats`,
-        direction: 'left',
-        status: 'success',
+        direction: "left",
+        status: "success",
       });
 
       addFlowStep({
-        fromWallet: 'alice',
-        toWallet: 'bob',
-        label: 'Paying invoice...',
-        direction: 'right',
-        status: 'pending',
+        fromWallet: "alice",
+        toWallet: "bob",
+        label: "Paying invoice...",
+        direction: "right",
+        status: "pending",
       });
 
       await client.payInvoice({ invoice: invoice.paymentRequest });
@@ -96,52 +97,52 @@ function AlicePanel() {
       // Update Alice's balance
       const aliceBalance = await client.getBalance();
       const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
-      setWalletBalance('alice', aliceBalanceSats);
-      addBalanceSnapshot({ walletId: 'alice', balance: aliceBalanceSats });
+      setWalletBalance("alice", aliceBalanceSats);
+      addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
 
       // Update Bob's balance
-      const bobClient = getNWCClient('bob');
+      const bobClient = getNWCClient("bob");
       if (bobClient) {
         const bobBalance = await bobClient.getBalance();
         const bobBalanceSats = Math.floor(bobBalance.balance / 1000);
-        setWalletBalance('bob', bobBalanceSats);
-        addBalanceSnapshot({ walletId: 'bob', balance: bobBalanceSats });
+        setWalletBalance("bob", bobBalanceSats);
+        addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
       }
 
       addTransaction({
-        type: 'payment_sent',
-        status: 'success',
-        fromWallet: 'alice',
-        toWallet: 'bob',
+        type: "payment_sent",
+        status: "success",
+        fromWallet: "alice",
+        toWallet: "bob",
         amount: satoshi,
         description: `Paid ${satoshi} sats to ${addressToUse}`,
       });
 
       addFlowStep({
-        fromWallet: 'bob',
-        toWallet: 'alice',
-        label: 'Payment confirmed',
-        direction: 'left',
-        status: 'success',
+        fromWallet: "bob",
+        toWallet: "alice",
+        label: "Payment confirmed",
+        direction: "left",
+        status: "success",
       });
     } catch (err) {
-      console.error('Failed to pay:', err);
-      setError(err instanceof Error ? err.message : 'Payment failed');
+      console.error("Failed to pay:", err);
+      setError(err instanceof Error ? err.message : "Payment failed");
 
       addTransaction({
-        type: 'payment_failed',
-        status: 'error',
-        fromWallet: 'alice',
-        toWallet: 'bob',
-        description: 'Payment failed',
+        type: "payment_failed",
+        status: "error",
+        fromWallet: "alice",
+        toWallet: "bob",
+        description: "Payment failed",
       });
 
       addFlowStep({
-        fromWallet: 'alice',
-        toWallet: 'bob',
-        label: 'Payment failed',
-        direction: 'right',
-        status: 'error',
+        fromWallet: "alice",
+        toWallet: "bob",
+        label: "Payment failed",
+        direction: "right",
+        status: "error",
       });
     } finally {
       setIsPaying(false);
@@ -158,7 +159,9 @@ function AlicePanel() {
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Recipient Lightning Address</label>
+          <label className="text-xs text-muted-foreground">
+            Recipient Lightning Address
+          </label>
           <div className="flex gap-2">
             <Input
               value={addressToUse}
@@ -190,7 +193,9 @@ function AlicePanel() {
                 ) : (
                   <>
                     {amount}
-                    <span className="ml-1 text-xs text-muted-foreground">sats</span>
+                    <span className="ml-1 text-xs text-muted-foreground">
+                      sats
+                    </span>
                   </>
                 )}
               </Button>
@@ -203,8 +208,9 @@ function AlicePanel() {
         <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm text-blue-800 dark:text-blue-200">
           <p className="font-medium">Try it out!</p>
           <p className="text-xs mt-1 opacity-90">
-            Click the buttons above to send payments to Bob. If Bob is subscribed to notifications,
-            they'll see the payments appear in real-time.
+            Click the buttons above to send payments to Bob. If Bob is
+            subscribed to notifications, they'll see the payments appear in
+            real-time.
           </p>
         </div>
       </CardContent>
@@ -215,18 +221,21 @@ function AlicePanel() {
 function BobPanel() {
   const [isListening, setIsListening] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
-  const [receivedPayments, setReceivedPayments] = useState<ReceivedPayment[]>([]);
+  const [receivedPayments, setReceivedPayments] = useState<ReceivedPayment[]>(
+    [],
+  );
   const [error, setError] = useState<string | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
 
   const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } = useTransactionStore();
+  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+    useTransactionStore();
 
-  const bobWallet = getWallet('bob');
+  const bobWallet = getWallet("bob");
 
   const handleNotification = useCallback(
     (notification: Nip47Notification) => {
-      if (notification.notification_type === 'payment_received') {
+      if (notification.notification_type === "payment_received") {
         const tx = notification.notification;
         const amountSats = Math.floor(tx.amount / 1000);
 
@@ -240,39 +249,45 @@ function BobPanel() {
         setReceivedPayments((prev) => [payment, ...prev]);
 
         addTransaction({
-          type: 'payment_received',
-          status: 'success',
-          toWallet: 'bob',
+          type: "payment_received",
+          status: "success",
+          toWallet: "bob",
           amount: amountSats,
           description: `Bob received ${amountSats} sats via notification`,
         });
 
         addFlowStep({
-          fromWallet: 'alice',
-          toWallet: 'bob',
+          fromWallet: "alice",
+          toWallet: "bob",
           label: `🔔 Notification: +${amountSats} sats`,
-          direction: 'right',
-          status: 'success',
+          direction: "right",
+          status: "success",
         });
 
         // Update Bob's balance
-        const client = getNWCClient('bob');
+        const client = getNWCClient("bob");
         if (client) {
           client.getBalance().then((balance) => {
             const balanceSats = Math.floor(balance.balance / 1000);
-            setWalletBalance('bob', balanceSats);
-            addBalanceSnapshot({ walletId: 'bob', balance: balanceSats });
+            setWalletBalance("bob", balanceSats);
+            addBalanceSnapshot({ walletId: "bob", balance: balanceSats });
           });
         }
       }
     },
-    [addTransaction, addFlowStep, addBalanceSnapshot, getNWCClient, setWalletBalance]
+    [
+      addTransaction,
+      addFlowStep,
+      addBalanceSnapshot,
+      getNWCClient,
+      setWalletBalance,
+    ],
   );
 
   const startListening = async () => {
-    const client = getNWCClient('bob');
+    const client = getNWCClient("bob");
     if (!client) {
-      setError('Bob wallet not connected');
+      setError("Bob wallet not connected");
       return;
     }
 
@@ -281,36 +296,38 @@ function BobPanel() {
 
     try {
       addTransaction({
-        type: 'invoice_created',
-        status: 'pending',
-        description: 'Bob subscribing to payment notifications...',
+        type: "invoice_created",
+        status: "pending",
+        description: "Bob subscribing to payment notifications...",
       });
 
-      const unsub = await client.subscribeNotifications(handleNotification, ['payment_received']);
+      const unsub = await client.subscribeNotifications(handleNotification, [
+        "payment_received",
+      ]);
       unsubRef.current = unsub;
       setIsListening(true);
 
       addTransaction({
-        type: 'invoice_created',
-        status: 'success',
-        description: 'Bob is now listening for payment notifications',
+        type: "invoice_created",
+        status: "success",
+        description: "Bob is now listening for payment notifications",
       });
 
       addFlowStep({
-        fromWallet: 'bob',
-        toWallet: 'bob',
-        label: '🔔 Subscribed to notifications',
-        direction: 'right',
-        status: 'success',
+        fromWallet: "bob",
+        toWallet: "bob",
+        label: "🔔 Subscribed to notifications",
+        direction: "right",
+        status: "success",
       });
     } catch (err) {
-      console.error('Failed to subscribe to notifications:', err);
-      setError(err instanceof Error ? err.message : 'Failed to subscribe');
+      console.error("Failed to subscribe to notifications:", err);
+      setError(err instanceof Error ? err.message : "Failed to subscribe");
 
       addTransaction({
-        type: 'invoice_created',
-        status: 'error',
-        description: 'Failed to subscribe to notifications',
+        type: "invoice_created",
+        status: "error",
+        description: "Failed to subscribe to notifications",
       });
     } finally {
       setIsStarting(false);
@@ -325,17 +342,17 @@ function BobPanel() {
     setIsListening(false);
 
     addTransaction({
-      type: 'invoice_created',
-      status: 'success',
-      description: 'Bob stopped listening for notifications',
+      type: "invoice_created",
+      status: "success",
+      description: "Bob stopped listening for notifications",
     });
 
     addFlowStep({
-      fromWallet: 'bob',
-      toWallet: 'bob',
-      label: '🔕 Unsubscribed from notifications',
-      direction: 'right',
-      status: 'success',
+      fromWallet: "bob",
+      toWallet: "bob",
+      label: "🔕 Unsubscribed from notifications",
+      direction: "right",
+      status: "success",
     });
   };
 
@@ -360,7 +377,9 @@ function BobPanel() {
         {bobWallet?.lightningAddress && (
           <div className="flex items-center gap-2 p-2 bg-muted rounded-lg text-sm">
             <Mail className="h-4 w-4 text-muted-foreground" />
-            <span className="font-mono text-xs">{bobWallet.lightningAddress}</span>
+            <span className="font-mono text-xs">
+              {bobWallet.lightningAddress}
+            </span>
           </div>
         )}
 
@@ -376,12 +395,14 @@ function BobPanel() {
                 Listening
               </span>
             ) : (
-              <span className="text-sm text-muted-foreground">Not listening</span>
+              <span className="text-sm text-muted-foreground">
+                Not listening
+              </span>
             )}
           </div>
 
           <Button
-            variant={isListening ? 'outline' : 'default'}
+            variant={isListening ? "outline" : "default"}
             size="sm"
             onClick={isListening ? stopListening : startListening}
             disabled={isStarting}
@@ -405,13 +426,15 @@ function BobPanel() {
         {error && <p className="text-sm text-destructive">{error}</p>}
 
         <div className="space-y-2">
-          <label className="text-xs text-muted-foreground">Incoming Payments</label>
+          <label className="text-xs text-muted-foreground">
+            Incoming Payments
+          </label>
           <div className="min-h-[120px] max-h-[200px] overflow-y-auto space-y-2">
             {receivedPayments.length === 0 ? (
               <p className="text-sm text-muted-foreground py-4 text-center">
                 {isListening
-                  ? 'Waiting for incoming payments...'
-                  : 'Start listening to see incoming payments'}
+                  ? "Waiting for incoming payments..."
+                  : "Start listening to see incoming payments"}
               </p>
             ) : (
               receivedPayments.map((payment) => (
