@@ -2,6 +2,7 @@ import { useScenarioStore } from '@/stores';
 import {
   SimplePaymentScenario,
   LightningAddressScenario,
+  NotificationsScenario,
   TransactionHistoryScenario,
 } from './scenarios';
 
@@ -13,6 +14,8 @@ export function ScenarioPanel() {
       return <SimplePaymentScenario />;
     case 'lightning-address':
       return <LightningAddressScenario />;
+    case 'notifications':
+      return <NotificationsScenario />;
     case 'transaction-history':
       return <TransactionHistoryScenario />;
     default:

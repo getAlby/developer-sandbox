@@ -52,7 +52,7 @@ export const scenarios: Scenario[] = [
       "Use the payment preimage as cryptographic proof that a payment was made.",
     education:
       "Every Lightning payment includes a preimage that serves as cryptographic proof of payment. This can be used to unlock content, verify purchases, or as a receipt.",
-    complexity: "medium",
+    complexity: "simple",
     requiredWallets: ["alice", "bob"],
     icon: "✅",
   },
@@ -66,7 +66,7 @@ export const scenarios: Scenario[] = [
     requiredWallets: ["alice", "bob", "charlie", "david"],
     icon: "📜",
   },
-  {
+  /*{
     id: "nostr-zap",
     title: "Nostr Zap",
     description: "Send a zap (payment) to a Nostr user or content.",
@@ -75,7 +75,7 @@ export const scenarios: Scenario[] = [
     complexity: "advanced",
     requiredWallets: ["alice", "bob"],
     icon: "⚡",
-  },
+  },*/
   {
     id: "fiat-conversion",
     title: "Fiat Conversion",
