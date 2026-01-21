@@ -151,7 +151,7 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
         className="absolute left-1/2 top-0 -translate-x-1/2 transform"
         style={{
           left: `${centerPosition}%`,
-          width: stepWidth * (rightWallet - leftWallet) + "%",
+          width: stepWidth * Math.max(rightWallet - leftWallet, 1) + "%",
         }}
       >
         <div className="flex flex-col items-center">
