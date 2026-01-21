@@ -1,4 +1,4 @@
-import { useScenarioStore } from '@/stores';
+import { useScenarioStore } from "@/stores";
 import {
   SimplePaymentScenario,
   LookupInvoiceScenario,
@@ -12,36 +12,39 @@ import {
   FiatConversionScenario,
   PaymentForwardingScenario,
   PaymentPrismsScenario,
-} from './scenarios';
+  LnurlVerifyScenario,
+} from "./scenarios";
 
 export function ScenarioPanel() {
   const { currentScenario } = useScenarioStore();
 
   switch (currentScenario.id) {
-    case 'simple-payment':
+    case "simple-payment":
       return <SimplePaymentScenario />;
-    case 'lookup-invoice':
+    case "lookup-invoice":
       return <LookupInvoiceScenario />;
-    case 'lightning-address':
+    case "lightning-address":
       return <LightningAddressScenario />;
-    case 'notifications':
+    case "notifications":
       return <NotificationsScenario />;
-    case 'subscription-payments':
+    case "subscription-payments":
       return <SubscriptionPaymentsScenario />;
-    case 'hold-invoice':
+    case "hold-invoice":
       return <HoldInvoiceScenario />;
-    case 'transaction-history':
+    case "transaction-history":
       return <TransactionHistoryScenario />;
-    case 'proof-of-payment':
+    case "proof-of-payment":
       return <ProofOfPaymentScenario />;
-    case 'decode-bolt11-invoice':
+    case "decode-bolt11-invoice":
       return <DecodeBolt11InvoiceScenario />;
-    case 'fiat-conversion':
+    case "fiat-conversion":
       return <FiatConversionScenario />;
-    case 'payment-forwarding':
+    case "payment-forwarding":
       return <PaymentForwardingScenario />;
-    case 'payment-prisms':
+    case "payment-prisms":
       return <PaymentPrismsScenario />;
+    case "lnurl-verify":
+      return <LnurlVerifyScenario />;
     default:
       return null;
   }
