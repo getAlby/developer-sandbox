@@ -153,6 +153,8 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [ ] `lookupInvoice()` - Check invoice status
 - [x] `listTransactions()` - Get transaction history
 
+# TODO: LNURL-Verify, Invoice decoding, Lookup invoice
+
 ---
 
 ## Phase 7: Polish & UX
@@ -178,6 +180,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 7.4 Misc feedback
 
+- [ ] Order scenarios by simplest to most difficult
 - [ ] correct cursor when hovering on buttons
 - [ ] use a hash router for navigating scenarios
 - [ ] On the payment log there are logs of a Loader even when the payment has either failed or succeeded, this is confusing. (e.g. "Creating invoice..." which still shows a loading spinner when the next line is "Invoice created for 1000 sats" which shows a check)

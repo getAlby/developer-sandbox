@@ -6,3 +6,4 @@ export { TransactionHistoryScenario } from './transaction-history';
 export { ProofOfPaymentScenario } from './proof-of-payment';
 export { FiatConversionScenario } from './fiat-conversion';
 export { PaymentForwardingScenario } from './payment-forwarding';
+export { PaymentPrismsScenario } from './payment-prisms';

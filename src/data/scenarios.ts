@@ -122,6 +122,34 @@ export const scenarios: Scenario[] = [
     icon: "🔀",
   },
   {
+    id: "payment-prisms",
+    title: "Payment Prisms",
+    description:
+      "Listen to incoming payments, and forward a percentage of the value to multiple recipients.",
+    education:
+      "Prisms is an extension of payment forwarding that allows a single initial payment to fund multiple wallets. Prisms can also be recursive. Make sure to consider reserving 1% for routing fees for each payment.",
+    howItWorks: [
+      {
+        title: "Configure",
+        description:
+          "Bob sets up a prism split with percentages for Charlie and David.",
+      },
+      {
+        title: "Receive",
+        description:
+          "Alice pays Bob. Bob's wallet receives the payment notification.",
+      },
+      {
+        title: "Split",
+        description:
+          "Bob automatically splits the payment, forwarding to Charlie and David.",
+      },
+    ],
+    complexity: "medium",
+    requiredWallets: ["alice", "bob", "charlie", "david"],
+    icon: "🔺",
+  },
+  {
     id: "fiat-conversion",
     title: "Fiat Conversion",
     description: "Convert between sats and fiat currencies for display.",
