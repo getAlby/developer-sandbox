@@ -1,5 +1,5 @@
 Title: Simple Invoice Payment
-Description: Bob creates a BOLT-11 invoice, Alice pays it. The fundamental Lightning payment flow.
+Description: Alice creates a BOLT-11 invoice, Bob pays it. The fundamental Lightning payment flow.
 Education: invoices can be shared as text or displayed as a QR code, or opened as a link in a lightning wallet.
 Complexity: Simplest
 
@@ -8,18 +8,18 @@ Complexity: Simplest
 Initial state
 
 ```txt
-│  👤 Alice              │  👤 Bob                           │
+│  👤 Alice                       │  👤 Bob                                    │
 │                                 │                                            │
-│  BOLT-11 Invoice                │  Amount (sats)                             │
+│  Amount (sats)                  │  BOLT-11 Invoice                           │
 │  ┌──────────────────────────┐  │  ┌──────────────────────────────────────┐ │
-│  │ lnbc...                  │  │  │ 1000                                 │ │
+│  │ 1000                     │  │  │ lnbc...                              │ │
 │  └──────────────────────────┘  │  └──────────────────────────────────────┘ │
 │                                 │                                            │
-│  [Pay Invoice]                  │  Description (optional)                    │
-│                                 │  ┌──────────────────────────────────────┐ │
-│                                 │  │ What's this payment for?             │ │
-│                                 │  └──────────────────────────────────────┘ │
+│  Description (optional)         │  [Pay Invoice]                             │
+│  ┌──────────────────────────┐  │                                            │
+│  │ What's this payment for? │  │                                            │
+│  └──────────────────────────┘  │                                            │
 │                                 │                                            │
-│                                 │  [Create Invoice]                          │
+│  [Create Invoice]               │                                            │
 │                                 │                                            │
 ```
