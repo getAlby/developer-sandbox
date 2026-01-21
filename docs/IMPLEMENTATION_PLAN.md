@@ -178,14 +178,12 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 7.4 Misc feedback
 
-- [ ] Add subscription payments scenario
-- [ ] Add a LNURL-Verify scenario
-- [ ] Order scenarios by simplest to most difficult
-- [ ] correct cursor when hovering on buttons
+- [ ] add success state to simple payment scenario
 - [ ] use a hash router for navigating scenarios
 - [ ] On the payment log there are logs of a Loader even when the payment has either failed or succeeded, this is confusing. (e.g. "Creating invoice..." which still shows a loading spinner when the next line is "Invoice created for 1000 sats" which shows a check)
 - [ ] Add a way to copy NWC connection from a wallet card, and also a way to topup the wallet (via the faucet API)
 - [ ] fix the flow diagram view (broken)
+- [ ] fix the balance chart lines not showing
 
 ## Phase 8: Github Pages
 

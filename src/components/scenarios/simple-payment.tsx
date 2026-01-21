@@ -313,7 +313,7 @@ function BobPanel() {
           <span>Bob: Pay Invoice</span>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="flex flex-col space-y-3 h-full">
         <div className="space-y-1">
           <label className="text-xs text-muted-foreground">
             BOLT-11 Invoice
@@ -331,6 +331,7 @@ function BobPanel() {
             </p>
           )}
         </div>
+        <div className="flex-1" />
         <Button
           onClick={handlePayInvoice}
           disabled={isPaying || !invoiceToUse}
