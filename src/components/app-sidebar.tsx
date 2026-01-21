@@ -14,9 +14,14 @@ import {
 import { scenarios } from "@/data/scenarios";
 import { useScenarioStore } from "@/stores";
 import { AlbyIcon } from "@/icons/AlbyIcon";
+import { AlbyHubIcon } from "@/icons/AlbyHubIcon";
 
 const externalLinks = [
-  { title: "Alby Hub", url: "https://getalby.com/alby-hub", icon: "⚡" },
+  {
+    title: "Alby Hub",
+    url: "https://getalby.com/alby-hub",
+    icon: <AlbyHubIcon className="size-4" />,
+  },
   {
     title: "Alby Agent Skill",
     url: "https://github.com/getalby/alby-agent-skill",
@@ -25,12 +30,17 @@ const externalLinks = [
   {
     title: "NWC Faucet",
     url: "https://faucet.nwc.dev",
-    icon: "🚰",
+    icon: "💧",
   },
   {
     title: "Sandbox Source Code",
     url: "https://github.com/getAlby/developer-sandbox",
     icon: "💻",
+  },
+  {
+    title: "Alby Developers",
+    url: "https://getalby.com/developers",
+    icon: "🔨",
   },
 ];
 
