@@ -10,10 +10,11 @@ export function VisualizationPanel() {
           <FileText className="h-4 w-4" />
           Log
         </TabsTrigger>
-        <TabsTrigger value="flow" className="gap-2">
+        {/*FIXME: doesn't work well */}
+        {/* <TabsTrigger value="flow" className="gap-2">
           <GitBranch className="h-4 w-4" />
           Flow Diagram
-        </TabsTrigger>
+        </TabsTrigger> */}
         <TabsTrigger value="chart" className="gap-2">
           <LineChart className="h-4 w-4" />
           Balance Chart
