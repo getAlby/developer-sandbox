@@ -100,7 +100,7 @@ export const scenarios: Scenario[] = [
     education:
       "Many apps need to display Bitcoin amounts in familiar fiat currencies. Learn how to fetch exchange rates and convert amounts.",
     complexity: "advanced",
-    requiredWallets: ["alice"],
+    requiredWallets: [],
     icon: "💱",
   },
 ];

@@ -4,3 +4,4 @@ export { NotificationsScenario } from './notifications';
 export { HoldInvoiceScenario } from './hold-invoice';
 export { TransactionHistoryScenario } from './transaction-history';
 export { ProofOfPaymentScenario } from './proof-of-payment';
+export { FiatConversionScenario } from './fiat-conversion';

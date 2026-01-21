@@ -6,6 +6,7 @@ import {
   HoldInvoiceScenario,
   TransactionHistoryScenario,
   ProofOfPaymentScenario,
+  FiatConversionScenario,
 } from './scenarios';
 
 export function ScenarioPanel() {
@@ -24,6 +25,8 @@ export function ScenarioPanel() {
       return <TransactionHistoryScenario />;
     case 'proof-of-payment':
       return <ProofOfPaymentScenario />;
+    case 'fiat-conversion':
+      return <FiatConversionScenario />;
     default:
       return null;
   }
