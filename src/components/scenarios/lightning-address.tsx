@@ -17,40 +17,40 @@ export function LightningAddressScenario() {
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <BobPanel />
       <AlicePanel />
+      <BobPanel />
     </div>
   );
 }
 
-function BobPanel() {
+function AlicePanel() {
   const { getWallet } = useWalletStore();
-  const bobWallet = getWallet("bob");
+  const aliceWallet = getWallet("alice");
 
   return (
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <span>{WALLET_PERSONAS.bob.emoji}</span>
-          <span>Bob: Share Lightning Address</span>
+          <span>{WALLET_PERSONAS.alice.emoji}</span>
+          <span>Alice: Share Lightning Address</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-sm text-muted-foreground">
-          Bob's Lightning Address is like an email for receiving payments.
+          Alice's Lightning Address is like an email for receiving payments.
           Anyone can send sats to this address without needing an invoice first.
         </p>
 
-        {bobWallet?.lightningAddress ? (
+        {aliceWallet?.lightningAddress ? (
           <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
             <Mail className="h-5 w-5 text-primary" />
             <span className="font-mono text-sm">
-              {bobWallet.lightningAddress}
+              {aliceWallet.lightningAddress}
             </span>
           </div>
         ) : (
           <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg text-sm text-yellow-800 dark:text-yellow-200">
-            <p>Bob's wallet doesn't have a Lightning Address.</p>
+            <p>Alice's wallet doesn't have a Lightning Address.</p>
             <p className="text-xs mt-1 opacity-75">
               Test wallets from faucet.nwc.dev include a Lightning Address
               automatically.
@@ -62,7 +62,7 @@ function BobPanel() {
   );
 }
 
-function AlicePanel() {
+function BobPanel() {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("100");
   const [comment, setComment] = useState("");
@@ -78,10 +78,10 @@ function AlicePanel() {
   const { addTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
-  const bobWallet = getWallet("bob");
+  const aliceWallet = getWallet("alice");
 
-  // Pre-fill with Bob's address if available and input is empty
-  const addressToUse = address || bobWallet?.lightningAddress || "";
+  // Pre-fill with Alice's address if available and input is empty
+  const addressToUse = address || aliceWallet?.lightningAddress || "";
 
   const handleLookup = async () => {
     if (!addressToUse) return;
@@ -116,10 +116,10 @@ function AlicePanel() {
       });
 
       addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         label: `Lookup: ${addressToUse}`,
-        direction: "right",
+        direction: "left",
         status: "success",
       });
     } catch (err) {
@@ -136,7 +136,7 @@ function AlicePanel() {
   const handlePay = async () => {
     if (!addressToUse || !amount) return;
 
-    const client = getNWCClient("alice");
+    const client = getNWCClient("bob");
     if (!client) return;
 
     setIsPaying(true);
@@ -149,17 +149,17 @@ function AlicePanel() {
       addTransaction({
         type: "payment_sent",
         status: "pending",
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         amount: satoshi,
         description: `Paying ${satoshi} sats to ${addressToUse}...`,
       });
 
       addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         label: `Requesting invoice...`,
-        direction: "right",
+        direction: "left",
         status: "pending",
       });
 
@@ -173,54 +173,54 @@ function AlicePanel() {
       });
 
       addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+        fromWallet: "alice",
+        toWallet: "bob",
         label: `Invoice: ${satoshi} sats`,
-        direction: "left",
+        direction: "right",
         status: "success",
       });
 
       // Pay the invoice
       addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         label: "Paying invoice...",
-        direction: "right",
+        direction: "left",
         status: "pending",
       });
 
       await client.payInvoice({ invoice: invoice.paymentRequest });
 
-      // Update Alice's balance
-      const aliceBalance = await client.getBalance();
-      const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
-      setWalletBalance("alice", aliceBalanceSats);
-      addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
+      // Update Bob's balance
+      const bobBalance = await client.getBalance();
+      const bobBalanceSats = Math.floor(bobBalance.balance / 1000);
+      setWalletBalance("bob", bobBalanceSats);
+      addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
 
-      // Update Bob's balance if connected
-      const bobClient = getNWCClient("bob");
-      if (bobClient) {
-        const bobBalance = await bobClient.getBalance();
-        const bobBalanceSats = Math.floor(bobBalance.balance / 1000);
-        setWalletBalance("bob", bobBalanceSats);
-        addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
+      // Update Alice's balance if connected
+      const aliceClient = getNWCClient("alice");
+      if (aliceClient) {
+        const aliceBalance = await aliceClient.getBalance();
+        const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
+        setWalletBalance("alice", aliceBalanceSats);
+        addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
       }
 
       // Add success transaction
       addTransaction({
         type: "payment_sent",
         status: "success",
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         amount: satoshi,
         description: `Paid ${satoshi} sats to ${addressToUse}`,
       });
 
       addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+        fromWallet: "alice",
+        toWallet: "bob",
         label: "Payment confirmed",
-        direction: "left",
+        direction: "right",
         status: "success",
       });
 
@@ -235,16 +235,16 @@ function AlicePanel() {
       addTransaction({
         type: "payment_failed",
         status: "error",
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         description: "Payment failed",
       });
 
       addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         label: "Payment failed",
-        direction: "right",
+        direction: "left",
         status: "error",
       });
     } finally {
@@ -256,8 +256,8 @@ function AlicePanel() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <span>{WALLET_PERSONAS.alice.emoji}</span>
-          <span>Alice: Pay to Lightning Address</span>
+          <span>{WALLET_PERSONAS.bob.emoji}</span>
+          <span>Bob: Pay to Lightning Address</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -269,7 +269,7 @@ function AlicePanel() {
             <Input
               value={addressToUse}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="bob@example.com"
+              placeholder="alice@example.com"
               disabled={isPaying}
             />
             <Button
@@ -282,9 +282,9 @@ function AlicePanel() {
               <AtSign className="h-4 w-4" />
             </Button>
           </div>
-          {bobWallet?.lightningAddress && !address && (
+          {aliceWallet?.lightningAddress && !address && (
             <p className="text-xs text-green-600 dark:text-green-400">
-              Using Bob's Lightning Address
+              Using Alice's Lightning Address
             </p>
           )}
         </div>

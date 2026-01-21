@@ -40,13 +40,13 @@ export function HoldInvoiceScenario() {
 
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <BobPanel />
       <AlicePanel />
+      <BobPanel />
     </div>
   );
 }
 
-function BobPanel() {
+function AlicePanel() {
   const [amount, setAmount] = useState("1000");
   const [description, setDescription] = useState("");
   const [isCreating, setIsCreating] = useState(false);
@@ -87,16 +87,16 @@ function BobPanel() {
         addTransaction({
           type: "payment_received",
           status: "pending",
-          toWallet: "bob",
+          toWallet: "alice",
           amount: currentInvoiceData.amount,
           description: `Hold invoice payment held (${currentInvoiceData.amount} sats)`,
         });
 
         addFlowStep({
-          fromWallet: "alice",
-          toWallet: "bob",
+          fromWallet: "bob",
+          toWallet: "alice",
           label: `🔒 Payment held: ${currentInvoiceData.amount} sats`,
-          direction: "right",
+          direction: "left",
           status: "pending",
         });
       }
@@ -105,9 +105,9 @@ function BobPanel() {
   );
 
   const createHoldInvoice = async () => {
-    const client = getNWCClient("bob");
+    const client = getNWCClient("alice");
     if (!client) {
-      setError("Bob wallet not connected");
+      setError("Alice wallet not connected");
       return;
     }
 
@@ -161,8 +161,8 @@ function BobPanel() {
       });
 
       addFlowStep({
-        fromWallet: "bob",
-        toWallet: "bob",
+        fromWallet: "alice",
+        toWallet: "alice",
         label: `⏳ Created hold invoice: ${satoshi} sats`,
         direction: "right",
         status: "success",
@@ -198,7 +198,7 @@ function BobPanel() {
   const settleInvoice = async () => {
     if (!invoiceData) return;
 
-    const client = getNWCClient("bob");
+    const client = getNWCClient("alice");
     if (!client) return;
 
     setIsProcessing(true);
@@ -208,7 +208,7 @@ function BobPanel() {
       addTransaction({
         type: "payment_received",
         status: "pending",
-        toWallet: "bob",
+        toWallet: "alice",
         description: "Settling hold invoice...",
       });
 
@@ -216,32 +216,32 @@ function BobPanel() {
 
       setInvoiceState("settled");
 
-      // Update Bob's balance
-      const bobBalance = await client.getBalance();
-      const bobBalanceSats = Math.floor(bobBalance.balance / 1000);
-      setWalletBalance("bob", bobBalanceSats);
-      addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
-
       // Update Alice's balance
-      const aliceClient = getNWCClient("alice");
-      if (aliceClient) {
-        const aliceBalance = await aliceClient.getBalance();
-        const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
-        setWalletBalance("alice", aliceBalanceSats);
-        addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
+      const aliceBalance = await client.getBalance();
+      const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
+      setWalletBalance("alice", aliceBalanceSats);
+      addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
+
+      // Update Bob's balance
+      const bobClient = getNWCClient("bob");
+      if (bobClient) {
+        const bobBalance = await bobClient.getBalance();
+        const bobBalanceSats = Math.floor(bobBalance.balance / 1000);
+        setWalletBalance("bob", bobBalanceSats);
+        addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
       }
 
       addTransaction({
         type: "payment_received",
         status: "success",
-        toWallet: "bob",
+        toWallet: "alice",
         amount: invoiceData.amount,
-        description: `Hold invoice settled - Bob received ${invoiceData.amount} sats`,
+        description: `Hold invoice settled - Alice received ${invoiceData.amount} sats`,
       });
 
       addFlowStep({
-        fromWallet: "bob",
-        toWallet: "bob",
+        fromWallet: "alice",
+        toWallet: "alice",
         label: `✅ Settled: +${invoiceData.amount} sats`,
         direction: "right",
         status: "success",
@@ -269,7 +269,7 @@ function BobPanel() {
   const cancelInvoice = async () => {
     if (!invoiceData) return;
 
-    const client = getNWCClient("bob");
+    const client = getNWCClient("alice");
     if (!client) return;
 
     setIsProcessing(true);
@@ -286,26 +286,26 @@ function BobPanel() {
 
       setInvoiceState("cancelled");
 
-      // Update balances (Alice should get refund)
-      const aliceClient = getNWCClient("alice");
-      if (aliceClient) {
-        const aliceBalance = await aliceClient.getBalance();
-        const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
-        setWalletBalance("alice", aliceBalanceSats);
-        addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
+      // Update balances (Bob should get refund)
+      const bobClient = getNWCClient("bob");
+      if (bobClient) {
+        const bobBalance = await bobClient.getBalance();
+        const bobBalanceSats = Math.floor(bobBalance.balance / 1000);
+        setWalletBalance("bob", bobBalanceSats);
+        addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
       }
 
       addTransaction({
         type: "payment_failed",
         status: "success",
-        description: `Hold invoice cancelled - Alice refunded ${invoiceData.amount} sats`,
+        description: `Hold invoice cancelled - Bob refunded ${invoiceData.amount} sats`,
       });
 
       addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+        fromWallet: "alice",
+        toWallet: "bob",
         label: `❌ Cancelled: refund ${invoiceData.amount} sats`,
-        direction: "left",
+        direction: "right",
         status: "error",
       });
 
@@ -389,8 +389,8 @@ function BobPanel() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <span>{WALLET_PERSONAS.bob.emoji}</span>
-          <span>Bob: Create Hold Invoice</span>
+          <span>{WALLET_PERSONAS.alice.emoji}</span>
+          <span>Alice: Create Hold Invoice</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -580,7 +580,7 @@ function BobPanel() {
   );
 }
 
-function AlicePanel() {
+function BobPanel() {
   const [invoiceInput, setInvoiceInput] = useState("");
   const [isPaying, setIsPaying] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -592,7 +592,7 @@ function AlicePanel() {
 
   const invoiceToUse = invoiceInput || invoiceData?.invoice || "";
 
-  // Determine Alice's payment status based on shared invoice state
+  // Determine Bob's payment status based on shared invoice state
   // Prioritize store state (held/settled/cancelled) over local isPaying flag
   const getPaymentStatus = () => {
     if (invoiceState === "held") return "held";
@@ -607,7 +607,7 @@ function AlicePanel() {
   const handlePay = async () => {
     if (!invoiceToUse) return;
 
-    const client = getNWCClient("alice");
+    const client = getNWCClient("bob");
     if (!client) return;
 
     setIsPaying(true);
@@ -619,34 +619,34 @@ function AlicePanel() {
       addTransaction({
         type: "payment_sent",
         status: "pending",
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         amount,
         description: `Paying hold invoice for ${amount} sats...`,
       });
 
       addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         label: `Paying hold invoice: ${amount} sats`,
-        direction: "right",
+        direction: "left",
         status: "pending",
       });
 
       // Pay the invoice - this will block until settled or cancelled
       await client.payInvoice({ invoice: invoiceToUse });
 
-      // Update Alice's balance
-      const aliceBalance = await client.getBalance();
-      const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
-      setWalletBalance("alice", aliceBalanceSats);
-      addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
+      // Update Bob's balance
+      const bobBalance = await client.getBalance();
+      const bobBalanceSats = Math.floor(bobBalance.balance / 1000);
+      setWalletBalance("bob", bobBalanceSats);
+      addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
 
       addTransaction({
         type: "payment_sent",
         status: "success",
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         amount,
         description: `Payment completed (${amount} sats)`,
       });
@@ -657,15 +657,15 @@ function AlicePanel() {
       addTransaction({
         type: "payment_failed",
         status: "error",
-        fromWallet: "alice",
+        fromWallet: "bob",
         description: "Payment failed",
       });
 
       addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         label: "Payment failed",
-        direction: "right",
+        direction: "left",
         status: "error",
       });
     } finally {
@@ -706,8 +706,8 @@ function AlicePanel() {
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <span>{WALLET_PERSONAS.alice.emoji}</span>
-          <span>Alice: Pay Hold Invoice</span>
+          <span>{WALLET_PERSONAS.bob.emoji}</span>
+          <span>Bob: Pay Hold Invoice</span>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -726,7 +726,7 @@ function AlicePanel() {
           />
           {invoiceData && !invoiceInput && (
             <p className="text-xs text-green-600 dark:text-green-400">
-              Using Bob's hold invoice
+              Using Alice's hold invoice
             </p>
           )}
         </div>
@@ -768,7 +768,7 @@ function AlicePanel() {
 
         {paymentStatus === "settled" && (
           <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg text-sm text-green-800 dark:text-green-200">
-            <p>Payment completed successfully. Bob has received the funds.</p>
+            <p>Payment completed successfully. Alice has received the funds.</p>
           </div>
         )}
 

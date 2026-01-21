@@ -167,7 +167,7 @@ export const scenarios: Scenario[] = [
           "Bob automatically splits the payment, forwarding to Charlie and David.",
       },
     ],
-    complexity: "medium",
+    complexity: "advanced",
     requiredWallets: ["alice", "bob", "charlie", "david"],
     icon: "🔺",
   },
@@ -177,7 +177,7 @@ export const scenarios: Scenario[] = [
     description: "Convert between sats and fiat currencies for display.",
     education:
       "Many apps need to display Bitcoin amounts in familiar fiat currencies. Learn how to fetch exchange rates and convert amounts.",
-    complexity: "advanced",
+    complexity: "simple",
     requiredWallets: [],
     icon: "💱",
   },
