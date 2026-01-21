@@ -6,6 +6,7 @@ import {
   HoldInvoiceScenario,
   TransactionHistoryScenario,
   ProofOfPaymentScenario,
+  DecodeBolt11InvoiceScenario,
   FiatConversionScenario,
   PaymentForwardingScenario,
   PaymentPrismsScenario,
@@ -27,6 +28,8 @@ export function ScenarioPanel() {
       return <TransactionHistoryScenario />;
     case 'proof-of-payment':
       return <ProofOfPaymentScenario />;
+    case 'decode-bolt11-invoice':
+      return <DecodeBolt11InvoiceScenario />;
     case 'fiat-conversion':
       return <FiatConversionScenario />;
     case 'payment-forwarding':

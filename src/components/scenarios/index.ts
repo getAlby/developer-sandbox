@@ -4,6 +4,7 @@ export { NotificationsScenario } from './notifications';
 export { HoldInvoiceScenario } from './hold-invoice';
 export { TransactionHistoryScenario } from './transaction-history';
 export { ProofOfPaymentScenario } from './proof-of-payment';
+export { DecodeBolt11InvoiceScenario } from './decode-bolt11-invoice';
 export { FiatConversionScenario } from './fiat-conversion';
 export { PaymentForwardingScenario } from './payment-forwarding';
 export { PaymentPrismsScenario } from './payment-prisms';

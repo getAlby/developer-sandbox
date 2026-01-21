@@ -63,6 +63,17 @@ export const scenarios: Scenario[] = [
     icon: "🔒",
   },
   {
+    id: "decode-bolt11-invoice",
+    title: "Invoice Decoding",
+    description:
+      "Decode an invoice to verify or read its properties, useful when an invoice is provided by an end-user.",
+    education:
+      "A BOLT-11 invoice can be decoded into its separate fields, to access for example the invoice amount, description, payment hash, and expiry. This is useful for verifying invoice details before paying or displaying them to users.",
+    complexity: "medium",
+    requiredWallets: [],
+    icon: "🔍",
+  },
+  {
     id: "proof-of-payment",
     title: "Proof of Payment",
     description:
