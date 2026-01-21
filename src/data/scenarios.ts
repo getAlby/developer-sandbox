@@ -94,6 +94,34 @@ export const scenarios: Scenario[] = [
     icon: "⚡",
   },*/
   {
+    id: "payment-forwarding",
+    title: "Payment Forwarding",
+    description:
+      "Listen to incoming payments, and forward a percentage of the value using a recipient lightning address.",
+    education:
+      "Payment forwarding can be used to make revenue by providing a service for merchants. For example, receive the payment on behalf of a merchant, provide a service, and then forward 99% of the value to the merchant. Keep in mind, you should reserve 1% for routing fees.",
+    howItWorks: [
+      {
+        title: "Configure",
+        description:
+          "Bob sets up forwarding to Charlie's lightning address with a percentage.",
+      },
+      {
+        title: "Receive",
+        description:
+          "Alice pays Bob. Bob's wallet receives the payment notification.",
+      },
+      {
+        title: "Forward",
+        description:
+          "Bob automatically forwards the configured percentage to Charlie.",
+      },
+    ],
+    complexity: "medium",
+    requiredWallets: ["alice", "bob", "charlie"],
+    icon: "🔀",
+  },
+  {
     id: "fiat-conversion",
     title: "Fiat Conversion",
     description: "Convert between sats and fiat currencies for display.",
