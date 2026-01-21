@@ -1,4 +1,4 @@
-import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid } from "recharts";
 import {
   ChartContainer,
   ChartTooltip,
@@ -6,15 +6,15 @@ import {
   ChartLegend,
   ChartLegendContent,
   type ChartConfig,
-} from '@/components/ui/chart';
-import { useTransactionStore, useScenarioStore } from '@/stores';
-import { WALLET_PERSONAS } from '@/types';
+} from "@/components/ui/chart";
+import { useTransactionStore, useScenarioStore } from "@/stores";
+import { WALLET_PERSONAS } from "@/types";
 
 const WALLET_COLORS: Record<string, string> = {
-  alice: 'hsl(var(--chart-1))',
-  bob: 'hsl(var(--chart-2))',
-  charlie: 'hsl(var(--chart-3))',
-  david: 'hsl(var(--chart-4))',
+  alice: "var(--color-chart-1)",
+  bob: "var(--color-chart-2)",
+  charlie: "var(--color-chart-3)",
+  david: "var(--color-chart-4)",
 };
 
 export function BalanceChart() {
@@ -26,27 +26,34 @@ export function BalanceChart() {
       ...acc,
       [walletId]: {
         label: WALLET_PERSONAS[walletId]?.name ?? walletId,
-        color: WALLET_COLORS[walletId] || 'hsl(var(--chart-5))',
+        color: WALLET_COLORS[walletId] || "hsl(var(--chart-5))",
       },
     }),
-    {} as ChartConfig
+    {} as ChartConfig,
   );
 
   if (balanceHistory.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
-        No balance data yet. Execute transactions to see balance changes over time.
+        No balance data yet. Execute transactions to see balance changes over
+        time.
       </div>
     );
   }
 
   // Group balance snapshots by timestamp and transform for recharts
-  const chartData = transformBalanceData(balanceHistory, currentScenario.requiredWallets);
+  const chartData = transformBalanceData(
+    balanceHistory,
+    currentScenario.requiredWallets,
+  );
 
   return (
     <div className="h-full p-4">
       <ChartContainer config={chartConfig} className="h-full w-full">
-        <LineChart data={chartData} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+        <LineChart
+          data={chartData}
+          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
             dataKey="label"
@@ -67,7 +74,7 @@ export function BalanceChart() {
               key={walletId}
               type="monotone"
               dataKey={walletId}
-              stroke={WALLET_COLORS[walletId] || 'hsl(var(--chart-5))'}
+              stroke={WALLET_COLORS[walletId] || "hsl(var(--chart-5))"}
               strokeWidth={2}
               dot={{ r: 4 }}
               activeDot={{ r: 6 }}
@@ -86,7 +93,7 @@ interface ChartDataPoint {
 
 function transformBalanceData(
   balanceHistory: Array<{ timestamp: Date; walletId: string; balance: number }>,
-  walletIds: string[]
+  walletIds: string[],
 ): ChartDataPoint[] {
   // Group by timestamp (rounded to seconds)
   const grouped = new Map<number, Map<string, number>>();
@@ -110,7 +117,7 @@ function transformBalanceData(
   return sortedTimes.map((time, index) => {
     const balances = grouped.get(time)!;
     const point: ChartDataPoint = {
-      label: index === 0 ? 'Start' : `Tx${index}`,
+      label: index === 0 ? "Start" : `Tx${index}`,
     };
 
     for (const walletId of walletIds) {
