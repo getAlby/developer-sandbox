@@ -1,4 +1,5 @@
 export { SimplePaymentScenario } from './simple-payment';
+export { LookupInvoiceScenario } from './lookup-invoice';
 export { LightningAddressScenario } from './lightning-address';
 export { NotificationsScenario } from './notifications';
 export { HoldInvoiceScenario } from './hold-invoice';

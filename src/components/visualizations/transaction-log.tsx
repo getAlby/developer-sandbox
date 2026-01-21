@@ -51,22 +51,22 @@ function TransactionRow({ transaction }: { transaction: Transaction }) {
   };
 
   return (
-    <div className="flex items-center gap-3 rounded-md px-2 py-1.5 hover:bg-muted/50">
+    <div className="flex items-start gap-3 rounded-md px-2 py-1.5 hover:bg-muted/50">
       <StatusIcon status={transaction.status} />
-      <span className="text-sm text-muted-foreground font-mono">
+      <span className="text-sm text-muted-foreground font-mono shrink-0">
         {formatTime(transaction.timestamp)}
       </span>
       {transaction.fromWallet && transaction.toWallet && (
-        <span className="text-sm">
+        <span className="text-sm shrink-0">
           {getWalletName(transaction.fromWallet)} → {getWalletName(transaction.toWallet)}
         </span>
       )}
       {transaction.amount && (
-        <span className="text-sm font-medium">
+        <span className="text-sm font-medium shrink-0">
           {transaction.amount.toLocaleString()} sats
         </span>
       )}
-      <span className="text-sm text-muted-foreground">{transaction.description}</span>
+      <span className="text-sm text-muted-foreground break-all">{transaction.description}</span>
     </div>
   );
 }

@@ -22,6 +22,11 @@ const externalLinks = [
     icon: "🤖",
   },
   {
+    title: "NWC Faucet",
+    url: "https://faucet.nwc.dev",
+    icon: "🚰",
+  },
+  {
     title: "Sandbox Source Code",
     url: "https://github.com/getAlby/developer-sandbox",
     icon: "💻",

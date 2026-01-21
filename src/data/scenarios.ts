@@ -13,6 +13,17 @@ export const scenarios: Scenario[] = [
     icon: "💸",
   },
   {
+    id: "lookup-invoice",
+    title: "Lookup Invoice Status",
+    description:
+      "Alice creates an invoice, Bob pays it. Alice can look up the status of the invoice at any time.",
+    education:
+      "The lookupInvoice method allows you to check the status of an invoice at any time. This is useful for verifying whether a payment has been received, especially in scenarios where you need to poll for payment confirmation.",
+    complexity: "simple",
+    requiredWallets: ["alice", "bob"],
+    icon: "🔎",
+  },
+  {
     id: "lightning-address",
     title: "Lightning Address",
     description:
