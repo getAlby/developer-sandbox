@@ -58,7 +58,7 @@ export const scenarios: Scenario[] = [
           "Bob reveals preimage to receive funds, or cancels to refund Alice.",
       },
     ],
-    complexity: "medium",
+    complexity: "advanced",
     requiredWallets: ["alice", "bob"],
     icon: "🔒",
   },
@@ -68,21 +68,21 @@ export const scenarios: Scenario[] = [
     description:
       "Use the payment preimage as cryptographic proof that a payment was made.",
     education:
-      "Every Lightning payment includes a preimage that serves as cryptographic proof of payment. This can be used to unlock content, verify purchases, or as a receipt.",
-    complexity: "simple",
-    requiredWallets: ["alice", "bob"],
+      "Every Lightning payment includes a preimage that serves as cryptographic proof of payment. This can be used to unlock content, verify purchases, as a receipt, or to enable atomic swaps. The preimage is atomically revealed on successful payment. Payment hash in a BOLT-11 invoice is the SHA-256 hash of the preimage.",
+    complexity: "medium",
+    requiredWallets: [],
     icon: "✅",
   },
-  {
-    id: "transaction-history",
-    title: "Transaction History",
-    description: "Fetch and display transaction history from a wallet.",
-    education:
-      "NWC allows you to query the transaction history of a wallet, useful for displaying past payments and receipts in your application.",
-    complexity: "medium",
-    requiredWallets: ["alice", "bob", "charlie", "david"],
-    icon: "📜",
-  },
+  // {
+  //   id: "transaction-history",
+  //   title: "Transaction History",
+  //   description: "Fetch and display transaction history from a wallet.",
+  //   education:
+  //     "NWC allows you to query the transaction history of a wallet, useful for displaying past payments and receipts in your application.",
+  //   complexity: "medium",
+  //   requiredWallets: ["alice", "bob", "charlie", "david"],
+  //   icon: "📜",
+  // },
   /*{
     id: "nostr-zap",
     title: "Nostr Zap",

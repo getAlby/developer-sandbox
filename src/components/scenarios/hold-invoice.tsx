@@ -79,7 +79,8 @@ function BobPanel() {
       if (
         notification.notification_type === "hold_invoice_accepted" &&
         currentInvoiceData &&
-        notification.notification.payment_hash === currentInvoiceData.paymentHash
+        notification.notification.payment_hash ===
+          currentInvoiceData.paymentHash
       ) {
         setInvoiceState("held");
 
@@ -100,7 +101,7 @@ function BobPanel() {
         });
       }
     },
-    [addTransaction, addFlowStep, setInvoiceState]
+    [addTransaction, addFlowStep, setInvoiceState],
   );
 
   const createHoldInvoice = async () => {
@@ -156,7 +157,7 @@ function BobPanel() {
         type: "invoice_created",
         status: "success",
         amount: satoshi,
-        description: `Hold invoice created for ${satoshi} sats`,
+        description: `Hold invoice created for ${satoshi} sats: ${newInvoiceData.invoice}`,
       });
 
       addFlowStep({
@@ -181,7 +182,7 @@ function BobPanel() {
     } catch (err) {
       console.error("Failed to create hold invoice:", err);
       setError(
-        err instanceof Error ? err.message : "Failed to create hold invoice"
+        err instanceof Error ? err.message : "Failed to create hold invoice",
       );
 
       addTransaction({
@@ -465,7 +466,7 @@ function BobPanel() {
               <>
                 <div className="p-3 bg-muted rounded-lg">
                   <p className="font-mono text-xs break-all">
-                    {invoiceData.invoice.slice(0, 60)}...
+                    {invoiceData.invoice}
                   </p>
                   <Button
                     variant="ghost"
@@ -556,11 +557,11 @@ function BobPanel() {
               <div className="p-2 bg-muted rounded text-xs font-mono space-y-1">
                 <p>
                   <span className="text-muted-foreground">preimage:</span>{" "}
-                  {invoiceData.preimage.slice(0, 16)}...
+                  {invoiceData.preimage}
                 </p>
                 <p>
                   <span className="text-muted-foreground">payment_hash:</span>{" "}
-                  {invoiceData.paymentHash.slice(0, 16)}...
+                  {invoiceData.paymentHash}
                 </p>
                 {invoiceData.settleDeadline && (
                   <p>

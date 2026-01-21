@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { Loader2, FileText, Send, Copy, Check, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useWalletStore, useTransactionStore } from '@/stores';
-import { WALLET_PERSONAS } from '@/types';
+import { useState, useEffect } from "react";
+import { Loader2, FileText, Send, Copy, Check, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useWalletStore, useTransactionStore } from "@/stores";
+import { WALLET_PERSONAS } from "@/types";
 
 export function SimplePaymentScenario() {
   const { areAllWalletsConnected } = useWalletStore();
-  const allConnected = areAllWalletsConnected(['alice', 'bob']);
+  const allConnected = areAllWalletsConnected(["alice", "bob"]);
 
   if (!allConnected) {
     return null;
@@ -52,8 +52,8 @@ function useSharedInvoice() {
 }
 
 function BobPanel() {
-  const [amount, setAmount] = useState('1000');
-  const [description, setDescription] = useState('');
+  const [amount, setAmount] = useState("1000");
+  const [description, setDescription] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [createdInvoice, setCreatedInvoice] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -62,7 +62,7 @@ function BobPanel() {
   const { addTransaction, addFlowStep } = useTransactionStore();
 
   const handleCreateInvoice = async () => {
-    const client = getNWCClient('bob');
+    const client = getNWCClient("bob");
     if (!client) return;
 
     setIsCreating(true);
@@ -70,11 +70,11 @@ function BobPanel() {
     try {
       // Add pending transaction
       addTransaction({
-        type: 'invoice_created',
-        status: 'pending',
-        toWallet: 'bob',
+        type: "invoice_created",
+        status: "pending",
+        toWallet: "bob",
         amount: parseInt(amount),
-        description: 'Creating invoice...',
+        description: "Creating invoice...",
       });
 
       // Create invoice (amount in millisats)
@@ -91,28 +91,28 @@ function BobPanel() {
 
       // Add success transaction
       addTransaction({
-        type: 'invoice_created',
-        status: 'success',
-        toWallet: 'bob',
+        type: "invoice_created",
+        status: "success",
+        toWallet: "bob",
         amount: amountSats,
-        description: `Invoice created for ${amountSats} sats`,
+        description: `Invoice created for ${amountSats} sats: ${invoice.invoice}`,
       });
 
       // Add flow step
       addFlowStep({
-        fromWallet: 'bob',
-        toWallet: 'alice',
+        fromWallet: "bob",
+        toWallet: "alice",
         label: `Invoice: ${amountSats} sats`,
-        direction: 'left',
-        status: 'success',
+        direction: "left",
+        status: "success",
       });
     } catch (error) {
-      console.error('Failed to create invoice:', error);
+      console.error("Failed to create invoice:", error);
       addTransaction({
-        type: 'invoice_created',
-        status: 'error',
-        toWallet: 'bob',
-        description: 'Failed to create invoice',
+        type: "invoice_created",
+        status: "error",
+        toWallet: "bob",
+        description: "Failed to create invoice",
       });
     } finally {
       setIsCreating(false);
@@ -147,7 +147,9 @@ function BobPanel() {
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">Description (optional)</label>
+          <label className="text-xs text-muted-foreground">
+            Description (optional)
+          </label>
           <Input
             value={description}
             onChange={(e) => setDescription(e.target.value)}
@@ -175,7 +177,9 @@ function BobPanel() {
 
         {createdInvoice && (
           <div className="space-y-2 pt-2 border-t">
-            <label className="text-xs text-muted-foreground">BOLT-11 Invoice</label>
+            <label className="text-xs text-muted-foreground">
+              BOLT-11 Invoice
+            </label>
             <div className="flex gap-2">
               <Input
                 value={createdInvoice}
@@ -202,18 +206,19 @@ function BobPanel() {
 }
 
 function AlicePanel() {
-  const [invoice, setInvoice] = useState('');
+  const [invoice, setInvoice] = useState("");
   const [isPaying, setIsPaying] = useState(false);
   const { invoice: sharedInv, amount: sharedAmt } = useSharedInvoice();
 
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } = useTransactionStore();
+  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+    useTransactionStore();
 
   // Use shared invoice if available and local input is empty
-  const invoiceToUse = invoice || sharedInv || '';
+  const invoiceToUse = invoice || sharedInv || "";
 
   const handlePayInvoice = async () => {
-    const client = getNWCClient('alice');
+    const client = getNWCClient("alice");
     if (!client || !invoiceToUse) return;
 
     setIsPaying(true);
@@ -221,21 +226,21 @@ function AlicePanel() {
     try {
       // Add pending transaction
       addTransaction({
-        type: 'payment_sent',
-        status: 'pending',
-        fromWallet: 'alice',
-        toWallet: 'bob',
+        type: "payment_sent",
+        status: "pending",
+        fromWallet: "alice",
+        toWallet: "bob",
         amount: sharedAmt ?? undefined,
-        description: 'Paying invoice...',
+        description: "Paying invoice...",
       });
 
       // Add flow step for payment initiation
       addFlowStep({
-        fromWallet: 'alice',
-        toWallet: 'bob',
-        label: 'Paying invoice...',
-        direction: 'right',
-        status: 'pending',
+        fromWallet: "alice",
+        toWallet: "bob",
+        label: "Paying invoice...",
+        direction: "right",
+        status: "pending",
       });
 
       // Pay the invoice
@@ -244,56 +249,56 @@ function AlicePanel() {
       // Get updated balances
       const aliceBalance = await client.getBalance();
       const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
-      setWalletBalance('alice', aliceBalanceSats);
-      addBalanceSnapshot({ walletId: 'alice', balance: aliceBalanceSats });
+      setWalletBalance("alice", aliceBalanceSats);
+      addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
 
       // Update Bob's balance if connected
-      const bobClient = getNWCClient('bob');
+      const bobClient = getNWCClient("bob");
       if (bobClient) {
         const bobBalance = await bobClient.getBalance();
         const bobBalanceSats = Math.floor(bobBalance.balance / 1000);
-        setWalletBalance('bob', bobBalanceSats);
-        addBalanceSnapshot({ walletId: 'bob', balance: bobBalanceSats });
+        setWalletBalance("bob", bobBalanceSats);
+        addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
       }
 
       // Add success transaction
       addTransaction({
-        type: 'payment_sent',
-        status: 'success',
-        fromWallet: 'alice',
-        toWallet: 'bob',
+        type: "payment_sent",
+        status: "success",
+        fromWallet: "alice",
+        toWallet: "bob",
         amount: sharedAmt ?? undefined,
-        description: `Payment confirmed! Preimage: ${result.preimage.slice(0, 16)}...`,
+        description: `Payment confirmed! Preimage: ${result.preimage}`,
       });
 
       // Add flow step for confirmation
       addFlowStep({
-        fromWallet: 'bob',
-        toWallet: 'alice',
-        label: 'Payment confirmed',
-        direction: 'left',
-        status: 'success',
+        fromWallet: "bob",
+        toWallet: "alice",
+        label: "Payment confirmed",
+        direction: "left",
+        status: "success",
       });
 
       // Clear the invoice
-      setInvoice('');
+      setInvoice("");
       setSharedInvoice(null, null);
     } catch (error) {
-      console.error('Failed to pay invoice:', error);
+      console.error("Failed to pay invoice:", error);
       addTransaction({
-        type: 'payment_failed',
-        status: 'error',
-        fromWallet: 'alice',
-        toWallet: 'bob',
-        description: 'Payment failed',
+        type: "payment_failed",
+        status: "error",
+        fromWallet: "alice",
+        toWallet: "bob",
+        description: "Payment failed",
       });
 
       addFlowStep({
-        fromWallet: 'alice',
-        toWallet: 'bob',
-        label: 'Payment failed',
-        direction: 'right',
-        status: 'error',
+        fromWallet: "alice",
+        toWallet: "bob",
+        label: "Payment failed",
+        direction: "right",
+        status: "error",
       });
     } finally {
       setIsPaying(false);
@@ -310,7 +315,9 @@ function AlicePanel() {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="space-y-1">
-          <label className="text-xs text-muted-foreground">BOLT-11 Invoice</label>
+          <label className="text-xs text-muted-foreground">
+            BOLT-11 Invoice
+          </label>
           <Input
             value={invoiceToUse}
             onChange={(e) => setInvoice(e.target.value)}
