@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/sidebar";
 import { scenarios } from "@/data/scenarios";
 import { useScenarioStore } from "@/stores";
+import { AlbyIcon } from "@/icons/AlbyIcon";
 
 const externalLinks = [
   { title: "Alby Hub", url: "https://getalby.com/alby-hub", icon: "⚡" },
@@ -40,7 +41,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="">
         <div className="flex items-center gap-2">
-          <Zap className="h-6 w-6 text-yellow-500" />
+          <AlbyIcon className="size-6" />
           <div>
             <h1 className="font-semibold">Alby Developer Sandbox</h1>
             <p className="text-xs text-muted-foreground">
