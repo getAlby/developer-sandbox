@@ -46,6 +46,34 @@ export const scenarios: Scenario[] = [
     icon: "🔔",
   },
   {
+    id: "subscription-payments",
+    title: "Subscription Payments",
+    description:
+      "Alice pays Bob on a regular interval using a budgeted wallet connection.",
+    education:
+      "Users can give budgeted wallet connections to a service so that the service can charge them on a regular interval. This enables subscription-based business models on Lightning.",
+    howItWorks: [
+      {
+        title: "Connect",
+        description:
+          "Alice provides Bob with her NWC connection, which has spending permissions.",
+      },
+      {
+        title: "Configure",
+        description:
+          "Alice sets the payment amount and interval for the subscription.",
+      },
+      {
+        title: "Charge",
+        description:
+          "Bob uses Alice's connection to pay invoices to himself on a regular schedule.",
+      },
+    ],
+    complexity: "medium",
+    requiredWallets: ["alice", "bob"],
+    icon: "🔄",
+  },
+  {
     id: "hold-invoice",
     title: "Hold Invoice",
     description:

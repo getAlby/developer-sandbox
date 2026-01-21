@@ -2,6 +2,7 @@ export { SimplePaymentScenario } from './simple-payment';
 export { LookupInvoiceScenario } from './lookup-invoice';
 export { LightningAddressScenario } from './lightning-address';
 export { NotificationsScenario } from './notifications';
+export { SubscriptionPaymentsScenario } from './subscription-payments';
 export { HoldInvoiceScenario } from './hold-invoice';
 export { TransactionHistoryScenario } from './transaction-history';
 export { ProofOfPaymentScenario } from './proof-of-payment';

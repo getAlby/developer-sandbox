@@ -185,6 +185,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [ ] use a hash router for navigating scenarios
 - [ ] On the payment log there are logs of a Loader even when the payment has either failed or succeeded, this is confusing. (e.g. "Creating invoice..." which still shows a loading spinner when the next line is "Invoice created for 1000 sats" which shows a check)
 - [ ] Add a way to copy NWC connection from a wallet card, and also a way to topup the wallet (via the faucet API)
+- [ ] fix the flow diagram view (broken)
 
 ## Phase 8: Github Pages
 

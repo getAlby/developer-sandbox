@@ -1,4 +1,4 @@
-import { ExternalLink, Zap } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
