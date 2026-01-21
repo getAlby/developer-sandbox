@@ -238,7 +238,7 @@ function BobPanel() {
   const [isListening, setIsListening] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
   const [charliePercent, setCharliePercent] = useState("5");
-  const [davidPercent, setDavidPercent] = useState("5");
+  const [davidPercent, setDavidPercent] = useState("10");
   const [prismPayments, setPrismPayments] = useState<PrismPayment[]>([]);
   const [error, setError] = useState<string | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
@@ -262,7 +262,7 @@ function BobPanel() {
   const payToRecipient = async (
     recipientId: string,
     recipientAddress: string,
-    amount: number
+    amount: number,
   ) => {
     const client = getNWCClient("bob");
     if (!client || amount < 1) return false;
@@ -292,7 +292,11 @@ function BobPanel() {
   const splitPayment = useCallback(
     async (amountSats: number) => {
       const client = getNWCClient("bob");
-      if (!client || !charlieWallet?.lightningAddress || !davidWallet?.lightningAddress) {
+      if (
+        !client ||
+        !charlieWallet?.lightningAddress ||
+        !davidWallet?.lightningAddress
+      ) {
         console.error("Cannot split: missing client or recipient addresses");
         return;
       }
@@ -324,13 +328,15 @@ function BobPanel() {
         charlieSuccess = await payToRecipient(
           "charlie",
           charlieWallet.lightningAddress,
-          charlieAmount
+          charlieAmount,
         );
 
         addFlowStep({
           fromWallet: "bob",
           toWallet: "charlie",
-          label: charlieSuccess ? `✅ Charlie: ${charlieAmount} sats` : "❌ Charlie failed",
+          label: charlieSuccess
+            ? `✅ Charlie: ${charlieAmount} sats`
+            : "❌ Charlie failed",
           direction: "right",
           status: charlieSuccess ? "success" : "error",
         });
@@ -350,13 +356,15 @@ function BobPanel() {
         davidSuccess = await payToRecipient(
           "david",
           davidWallet.lightningAddress,
-          davidAmount
+          davidAmount,
         );
 
         addFlowStep({
           fromWallet: "bob",
           toWallet: "david",
-          label: davidSuccess ? `✅ David: ${davidAmount} sats` : "❌ David failed",
+          label: davidSuccess
+            ? `✅ David: ${davidAmount} sats`
+            : "❌ David failed",
           direction: "right",
           status: davidSuccess ? "success" : "error",
         });
@@ -373,7 +381,10 @@ function BobPanel() {
         receivedAmount: amountSats,
         charlieAmount: charlieSuccess ? charlieAmount : 0,
         davidAmount: davidSuccess ? davidAmount : 0,
-        keptAmount: keptAmount + (charlieSuccess ? 0 : charlieAmount) + (davidSuccess ? 0 : davidAmount),
+        keptAmount:
+          keptAmount +
+          (charlieSuccess ? 0 : charlieAmount) +
+          (davidSuccess ? 0 : davidAmount),
         timestamp: new Date(),
       };
 
@@ -383,7 +394,7 @@ function BobPanel() {
         type: "payment_sent",
         status: "success",
         fromWallet: "bob",
-        description: `Prism split: Charlie ${charlieAmount}, David ${davidAmount}, kept ${keptAmount}`,
+        description: `Prism split: Charlie ${charlieAmount} sats, David ${davidAmount} sats, kept ${keptAmount} sats`,
       });
     },
     [
@@ -394,7 +405,7 @@ function BobPanel() {
       addTransaction,
       addFlowStep,
       addBalanceSnapshot,
-    ]
+    ],
   );
 
   const handleNotification = useCallback(
@@ -440,7 +451,7 @@ function BobPanel() {
       getNWCClient,
       setWalletBalance,
       splitPayment,
-    ]
+    ],
   );
 
   const startListening = async () => {
@@ -532,7 +543,8 @@ function BobPanel() {
     };
   }, []);
 
-  const keptPercent = 100 - (parseInt(charliePercent) || 0) - (parseInt(davidPercent) || 0);
+  const keptPercent =
+    100 - (parseInt(charliePercent) || 0) - (parseInt(davidPercent) || 0);
 
   return (
     <Card>
@@ -645,7 +657,8 @@ function BobPanel() {
                   className="p-1.5 bg-green-50 dark:bg-green-900/20 rounded text-xs"
                 >
                   <div className="text-green-700 dark:text-green-300">
-                    ✅ C:{payment.charlieAmount} D:{payment.davidAmount} K:{payment.keptAmount}
+                    ✅ Charlie:{payment.charlieAmount} David:
+                    {payment.davidAmount} Kept:{payment.keptAmount}
                   </div>
                 </div>
               ))}
@@ -665,7 +678,7 @@ function RecipientPanel({ walletId }: RecipientPanelProps) {
   const [isListening, setIsListening] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
   const [receivedPayments, setReceivedPayments] = useState<ReceivedPayment[]>(
-    []
+    [],
   );
   const [error, setError] = useState<string | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
@@ -679,7 +692,9 @@ function RecipientPanel({ walletId }: RecipientPanelProps) {
   const persona = WALLET_PERSONAS[walletId];
 
   // Use refs for the notification handler to avoid recreating subscriptions
-  const handleNotificationRef = useRef<((notification: Nip47Notification) => void) | null>(null);
+  const handleNotificationRef = useRef<
+    ((notification: Nip47Notification) => void) | null
+  >(null);
   handleNotificationRef.current = (notification: Nip47Notification) => {
     if (notification.notification_type === "payment_received") {
       const tx = notification.notification;
@@ -736,7 +751,7 @@ function RecipientPanel({ walletId }: RecipientPanelProps) {
     try {
       const unsub = await client.subscribeNotifications(
         (notification) => handleNotificationRef.current?.(notification),
-        ["payment_received"]
+        ["payment_received"],
       );
 
       unsubRef.current = unsub;
@@ -771,7 +786,7 @@ function RecipientPanel({ walletId }: RecipientPanelProps) {
     client
       .subscribeNotifications(
         (notification) => handleNotificationRef.current?.(notification),
-        ["payment_received"]
+        ["payment_received"],
       )
       .then((unsubFn) => {
         unsub = unsubFn;

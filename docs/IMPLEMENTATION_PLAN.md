@@ -150,10 +150,8 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [x] `getBalance()` - Fetch wallet balance (millisats → sats conversion)
 - [x] `makeInvoice()` - Create BOLT-11 invoice
 - [x] `payInvoice()` - Pay a BOLT-11 invoice
-- [ ] `lookupInvoice()` - Check invoice status
+- [x] `lookupInvoice()` - Check invoice status
 - [x] `listTransactions()` - Get transaction history
-
-# TODO: LNURL-Verify, Invoice decoding, Lookup invoice
 
 ---
 
@@ -180,6 +178,8 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 7.4 Misc feedback
 
+- [ ] Add subscription payments scenario
+- [ ] Add a LNURL-Verify scenario
 - [ ] Order scenarios by simplest to most difficult
 - [ ] correct cursor when hovering on buttons
 - [ ] use a hash router for navigating scenarios

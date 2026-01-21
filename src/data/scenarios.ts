@@ -5,7 +5,7 @@ export const scenarios: Scenario[] = [
     id: "simple-payment",
     title: "Simple Invoice Payment",
     description:
-      "Bob creates a BOLT-11 invoice, Alice pays it. The fundamental Lightning payment flow.",
+      "Alice creates a BOLT-11 invoice, Bob pays it. The fundamental Lightning payment flow.",
     education:
       "Lightning invoices can be shared as text or displayed as a QR code, or opened as a link in a lightning wallet. Invoices can only be used once.",
     complexity: "simplest",
@@ -56,17 +56,17 @@ export const scenarios: Scenario[] = [
       {
         title: "Create",
         description:
-          "Bob generates a preimage and its hash. The hash is included in the invoice.",
+          "Alice generates a preimage and its hash. The hash is included in the invoice.",
       },
       {
         title: "Hold",
         description:
-          "Alice pays, but funds are locked. Only Bob has the preimage to claim them.",
+          "Bob pays, but funds are locked. Only Alice has the preimage to claim them.",
       },
       {
         title: "Settle/Cancel",
         description:
-          "Bob reveals preimage to receive funds, or cancels to refund Alice.",
+          "Alice reveals preimage to receive funds, or cancels to refund Bob.",
       },
     ],
     complexity: "advanced",
