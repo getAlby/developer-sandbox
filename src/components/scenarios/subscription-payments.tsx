@@ -142,7 +142,7 @@ function BobPanel() {
   const [isCharging, setIsCharging] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
   const [receivedPayments, setReceivedPayments] = useState<ReceivedPayment[]>(
-    []
+    [],
   );
   const [error, setError] = useState<string | null>(null);
   const [nextChargeIn, setNextChargeIn] = useState<number | null>(null);
@@ -178,9 +178,9 @@ function BobPanel() {
 
       addFlowStep({
         fromWallet: "bob",
-        toWallet: "bob",
+        toWallet: "alice",
         label: `Requesting invoice for ${config.amount} sats...`,
-        direction: "right",
+        direction: "left",
         status: "pending",
       });
 
@@ -190,10 +190,10 @@ function BobPanel() {
       const invoice = await ln.requestInvoice({ satoshi: config.amount });
 
       addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+        fromWallet: "alice",
+        toWallet: "bob",
         label: `Invoice: ${config.amount} sats`,
-        direction: "left",
+        direction: "right",
         status: "success",
       });
 
@@ -282,6 +282,14 @@ function BobPanel() {
     setIsStarting(true);
     setError(null);
 
+    addFlowStep({
+      fromWallet: "bob",
+      toWallet: "bob",
+      label: `Subscription started`,
+      direction: "right",
+      status: "success",
+    });
+
     addTransaction({
       type: "invoice_created",
       status: "pending",
@@ -301,14 +309,6 @@ function BobPanel() {
         description: `Subscription active: ${config.amount} sats every ${config.interval}s`,
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "bob",
-        label: `Subscription started`,
-        direction: "right",
-        status: "success",
-      });
-
       // Set up interval for recurring charges
       intervalRef.current = setInterval(() => {
         chargeSubscription();
@@ -317,7 +317,9 @@ function BobPanel() {
 
       // Set up countdown timer
       countdownRef.current = setInterval(() => {
-        setNextChargeIn((prev) => (prev !== null && prev > 0 ? prev - 1 : null));
+        setNextChargeIn((prev) =>
+          prev !== null && prev > 0 ? prev - 1 : null,
+        );
       }, 1000);
     }
 

@@ -100,8 +100,8 @@ function AlicePanel() {
 
       // Add flow step
       addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         label: `Invoice: ${amountSats} sats`,
         direction: "right",
         status: "success",

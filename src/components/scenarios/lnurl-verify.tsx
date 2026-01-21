@@ -85,10 +85,10 @@ function AlicePanel() {
       });
 
       addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+        fromWallet: "alice",
+        toWallet: "bob",
         label: `Request invoice: ${satoshi} sats`,
-        direction: "left",
+        direction: "right",
         status: "pending",
       });
 
@@ -114,10 +114,10 @@ function AlicePanel() {
       });
 
       addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         label: hasVerify ? "Invoice + Verify URL" : "Invoice (no verify)",
-        direction: "right",
+        direction: "left",
         status: "success",
       });
 
@@ -171,10 +171,10 @@ function AlicePanel() {
       });
 
       addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+        fromWallet: "alice",
+        toWallet: "bob",
         label: `Pay: ${storedInvoice.amount} sats`,
-        direction: "left",
+        direction: "right",
         status: "pending",
       });
 
@@ -206,10 +206,10 @@ function AlicePanel() {
       });
 
       addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+        fromWallet: "bob",
+        toWallet: "alice",
         label: "Payment received",
-        direction: "right",
+        direction: "left",
         status: "success",
       });
 
@@ -259,10 +259,10 @@ function AlicePanel() {
       });
 
       addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+        fromWallet: "alice",
+        toWallet: "bob",
         label: "GET verify URL",
-        direction: "left",
+        direction: "right",
         status: "pending",
       });
 
@@ -283,10 +283,10 @@ function AlicePanel() {
         });
 
         addFlowStep({
-          fromWallet: "alice",
-          toWallet: "bob",
+          fromWallet: "bob",
+          toWallet: "alice",
           label: "Status: SETTLED",
-          direction: "right",
+          direction: "left",
           status: "success",
         });
       } else {
@@ -303,10 +303,10 @@ function AlicePanel() {
         });
 
         addFlowStep({
-          fromWallet: "alice",
-          toWallet: "bob",
+          fromWallet: "bob",
+          toWallet: "alice",
           label: "Status: PENDING",
-          direction: "right",
+          direction: "left",
           status: "pending",
         });
       }

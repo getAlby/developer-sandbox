@@ -93,7 +93,7 @@ function AlicePanel() {
         });
 
         addFlowStep({
-          fromWallet: "bob",
+          fromWallet: "alice",
           toWallet: "alice",
           label: `🔒 Payment held: ${currentInvoiceData.amount} sats`,
           direction: "left",
@@ -162,7 +162,7 @@ function AlicePanel() {
 
       addFlowStep({
         fromWallet: "alice",
-        toWallet: "alice",
+        toWallet: "bob",
         label: `⏳ Created hold invoice: ${satoshi} sats`,
         direction: "right",
         status: "success",
@@ -241,7 +241,7 @@ function AlicePanel() {
 
       addFlowStep({
         fromWallet: "alice",
-        toWallet: "alice",
+        toWallet: "bob",
         label: `✅ Settled: +${invoiceData.amount} sats`,
         direction: "right",
         status: "success",
