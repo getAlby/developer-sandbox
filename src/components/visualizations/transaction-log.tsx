@@ -14,7 +14,7 @@ export function TransactionLog() {
   const { wallets } = useWalletStore();
   const requiredWalletIds = currentScenario.requiredWallets;
   const allWalletsConnected = requiredWalletIds.every(
-    (id) => wallets[id].status === "connected",
+    (id) => wallets[id]?.status === "connected",
   );
 
   if (transactions.length === 0) {
