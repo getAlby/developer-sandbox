@@ -1,16 +1,27 @@
-import { Check, X, Loader2, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useTransactionStore } from '@/stores';
-import type { Transaction } from '@/types';
-import { WALLET_PERSONAS } from '@/types';
+import { Check, X, Loader2, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  useScenarioStore,
+  useTransactionStore,
+  useWalletStore,
+} from "@/stores";
+import type { Transaction } from "@/types";
+import { WALLET_PERSONAS } from "@/types";
 
 export function TransactionLog() {
   const { transactions, clearAll } = useTransactionStore();
+  const { currentScenario } = useScenarioStore();
+  const { wallets } = useWalletStore();
+  const requiredWalletIds = currentScenario.requiredWallets;
+  const allWalletsConnected = requiredWalletIds.every(
+    (id) => wallets[id].status === "connected",
+  );
 
   if (transactions.length === 0) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
-        No events yet. Connect all wallets to start the scenario.
+        No events yet.
+        {!allWalletsConnected && " Connect all wallets to start the scenario."}
       </div>
     );
   }
@@ -37,16 +48,16 @@ export function TransactionLog() {
 
 function TransactionRow({ transaction }: { transaction: Transaction }) {
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
+    return date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
       hour12: false,
     });
   };
 
   const getWalletName = (id?: string) => {
-    if (!id) return '';
+    if (!id) return "";
     return WALLET_PERSONAS[id]?.name ?? id;
   };
 
@@ -58,7 +69,8 @@ function TransactionRow({ transaction }: { transaction: Transaction }) {
       </span>
       {transaction.fromWallet && transaction.toWallet && (
         <span className="text-sm shrink-0">
-          {getWalletName(transaction.fromWallet)} → {getWalletName(transaction.toWallet)}
+          {getWalletName(transaction.fromWallet)} →{" "}
+          {getWalletName(transaction.toWallet)}
         </span>
       )}
       {transaction.amount && (
@@ -66,18 +78,20 @@ function TransactionRow({ transaction }: { transaction: Transaction }) {
           {transaction.amount.toLocaleString()} sats
         </span>
       )}
-      <span className="text-sm text-muted-foreground break-all">{transaction.description}</span>
+      <span className="text-sm text-muted-foreground break-all">
+        {transaction.description}
+      </span>
     </div>
   );
 }
 
-function StatusIcon({ status }: { status: Transaction['status'] }) {
+function StatusIcon({ status }: { status: Transaction["status"] }) {
   switch (status) {
-    case 'success':
+    case "success":
       return <Check className="h-4 w-4 text-green-500" />;
-    case 'error':
+    case "error":
       return <X className="h-4 w-4 text-destructive" />;
-    case 'pending':
+    case "pending":
       return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
   }
 }
