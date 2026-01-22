@@ -608,10 +608,10 @@ function CharliePanel() {
   );
   const [error, setError] = useState<string | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
+  const seenPaymentsRef = useRef<Set<string>>(new Set());
 
   const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
-    useTransactionStore();
+  const { addFlowStep, addBalanceSnapshot } = useTransactionStore();
 
   const charlieWallet = getWallet("charlie");
 
@@ -621,21 +621,21 @@ function CharliePanel() {
         const tx = notification.notification;
         const amountSats = Math.floor(tx.amount / 1000);
 
-        const payment: ReceivedPayment = {
-          id: tx.payment_hash || Date.now().toString(),
-          amount: amountSats,
-          timestamp: new Date(),
-        };
+        const paymentId = tx.payment_hash || Date.now().toString();
 
-        setReceivedPayments((prev) => [payment, ...prev]);
+        // Deduplicate - only process if this payment hasn't been seen yet
+        if (seenPaymentsRef.current.has(paymentId)) {
+          return;
+        }
+        seenPaymentsRef.current.add(paymentId);
 
-        addTransaction({
-          type: "payment_received",
-          status: "success",
-          toWallet: "charlie",
-          amount: amountSats,
-          description: `Charlie received ${amountSats} sats (forwarded from Bob)`,
-        });
+        setReceivedPayments((prev) => [
+          { id: paymentId, amount: amountSats, timestamp: new Date() },
+          ...prev,
+        ]);
+
+        // Note: We don't add a transaction here because BobPanel already logs
+        // the successful forward. This notification just updates Charlie's UI.
 
         addFlowStep({
           fromWallet: "bob",
@@ -657,7 +657,6 @@ function CharliePanel() {
       }
     },
     [
-      addTransaction,
       addFlowStep,
       addBalanceSnapshot,
       getNWCClient,
