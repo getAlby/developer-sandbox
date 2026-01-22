@@ -55,6 +55,7 @@ function AlicePanel() {
   const [showDetails, setShowDetails] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
+  const heldTxIdRef = useRef<string | null>(null);
 
   const { getNWCClient, setWalletBalance } = useWalletStore();
   const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
@@ -84,13 +85,14 @@ function AlicePanel() {
       ) {
         setInvoiceState("held");
 
-        addTransaction({
+        const txId = addTransaction({
           type: "payment_received",
           status: "pending",
           toWallet: "alice",
           amount: currentInvoiceData.amount,
           description: `Hold invoice payment held (${currentInvoiceData.amount} sats)`,
         });
+        heldTxIdRef.current = txId;
 
         addFlowStep({
           fromWallet: "alice",
@@ -172,12 +174,6 @@ function AlicePanel() {
         "hold_invoice_accepted",
       ]);
       unsubRef.current = unsub;
-
-      addTransaction({
-        type: "invoice_created",
-        status: "success",
-        description: "Listening for payment...",
-      });
     } catch (err) {
       console.error("Failed to create hold invoice:", err);
       setError(
@@ -202,13 +198,6 @@ function AlicePanel() {
     setIsProcessing(true);
     setError(null);
 
-    const txId = addTransaction({
-      type: "payment_received",
-      status: "pending",
-      toWallet: "alice",
-      description: "Settling hold invoice...",
-    });
-
     try {
       await client.settleHoldInvoice({ preimage: invoiceData.preimage });
 
@@ -229,11 +218,14 @@ function AlicePanel() {
         addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
       }
 
-      updateTransaction(txId, {
-        status: "success",
-        amount: invoiceData.amount,
-        description: `Hold invoice settled - Alice received ${invoiceData.amount} sats`,
-      });
+      // Update the held transaction to show it's settled
+      if (heldTxIdRef.current) {
+        updateTransaction(heldTxIdRef.current, {
+          status: "success",
+          description: `Hold invoice settled - Alice received ${invoiceData.amount} sats`,
+        });
+        heldTxIdRef.current = null;
+      }
 
       addFlowStep({
         fromWallet: "alice",
@@ -251,11 +243,6 @@ function AlicePanel() {
     } catch (err) {
       console.error("Failed to settle hold invoice:", err);
       setError(err instanceof Error ? err.message : "Failed to settle");
-
-      updateTransaction(txId, {
-        status: "error",
-        description: "Failed to settle hold invoice",
-      });
     } finally {
       setIsProcessing(false);
     }
@@ -269,12 +256,6 @@ function AlicePanel() {
 
     setIsProcessing(true);
     setError(null);
-
-    const txId = addTransaction({
-      type: "payment_received",
-      status: "pending",
-      description: "Cancelling hold invoice...",
-    });
 
     try {
       await client.cancelHoldInvoice({ payment_hash: invoiceData.paymentHash });
@@ -290,11 +271,15 @@ function AlicePanel() {
         addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
       }
 
-      updateTransaction(txId, {
-        type: "payment_failed",
-        status: "success",
-        description: `Hold invoice cancelled - Bob refunded ${invoiceData.amount} sats`,
-      });
+      // Update the held transaction to show it's cancelled
+      if (heldTxIdRef.current) {
+        updateTransaction(heldTxIdRef.current, {
+          type: "payment_failed",
+          status: "error",
+          description: `Hold invoice cancelled - Bob refunded ${invoiceData.amount} sats`,
+        });
+        heldTxIdRef.current = null;
+      }
 
       addFlowStep({
         fromWallet: "alice",
@@ -312,11 +297,6 @@ function AlicePanel() {
     } catch (err) {
       console.error("Failed to cancel hold invoice:", err);
       setError(err instanceof Error ? err.message : "Failed to cancel");
-
-      updateTransaction(txId, {
-        status: "error",
-        description: "Failed to cancel hold invoice",
-      });
     } finally {
       setIsProcessing(false);
     }
@@ -334,6 +314,7 @@ function AlicePanel() {
     setAmount("1000");
     setDescription("");
     setError(null);
+    heldTxIdRef.current = null;
     if (unsubRef.current) {
       unsubRef.current();
       unsubRef.current = null;
