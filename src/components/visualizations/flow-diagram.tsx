@@ -62,7 +62,20 @@ export function FlowDiagram() {
           ))}
         </div>
 
-        <div className="mt-8 space-y-4">
+        <div className="relative pt-8 space-y-4 pb-8">
+          {/* Vertical lifelines for each wallet */}
+          {walletList.map((wallet, idx) => {
+            const walletCount = walletList.length || 1;
+            const stepWidth = 100 / walletCount;
+            const xPosition = idx * stepWidth + stepWidth / 2;
+            return (
+              <div
+                key={`lifeline-${wallet.id}`}
+                className="absolute top-0 bottom-0 w-px border-l border-dashed border-muted-foreground/30"
+                style={{ left: `${xPosition}%` }}
+              />
+            );
+          })}
           {flowSteps.map((step, index) => (
             <FlowStepRow
               key={step.id}
@@ -121,47 +134,53 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
       />
 
       {/* Arrow head at the destination wallet end */}
-      <div
-        className="absolute top-4"
-        style={{
-          left: isLeftToRight ? `${rightPosition}%` : `${leftPosition}%`,
-          transform: isLeftToRight ? "rotate(0deg)" : "rotate(180deg)",
-        }}
-      >
-        <svg
-          width="12"
-          height="12"
-          viewBox="0 0 12 12"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      {leftWallet !== rightWallet && (
+        <div
+          className="absolute"
+          style={{
+            top: "15px",
+            left: isLeftToRight
+              ? `calc(${rightPosition}% + 2px)`
+              : `${leftPosition}%`,
+            transform: isLeftToRight
+              ? "translateX(-100%)"
+              : "translateX(-2px) rotate(180deg)",
+          }}
         >
-          <path
-            d="M0 6L10 6M10 6L5 2M10 6L5 10"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-border"
-          />
-        </svg>
-      </div>
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M0 6L10 6M10 6L5 2M10 6L5 10"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="text-border"
+            />
+          </svg>
+        </div>
+      )}
 
       {/* Step indicator at the center */}
       <div
-        className="absolute left-1/2 top-0 -translate-x-1/2 transform"
+        className="absolute left-1/2 top-1 -translate-x-1/2 transform"
         style={{
           left: `${centerPosition}%`,
           width: stepWidth * Math.max(rightWallet - leftWallet, 1) + "%",
         }}
       >
         <div className="flex flex-col items-center">
-          <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground shadow-sm">
-            {index + 1}
-          </div>
+          <div className="flex h-6 w-6">{/* for arrow */}</div>
           <div
             className="mt-1 flex flex-1 w-full items-center gap-1 rounded border bg-background px-2 py-1 shadow-sm"
             style={{ width: 100 + "%" }}
           >
+            <span className="absolute -mx-6 text-sm">{index + 1}</span>
             <span className="text-xs font-medium">
               {WALLET_PERSONAS[walletList[leftWallet].id]?.name ??
                 walletList[leftWallet]?.id}
