@@ -167,7 +167,7 @@ function AlicePanel() {
         toWallet: "alice",
         label: `Status: ${statusLabel}`,
         direction: "right",
-        status: result.state === "settled" ? "success" : "pending",
+        status: result.state === "failed" ? "error" : "success",
       });
     } catch (error) {
       console.error("Failed to lookup invoice:", error);
@@ -365,7 +365,7 @@ function BobPanel() {
   const { invoice: sharedInv, amount: sharedAmt } = useSharedInvoice();
 
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, updateFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const invoiceToUse = invoice || sharedInv || "";
@@ -385,7 +385,7 @@ function BobPanel() {
       description: "Paying invoice...",
     });
 
-    addFlowStep({
+    const flowStepId = addFlowStep({
       fromWallet: "bob",
       toWallet: "alice",
       label: "Paying invoice...",
@@ -414,11 +414,9 @@ function BobPanel() {
         description: `Payment confirmed! Preimage: ${result.preimage}`,
       });
 
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+      // Update flow step to success
+      updateFlowStep(flowStepId, {
         label: "Payment confirmed",
-        direction: "right",
         status: "success",
       });
 
@@ -435,11 +433,9 @@ function BobPanel() {
         description: "Payment failed",
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update flow step to error
+      updateFlowStep(flowStepId, {
         label: "Payment failed",
-        direction: "left",
         status: "error",
       });
     } finally {

@@ -60,8 +60,13 @@ function AlicePanel() {
   const [error, setError] = useState<string | null>(null);
 
   const { getNWCClient, setWalletBalance, getWallet } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
-    useTransactionStore();
+  const {
+    addTransaction,
+    updateTransaction,
+    addFlowStep,
+    updateFlowStep,
+    addBalanceSnapshot,
+  } = useTransactionStore();
 
   const bobWallet = getWallet("bob");
   const addressToUse = address || bobWallet?.lightningAddress || "";
@@ -83,7 +88,7 @@ function AlicePanel() {
       description: `Fetching invoice from ${addressToUse}...`,
     });
 
-    addFlowStep({
+    const flowStepId = addFlowStep({
       fromWallet: "alice",
       toWallet: "bob",
       label: `Request invoice: ${satoshi} sats`,
@@ -112,9 +117,8 @@ function AlicePanel() {
         description: `Invoice received (${satoshi} sats)${hasVerify ? " with verify URL" : ""}`,
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update flow step to success
+      updateFlowStep(flowStepId, {
         label: hasVerify ? "Invoice + Verify URL" : "Invoice (no verify)",
         direction: "left",
         status: "success",
@@ -137,17 +141,15 @@ function AlicePanel() {
         description: "Failed to fetch invoice",
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update flow step to error
+      updateFlowStep(flowStepId, {
         label: "Invoice request failed",
-        direction: "left",
         status: "error",
       });
     } finally {
       setIsFetching(false);
     }
-  }, [addressToUse, amount, addTransaction, addFlowStep]);
+  }, [addressToUse, amount, addTransaction, addFlowStep, updateFlowStep]);
 
   const handlePayInvoice = useCallback(async () => {
     if (!storedInvoice) return;
@@ -167,7 +169,7 @@ function AlicePanel() {
       description: `Paying ${storedInvoice.amount} sats...`,
     });
 
-    addFlowStep({
+    const flowStepId = addFlowStep({
       fromWallet: "alice",
       toWallet: "bob",
       label: `Pay: ${storedInvoice.amount} sats`,
@@ -199,11 +201,9 @@ function AlicePanel() {
         description: `Payment sent! Use verify URL to confirm.`,
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
-        label: "Payment received",
-        direction: "left",
+      // Update flow step to success
+      updateFlowStep(flowStepId, {
+        label: "Payment sent",
         status: "success",
       });
 
@@ -217,11 +217,9 @@ function AlicePanel() {
         description: "Payment failed",
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update flow step to error
+      updateFlowStep(flowStepId, {
         label: "Payment failed",
-        direction: "left",
         status: "error",
       });
     } finally {
@@ -233,6 +231,7 @@ function AlicePanel() {
     setWalletBalance,
     addTransaction,
     addFlowStep,
+    updateFlowStep,
     addBalanceSnapshot,
   ]);
 
@@ -248,7 +247,7 @@ function AlicePanel() {
       description: `Verifying payment via LNURL-Verify...`,
     });
 
-    addFlowStep({
+    const flowStepId = addFlowStep({
       fromWallet: "alice",
       toWallet: "bob",
       label: "GET verify URL",
@@ -272,12 +271,11 @@ function AlicePanel() {
           description: `Payment verified: SETTLED`,
         });
 
-        addFlowStep({
-          fromWallet: "bob",
-          toWallet: "alice",
+        // Update flow step to success
+        updateFlowStep(flowStepId, {
           label: "Status: SETTLED",
-          direction: "left",
           status: "success",
+          direction: "left",
         });
       } else {
         setVerifyStatus("pending");
@@ -291,12 +289,11 @@ function AlicePanel() {
           description: `Payment verified: PENDING`,
         });
 
-        addFlowStep({
-          fromWallet: "bob",
-          toWallet: "alice",
+        // Update flow step to success (verify operation completed, invoice just not paid yet)
+        updateFlowStep(flowStepId, {
           label: "Status: PENDING",
+          status: "success",
           direction: "left",
-          status: "pending",
         });
       }
     } catch (err) {
@@ -308,17 +305,15 @@ function AlicePanel() {
         description: "Verification failed",
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update flow step to error
+      updateFlowStep(flowStepId, {
         label: "Verify failed",
-        direction: "left",
         status: "error",
       });
     } finally {
       setIsVerifying(false);
     }
-  }, [storedInvoice, addTransaction, addFlowStep]);
+  }, [storedInvoice, addTransaction, addFlowStep, updateFlowStep]);
 
   const handleReset = () => {
     setStoredInvoice(null);

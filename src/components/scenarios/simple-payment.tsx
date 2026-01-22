@@ -206,7 +206,7 @@ function BobPanel() {
   const { invoice: sharedInv, amount: sharedAmt } = useSharedInvoice();
 
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, updateFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   // Use shared invoice if available and local input is empty
@@ -229,7 +229,7 @@ function BobPanel() {
     });
 
     // Add flow step for payment initiation
-    addFlowStep({
+    const flowStepId = addFlowStep({
       fromWallet: "bob",
       toWallet: "alice",
       label: "Paying invoice...",
@@ -262,12 +262,9 @@ function BobPanel() {
         description: `Payment confirmed! Preimage: ${result.preimage}`,
       });
 
-      // Add flow step for confirmation
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+      // Update flow step to success
+      updateFlowStep(flowStepId, {
         label: "Payment confirmed",
-        direction: "right",
         status: "success",
       });
 
@@ -281,11 +278,9 @@ function BobPanel() {
         description: "Payment failed",
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update flow step to error
+      updateFlowStep(flowStepId, {
         label: "Payment failed",
-        direction: "left",
         status: "error",
       });
     } finally {

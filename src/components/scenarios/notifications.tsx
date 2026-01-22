@@ -37,8 +37,13 @@ function AlicePanel() {
   const [error, setError] = useState<string | null>(null);
 
   const { getNWCClient, setWalletBalance, getWallet } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
-    useTransactionStore();
+  const {
+    addTransaction,
+    updateTransaction,
+    addFlowStep,
+    updateFlowStep,
+    addBalanceSnapshot,
+  } = useTransactionStore();
 
   const bobWallet = getWallet("bob");
   const addressToUse = address || bobWallet?.lightningAddress || "";
@@ -61,13 +66,15 @@ function AlicePanel() {
       description: `Paying ${satoshi} sats to ${addressToUse}...`,
     });
 
-    addFlowStep({
+    const requestFlowStepId = addFlowStep({
       fromWallet: "alice",
       toWallet: "bob",
       label: `Requesting invoice for ${satoshi} sats...`,
       direction: "right",
       status: "pending",
     });
+
+    let payFlowStepId = "";
 
     try {
       // Lookup the lightning address and request an invoice
@@ -76,15 +83,14 @@ function AlicePanel() {
 
       const invoice = await ln.requestInvoice({ satoshi });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update request flow step to success
+      updateFlowStep(requestFlowStepId, {
         label: `Invoice: ${satoshi} sats`,
-        direction: "left",
         status: "success",
+        direction: "left",
       });
 
-      addFlowStep({
+      payFlowStepId = addFlowStep({
         fromWallet: "alice",
         toWallet: "bob",
         label: "Paying invoice...",
@@ -114,11 +120,9 @@ function AlicePanel() {
         description: `Paid ${satoshi} sats to ${addressToUse}`,
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update flow step to success
+      updateFlowStep(payFlowStepId, {
         label: "Payment confirmed",
-        direction: "left",
         status: "success",
       });
     } catch (err) {
@@ -130,13 +134,18 @@ function AlicePanel() {
         description: "Payment failed",
       });
 
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: "Payment failed",
-        direction: "right",
-        status: "error",
-      });
+      // Update the appropriate flow step to error
+      if (payFlowStepId) {
+        updateFlowStep(payFlowStepId, {
+          label: "Payment failed",
+          status: "error",
+        });
+      } else {
+        updateFlowStep(requestFlowStepId, {
+          label: "Request failed",
+          status: "error",
+        });
+      }
     } finally {
       setIsPaying(false);
     }

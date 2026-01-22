@@ -56,9 +56,10 @@ function AlicePanel() {
   const [error, setError] = useState<string | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
   const heldTxIdRef = useRef<string | null>(null);
+  const heldFlowStepIdRef = useRef<string | null>(null);
 
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, updateFlowStep, addBalanceSnapshot } =
     useTransactionStore();
   const {
     invoiceData,
@@ -94,13 +95,14 @@ function AlicePanel() {
         });
         heldTxIdRef.current = txId;
 
-        addFlowStep({
+        const flowStepId = addFlowStep({
           fromWallet: "alice",
           toWallet: "alice",
           label: `🔒 Payment held: ${currentInvoiceData.amount} sats`,
           direction: "left",
           status: "pending",
         });
+        heldFlowStepIdRef.current = flowStepId;
       }
     },
     [addTransaction, addFlowStep, setInvoiceState],
@@ -227,13 +229,14 @@ function AlicePanel() {
         heldTxIdRef.current = null;
       }
 
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: `✅ Settled: +${invoiceData.amount} sats`,
-        direction: "right",
-        status: "success",
-      });
+      // Update the held flow step to show it's settled
+      if (heldFlowStepIdRef.current) {
+        updateFlowStep(heldFlowStepIdRef.current, {
+          label: `✅ Settled: +${invoiceData.amount} sats`,
+          status: "success",
+        });
+        heldFlowStepIdRef.current = null;
+      }
 
       // Cleanup
       if (unsubRef.current) {
@@ -281,13 +284,14 @@ function AlicePanel() {
         heldTxIdRef.current = null;
       }
 
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: `❌ Cancelled: refund ${invoiceData.amount} sats`,
-        direction: "right",
-        status: "error",
-      });
+      // Update the held flow step to show it's cancelled
+      if (heldFlowStepIdRef.current) {
+        updateFlowStep(heldFlowStepIdRef.current, {
+          label: `❌ Cancelled: refund ${invoiceData.amount} sats`,
+          status: "error",
+        });
+        heldFlowStepIdRef.current = null;
+      }
 
       // Cleanup
       if (unsubRef.current) {
@@ -315,6 +319,7 @@ function AlicePanel() {
     setDescription("");
     setError(null);
     heldTxIdRef.current = null;
+    heldFlowStepIdRef.current = null;
     if (unsubRef.current) {
       unsubRef.current();
       unsubRef.current = null;
@@ -562,7 +567,7 @@ function BobPanel() {
 
   const { invoiceData, invoiceState } = useHoldInvoiceStore();
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, updateFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const invoiceToUse = invoiceInput || invoiceData?.invoice || "";
@@ -599,7 +604,7 @@ function BobPanel() {
       description: `Paying hold invoice for ${amount} sats...`,
     });
 
-    addFlowStep({
+    const flowStepId = addFlowStep({
       fromWallet: "bob",
       toWallet: "alice",
       label: `Paying hold invoice: ${amount} sats`,
@@ -621,6 +626,12 @@ function BobPanel() {
         status: "success",
         description: `Payment completed (${amount} sats)`,
       });
+
+      // Update flow step to success
+      updateFlowStep(flowStepId, {
+        label: `Payment sent: ${amount} sats`,
+        status: "success",
+      });
     } catch (err) {
       console.error("Failed to pay:", err);
       setError(err instanceof Error ? err.message : "Payment failed");
@@ -630,11 +641,9 @@ function BobPanel() {
         description: "Payment failed",
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update flow step to error
+      updateFlowStep(flowStepId, {
         label: "Payment failed",
-        direction: "left",
         status: "error",
       });
     } finally {

@@ -20,7 +20,7 @@ export function ProofOfPaymentScenario() {
     description: string | null;
   } | null>(null);
 
-  const { addTransaction, updateTransaction, addFlowStep } = useTransactionStore();
+  const { addTransaction, updateTransaction, addFlowStep, updateFlowStep } = useTransactionStore();
 
   const verifyProof = async () => {
     if (!invoice || !preimage) {
@@ -38,7 +38,7 @@ export function ProofOfPaymentScenario() {
       description: "Verifying proof of payment...",
     });
 
-    addFlowStep({
+    const flowStepId = addFlowStep({
       fromWallet: "alice",
       toWallet: "bob",
       label: "Verifying preimage...",
@@ -68,11 +68,9 @@ export function ProofOfPaymentScenario() {
           description: `Valid proof of payment verified for ${parsedInvoice.satoshi} sats`,
         });
 
-        addFlowStep({
-          fromWallet: "alice",
-          toWallet: "bob",
+        // Update flow step to success
+        updateFlowStep(flowStepId, {
           label: `Proof verified: ${parsedInvoice.satoshi} sats`,
-          direction: "right",
           status: "success",
         });
       } else {
@@ -84,11 +82,9 @@ export function ProofOfPaymentScenario() {
           description: "Invalid preimage - does not match payment hash",
         });
 
-        addFlowStep({
-          fromWallet: "alice",
-          toWallet: "bob",
+        // Update flow step to error
+        updateFlowStep(flowStepId, {
           label: "Invalid proof",
-          direction: "right",
           status: "error",
         });
       }
@@ -104,6 +100,12 @@ export function ProofOfPaymentScenario() {
       updateTransaction(txId, {
         status: "error",
         description: "Verification failed - invalid invoice format",
+      });
+
+      // Update flow step to error
+      updateFlowStep(flowStepId, {
+        label: "Verification failed",
+        status: "error",
       });
     } finally {
       setIsVerifying(false);

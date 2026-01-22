@@ -8,7 +8,8 @@ interface TransactionState {
 
   addTransaction: (transaction: Omit<Transaction, 'id' | 'timestamp'>) => string;
   updateTransaction: (id: string, updates: Partial<Omit<Transaction, 'id' | 'timestamp'>>) => void;
-  addFlowStep: (step: Omit<FlowStep, 'id'>) => void;
+  addFlowStep: (step: Omit<FlowStep, 'id'>) => string;
+  updateFlowStep: (id: string, updates: Partial<Omit<FlowStep, 'id'>>) => void;
   addBalanceSnapshot: (snapshot: Omit<BalanceSnapshot, 'timestamp'>) => void;
   clearAll: () => void;
 }
@@ -43,12 +44,22 @@ export const useTransactionStore = create<TransactionState>((set) => ({
   },
 
   addFlowStep: (step) => {
+    const id = `step-${++flowStepCounter}`;
     const newStep: FlowStep = {
       ...step,
-      id: `step-${++flowStepCounter}`,
+      id,
     };
     set((state) => ({
       flowSteps: [...state.flowSteps, newStep],
+    }));
+    return id;
+  },
+
+  updateFlowStep: (id, updates) => {
+    set((state) => ({
+      flowSteps: state.flowSteps.map((step) =>
+        step.id === id ? { ...step, ...updates } : step
+      ),
     }));
   },
 

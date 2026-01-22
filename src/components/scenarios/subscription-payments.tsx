@@ -150,7 +150,7 @@ function BobPanel() {
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, updateFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const config = useSubscriptionConfig();
@@ -175,7 +175,7 @@ function BobPanel() {
       description: `Subscription charge: ${config.amount} sats`,
     });
 
-    addFlowStep({
+    const requestFlowStepId = addFlowStep({
       fromWallet: "bob",
       toWallet: "alice",
       label: `Requesting invoice for ${config.amount} sats...`,
@@ -183,21 +183,21 @@ function BobPanel() {
       status: "pending",
     });
 
+    let payFlowStepId = "";
+
     try {
       // Bob requests an invoice from his own lightning address
       const ln = new LightningAddress(bobAddress);
       await ln.fetch();
       const invoice = await ln.requestInvoice({ satoshi: config.amount });
 
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
+      // Update request flow step to success
+      updateFlowStep(requestFlowStepId, {
         label: `Invoice: ${config.amount} sats`,
-        direction: "right",
         status: "success",
       });
 
-      addFlowStep({
+      payFlowStepId = addFlowStep({
         fromWallet: "alice",
         toWallet: "bob",
         label: "Paying subscription...",
@@ -234,11 +234,9 @@ function BobPanel() {
         description: `Subscription payment received: ${config.amount} sats`,
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update flow step to success
+      updateFlowStep(payFlowStepId, {
         label: "Payment confirmed",
-        direction: "left",
         status: "success",
       });
 
@@ -252,13 +250,18 @@ function BobPanel() {
         description: "Subscription charge failed",
       });
 
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: "Payment failed",
-        direction: "right",
-        status: "error",
-      });
+      // Update the appropriate flow step to error
+      if (payFlowStepId) {
+        updateFlowStep(payFlowStepId, {
+          label: "Payment failed",
+          status: "error",
+        });
+      } else {
+        updateFlowStep(requestFlowStepId, {
+          label: "Request failed",
+          status: "error",
+        });
+      }
 
       return false;
     }
@@ -270,6 +273,7 @@ function BobPanel() {
     addTransaction,
     updateTransaction,
     addFlowStep,
+    updateFlowStep,
     addBalanceSnapshot,
   ]);
 

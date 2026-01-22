@@ -56,8 +56,13 @@ function AlicePanel() {
   } | null>(null);
 
   const { getNWCClient, setWalletBalance, getWallet } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
-    useTransactionStore();
+  const {
+    addTransaction,
+    updateTransaction,
+    addFlowStep,
+    updateFlowStep,
+    addBalanceSnapshot,
+  } = useTransactionStore();
 
   const bobWallet = getWallet("bob");
   const addressToUse = address || bobWallet?.lightningAddress || "";
@@ -81,7 +86,7 @@ function AlicePanel() {
       description: `Alice paying ${satoshi} sats to Bob...`,
     });
 
-    addFlowStep({
+    const requestFlowStepId = addFlowStep({
       fromWallet: "alice",
       toWallet: "bob",
       label: `Requesting invoice for ${satoshi} sats...`,
@@ -89,21 +94,22 @@ function AlicePanel() {
       status: "pending",
     });
 
+    let payFlowStepId = "";
+
     try {
       const ln = new LightningAddress(addressToUse);
       await ln.fetch();
 
       const invoice = await ln.requestInvoice({ satoshi });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update request flow step to success
+      updateFlowStep(requestFlowStepId, {
         label: `Invoice: ${satoshi} sats`,
-        direction: "left",
         status: "success",
+        direction: "left",
       });
 
-      addFlowStep({
+      payFlowStepId = addFlowStep({
         fromWallet: "alice",
         toWallet: "bob",
         label: "Paying invoice...",
@@ -133,11 +139,9 @@ function AlicePanel() {
         description: `Alice paid ${satoshi} sats to Bob`,
       });
 
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
+      // Update flow step to success
+      updateFlowStep(payFlowStepId, {
         label: "Payment confirmed",
-        direction: "left",
         status: "success",
       });
 
@@ -152,13 +156,18 @@ function AlicePanel() {
         description: "Payment failed",
       });
 
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: "Payment failed",
-        direction: "right",
-        status: "error",
-      });
+      // Update the appropriate flow step to error
+      if (payFlowStepId) {
+        updateFlowStep(payFlowStepId, {
+          label: "Payment failed",
+          status: "error",
+        });
+      } else {
+        updateFlowStep(requestFlowStepId, {
+          label: "Request failed",
+          status: "error",
+        });
+      }
     } finally {
       setIsPaying(false);
     }
@@ -239,8 +248,13 @@ function BobPanel() {
   const davidPercentRef = useRef(davidPercent);
 
   const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
-    useTransactionStore();
+  const {
+    addTransaction,
+    updateTransaction,
+    addFlowStep,
+    updateFlowStep,
+    addBalanceSnapshot,
+  } = useTransactionStore();
 
   const bobWallet = getWallet("bob");
   const charlieWallet = getWallet("charlie");
@@ -307,7 +321,7 @@ function BobPanel() {
         description: `Bob splitting ${amountSats} sats via prism...`,
       });
 
-      addFlowStep({
+      const charlieFlowStepId = addFlowStep({
         fromWallet: "bob",
         toWallet: "charlie",
         label: `Splitting ${charlieAmount} sats (${cPercent}%)...`,
@@ -324,18 +338,22 @@ function BobPanel() {
           charlieAmount,
         );
 
-        addFlowStep({
-          fromWallet: "bob",
-          toWallet: "charlie",
+        // Update flow step to success or error
+        updateFlowStep(charlieFlowStepId, {
           label: charlieSuccess
             ? `✅ Charlie: ${charlieAmount} sats`
             : "❌ Charlie failed",
-          direction: "right",
           status: charlieSuccess ? "success" : "error",
+        });
+      } else {
+        // Amount too small, mark as success (skipped)
+        updateFlowStep(charlieFlowStepId, {
+          label: `Charlie: skipped (0 sats)`,
+          status: "success",
         });
       }
 
-      addFlowStep({
+      const davidFlowStepId = addFlowStep({
         fromWallet: "bob",
         toWallet: "david",
         label: `Splitting ${davidAmount} sats (${dPercent}%)...`,
@@ -352,14 +370,18 @@ function BobPanel() {
           davidAmount,
         );
 
-        addFlowStep({
-          fromWallet: "bob",
-          toWallet: "david",
+        // Update flow step to success or error
+        updateFlowStep(davidFlowStepId, {
           label: davidSuccess
             ? `✅ David: ${davidAmount} sats`
             : "❌ David failed",
-          direction: "right",
           status: davidSuccess ? "success" : "error",
+        });
+      } else {
+        // Amount too small, mark as success (skipped)
+        updateFlowStep(davidFlowStepId, {
+          label: `David: skipped (0 sats)`,
+          status: "success",
         });
       }
 
@@ -395,6 +417,7 @@ function BobPanel() {
       setWalletBalance,
       addTransaction,
       addFlowStep,
+      updateFlowStep,
       addBalanceSnapshot,
     ],
   );
@@ -414,7 +437,7 @@ function BobPanel() {
         });
 
         addFlowStep({
-          fromWallet: "alice",
+          fromWallet: "bob",
           toWallet: "bob",
           label: `🔔 Received ${amountSats} sats`,
           direction: "right",
@@ -706,7 +729,7 @@ function RecipientPanel({ walletId }: RecipientPanelProps) {
       });
 
       addFlowStep({
-        fromWallet: "bob",
+        fromWallet: walletId,
         toWallet: walletId,
         label: `🔔 ${persona.name}: +${amountSats} sats`,
         direction: "right",
