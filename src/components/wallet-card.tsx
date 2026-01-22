@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Loader2, Wallet, Unplug, Rocket, Mail } from "lucide-react";
+import { Loader2, Wallet, Unplug, Rocket, Mail, Plug } from "lucide-react";
 import { NWCClient } from "@getalby/sdk/nwc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,37 +28,43 @@ export function WalletCard({ wallet }: WalletCardProps) {
   const { addBalanceSnapshot } = useTransactionStore();
 
   const connectWithNWC = async (connectionSecret: string) => {
-    try {
-      // Create NWC client
-      const client = new NWCClient({
-        nostrWalletConnectUrl: connectionSecret,
-      });
+    for (let attempt = 0; ; attempt++) {
+      try {
+        // Create NWC client
+        const client = new NWCClient({
+          nostrWalletConnectUrl: connectionSecret,
+        });
 
-      // Store the client
-      setNWCClient(wallet.id, client);
+        // Store the client
+        setNWCClient(wallet.id, client);
 
-      // Get balance (returns millisats, convert to sats)
-      const { balance: balanceMillisats } = await client.getBalance();
-      const balanceSats = Math.floor(balanceMillisats / 1000);
+        // Get balance (returns millisats, convert to sats)
+        const { balance: balanceMillisats } = await client.getBalance();
+        const balanceSats = Math.floor(balanceMillisats / 1000);
 
-      // Extract lightning address from connection string
-      const lightningAddress = client.lud16 || null;
+        // Extract lightning address from connection string
+        const lightningAddress = client.lud16 || null;
 
-      // Update wallet state
-      setWalletConnection(
-        wallet.id,
-        connectionSecret,
-        lightningAddress ?? undefined,
-      );
-      setWalletBalance(wallet.id, balanceSats);
+        // Update wallet state
+        setWalletConnection(
+          wallet.id,
+          connectionSecret,
+          lightningAddress ?? undefined,
+        );
+        setWalletBalance(wallet.id, balanceSats);
 
-      // Record initial balance for visualizations
-      addBalanceSnapshot({ walletId: wallet.id, balance: balanceSats });
+        // Record initial balance for visualizations
+        addBalanceSnapshot({ walletId: wallet.id, balance: balanceSats });
 
-      setConnectionInput("");
-    } catch (error) {
-      console.error("Failed to connect wallet:", error);
-      throw error;
+        setConnectionInput("");
+        break;
+      } catch (error) {
+        console.error("Failed to connect wallet:", error);
+        if (attempt < 3) {
+          continue;
+        }
+        throw error;
+      }
     }
   };
 
@@ -98,21 +104,28 @@ export function WalletCard({ wallet }: WalletCardProps) {
     try {
       // Create test wallet via faucet API
       // Returns plaintext NWC connection secret with lud16 parameter
-      const response = await fetch("https://faucet.nwc.dev?balance=10000", {
-        method: "POST",
-      });
+      for (let attempt = 0; ; attempt++) {
+        const response = await fetch("https://faucet.nwc.dev?balance=10000", {
+          method: "POST",
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to create test wallet");
+        if (!response.ok) {
+          if (attempt < 3) {
+            continue;
+          }
+          throw new Error("Failed to create test wallet");
+        }
+
+        // Response is plaintext connection secret
+        connectionSecret = await response.text();
+        break;
       }
-
-      // Response is plaintext connection secret
-      connectionSecret = await response.text();
 
       if (
         !connectionSecret ||
         !connectionSecret.startsWith("nostr+walletconnect://")
       ) {
+        connectionSecret = "";
         throw new Error("Invalid connection secret received");
       }
     } catch (error) {
@@ -168,6 +181,7 @@ export function WalletCard({ wallet }: WalletCardProps) {
             onConnect={() =>
               handleConnect(wallet.connectionString || connectionInput)
             }
+            onRemove={handleDisconnect}
             onCreateTestWallet={handleCreateTestWallet}
           />
         )}
@@ -242,6 +256,7 @@ interface DisconnectedStateProps {
   hasConnection: boolean;
   onConnectionInputChange: (value: string) => void;
   onConnect: () => void;
+  onRemove: () => void;
   onCreateTestWallet: () => void;
 }
 
@@ -254,6 +269,7 @@ function DisconnectedState({
   hasConnection,
   onConnectionInputChange,
   onConnect,
+  onRemove,
   onCreateTestWallet,
 }: DisconnectedStateProps) {
   return (
@@ -275,7 +291,12 @@ function DisconnectedState({
             disabled={isConnecting || isCreatingWallet}
             className="w-full"
           >
-            {isCreatingWallet ? (
+            {isConnecting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Connecting...
+              </>
+            ) : isCreatingWallet ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Creating...
@@ -317,21 +338,35 @@ function DisconnectedState({
         </>
       )}
       {hasConnection && (
-        <Button
-          size="sm"
-          onClick={onConnect}
-          disabled={isConnecting}
-          className="w-full"
-        >
-          {isConnecting ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Connecting...
-            </>
-          ) : (
-            "Reconnect"
-          )}
-        </Button>
+        <>
+          <Button
+            size="sm"
+            onClick={onConnect}
+            disabled={isConnecting}
+            className="w-full"
+          >
+            {isConnecting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Connecting...
+              </>
+            ) : (
+              <>
+                <Plug className="mr-2 h-4 w-4" />
+                Reconnect
+              </>
+            )}
+          </Button>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={onRemove}
+            className="w-full"
+          >
+            <Unplug className="mr-2 h-4 w-4" />
+            Remove
+          </Button>
+        </>
       )}
     </>
   );
