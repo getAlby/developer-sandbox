@@ -26,7 +26,7 @@ export function DecodeBolt11InvoiceScenario() {
   const [error, setError] = useState<string | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
-  const { addTransaction, addFlowStep } = useTransactionStore();
+  const { addTransaction, updateTransaction, addFlowStep } = useTransactionStore();
 
   const handleDecode = async () => {
     if (!invoiceInput.trim()) return;
@@ -35,13 +35,13 @@ export function DecodeBolt11InvoiceScenario() {
     setError(null);
     setDecodedInvoice(null);
 
-    try {
-      addTransaction({
-        type: "invoice_created",
-        status: "pending",
-        description: "Decoding BOLT-11 invoice...",
-      });
+    const txId = addTransaction({
+      type: "invoice_created",
+      status: "pending",
+      description: "Decoding BOLT-11 invoice...",
+    });
 
+    try {
       // Use the Invoice class to decode
       const invoice = new Invoice({ pr: invoiceInput.trim() });
 
@@ -59,8 +59,7 @@ export function DecodeBolt11InvoiceScenario() {
 
       setDecodedInvoice(decoded);
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "success",
         amount: decoded.satoshi,
         description: `Invoice decoded: ${decoded.satoshi} sats${decoded.description ? ` - "${decoded.description}"` : ""}`,
@@ -78,8 +77,7 @@ export function DecodeBolt11InvoiceScenario() {
         err instanceof Error ? err.message : "Invalid lightning invoice";
       setError(errorMessage);
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "error",
         description: `Failed to decode invoice: ${errorMessage}`,
       });

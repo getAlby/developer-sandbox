@@ -37,7 +37,7 @@ function AlicePanel() {
   const [error, setError] = useState<string | null>(null);
 
   const { getNWCClient, setWalletBalance, getWallet } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const bobWallet = getWallet("bob");
@@ -52,24 +52,24 @@ function AlicePanel() {
     setIsPaying(true);
     setError(null);
 
+    const txId = addTransaction({
+      type: "payment_sent",
+      status: "pending",
+      fromWallet: "alice",
+      toWallet: "bob",
+      amount: satoshi,
+      description: `Paying ${satoshi} sats to ${addressToUse}...`,
+    });
+
+    addFlowStep({
+      fromWallet: "alice",
+      toWallet: "bob",
+      label: `Requesting invoice for ${satoshi} sats...`,
+      direction: "right",
+      status: "pending",
+    });
+
     try {
-      addTransaction({
-        type: "payment_sent",
-        status: "pending",
-        fromWallet: "alice",
-        toWallet: "bob",
-        amount: satoshi,
-        description: `Paying ${satoshi} sats to ${addressToUse}...`,
-      });
-
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: `Requesting invoice for ${satoshi} sats...`,
-        direction: "right",
-        status: "pending",
-      });
-
       // Lookup the lightning address and request an invoice
       const ln = new LightningAddress(addressToUse);
       await ln.fetch();
@@ -109,12 +109,8 @@ function AlicePanel() {
         addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
       }
 
-      addTransaction({
-        type: "payment_sent",
+      updateTransaction(txId, {
         status: "success",
-        fromWallet: "alice",
-        toWallet: "bob",
-        amount: satoshi,
         description: `Paid ${satoshi} sats to ${addressToUse}`,
       });
 
@@ -129,11 +125,8 @@ function AlicePanel() {
       console.error("Failed to pay:", err);
       setError(err instanceof Error ? err.message : "Payment failed");
 
-      addTransaction({
-        type: "payment_failed",
+      updateTransaction(txId, {
         status: "error",
-        fromWallet: "alice",
-        toWallet: "bob",
         description: "Payment failed",
       });
 
@@ -228,7 +221,7 @@ function BobPanel() {
   const unsubRef = useRef<(() => void) | null>(null);
 
   const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const bobWallet = getWallet("bob");
@@ -294,21 +287,20 @@ function BobPanel() {
     setIsStarting(true);
     setError(null);
 
-    try {
-      addTransaction({
-        type: "invoice_created",
-        status: "pending",
-        description: "Bob subscribing to payment notifications...",
-      });
+    const txId = addTransaction({
+      type: "invoice_created",
+      status: "pending",
+      description: "Bob subscribing to payment notifications...",
+    });
 
+    try {
       const unsub = await client.subscribeNotifications(handleNotification, [
         "payment_received",
       ]);
       unsubRef.current = unsub;
       setIsListening(true);
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "success",
         description: "Bob is now listening for payment notifications",
       });
@@ -324,8 +316,7 @@ function BobPanel() {
       console.error("Failed to subscribe to notifications:", err);
       setError(err instanceof Error ? err.message : "Failed to subscribe");
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "error",
         description: "Failed to subscribe to notifications",
       });

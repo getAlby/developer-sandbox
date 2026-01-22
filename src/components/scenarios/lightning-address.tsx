@@ -75,7 +75,7 @@ function BobPanel() {
   const [error, setError] = useState<string | null>(null);
 
   const { getNWCClient, setWalletBalance, getWallet } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const aliceWallet = getWallet("alice");
@@ -89,13 +89,13 @@ function BobPanel() {
     setError(null);
     setAddressInfo(null);
 
-    try {
-      addTransaction({
-        type: "invoice_created",
-        status: "pending",
-        description: `Looking up ${addressToUse}...`,
-      });
+    const txId = addTransaction({
+      type: "invoice_created",
+      status: "pending",
+      description: `Looking up ${addressToUse}...`,
+    });
 
+    try {
       const ln = new LightningAddress(addressToUse);
       await ln.fetch();
 
@@ -109,8 +109,7 @@ function BobPanel() {
         description: ln.lnurlpData.description,
       });
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "success",
         description: `Found ${addressToUse} (${ln.lnurlpData.min}-${ln.lnurlpData.max} sats)`,
       });
@@ -125,8 +124,7 @@ function BobPanel() {
     } catch (err) {
       console.error("Failed to lookup address:", err);
       setError("Failed to lookup Lightning Address");
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "error",
         description: "Failed to lookup Lightning Address",
       });
@@ -142,27 +140,27 @@ function BobPanel() {
     setIsPaying(true);
     setError(null);
 
+    const satoshi = parseInt(amount);
+
+    // Add pending transaction
+    const txId = addTransaction({
+      type: "payment_sent",
+      status: "pending",
+      fromWallet: "bob",
+      toWallet: "alice",
+      amount: satoshi,
+      description: `Paying ${satoshi} sats to ${addressToUse}...`,
+    });
+
+    addFlowStep({
+      fromWallet: "bob",
+      toWallet: "alice",
+      label: `Requesting invoice...`,
+      direction: "left",
+      status: "pending",
+    });
+
     try {
-      const satoshi = parseInt(amount);
-
-      // Add pending transaction
-      addTransaction({
-        type: "payment_sent",
-        status: "pending",
-        fromWallet: "bob",
-        toWallet: "alice",
-        amount: satoshi,
-        description: `Paying ${satoshi} sats to ${addressToUse}...`,
-      });
-
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
-        label: `Requesting invoice...`,
-        direction: "left",
-        status: "pending",
-      });
-
       // Lookup the lightning address and request an invoice
       const ln = new LightningAddress(addressToUse);
       await ln.fetch();
@@ -206,13 +204,9 @@ function BobPanel() {
         addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
       }
 
-      // Add success transaction
-      addTransaction({
-        type: "payment_sent",
+      // Update transaction to success
+      updateTransaction(txId, {
         status: "success",
-        fromWallet: "bob",
-        toWallet: "alice",
-        amount: satoshi,
         description: `Paid ${satoshi} sats to ${addressToUse}`,
       });
 
@@ -232,11 +226,8 @@ function BobPanel() {
       console.error("Failed to pay:", err);
       setError(err instanceof Error ? err.message : "Payment failed");
 
-      addTransaction({
-        type: "payment_failed",
+      updateTransaction(txId, {
         status: "error",
-        fromWallet: "bob",
-        toWallet: "alice",
         description: "Payment failed",
       });
 

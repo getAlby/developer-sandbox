@@ -57,7 +57,7 @@ function AlicePanel() {
   const unsubRef = useRef<(() => void) | null>(null);
 
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
   const {
     invoiceData,
@@ -114,8 +114,14 @@ function AlicePanel() {
     setIsCreating(true);
     setError(null);
 
+    const satoshi = parseInt(amount);
+    const txId = addTransaction({
+      type: "invoice_created",
+      status: "pending",
+      description: `Creating hold invoice for ${satoshi} sats...`,
+    });
+
     try {
-      const satoshi = parseInt(amount);
       const amountMsat = satoshi * 1000;
 
       // Generate preimage and payment hash
@@ -125,12 +131,6 @@ function AlicePanel() {
       const hashBuffer = await crypto.subtle.digest("SHA-256", preimageBytes);
       const paymentHashBytes = new Uint8Array(hashBuffer);
       const paymentHash = toHexString(paymentHashBytes);
-
-      addTransaction({
-        type: "invoice_created",
-        status: "pending",
-        description: `Creating hold invoice for ${satoshi} sats...`,
-      });
 
       // Create the hold invoice
       const response = await client.makeHoldInvoice({
@@ -153,8 +153,7 @@ function AlicePanel() {
       setInvoiceData(newInvoiceData);
       setInvoiceState("created");
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "success",
         amount: satoshi,
         description: `Hold invoice created for ${satoshi} sats: ${newInvoiceData.invoice}`,
@@ -185,8 +184,7 @@ function AlicePanel() {
         err instanceof Error ? err.message : "Failed to create hold invoice",
       );
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "error",
         description: "Failed to create hold invoice",
       });
@@ -204,14 +202,14 @@ function AlicePanel() {
     setIsProcessing(true);
     setError(null);
 
-    try {
-      addTransaction({
-        type: "payment_received",
-        status: "pending",
-        toWallet: "alice",
-        description: "Settling hold invoice...",
-      });
+    const txId = addTransaction({
+      type: "payment_received",
+      status: "pending",
+      toWallet: "alice",
+      description: "Settling hold invoice...",
+    });
 
+    try {
       await client.settleHoldInvoice({ preimage: invoiceData.preimage });
 
       setInvoiceState("settled");
@@ -231,10 +229,8 @@ function AlicePanel() {
         addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
       }
 
-      addTransaction({
-        type: "payment_received",
+      updateTransaction(txId, {
         status: "success",
-        toWallet: "alice",
         amount: invoiceData.amount,
         description: `Hold invoice settled - Alice received ${invoiceData.amount} sats`,
       });
@@ -256,8 +252,7 @@ function AlicePanel() {
       console.error("Failed to settle hold invoice:", err);
       setError(err instanceof Error ? err.message : "Failed to settle");
 
-      addTransaction({
-        type: "payment_received",
+      updateTransaction(txId, {
         status: "error",
         description: "Failed to settle hold invoice",
       });
@@ -275,13 +270,13 @@ function AlicePanel() {
     setIsProcessing(true);
     setError(null);
 
-    try {
-      addTransaction({
-        type: "payment_received",
-        status: "pending",
-        description: "Cancelling hold invoice...",
-      });
+    const txId = addTransaction({
+      type: "payment_received",
+      status: "pending",
+      description: "Cancelling hold invoice...",
+    });
 
+    try {
       await client.cancelHoldInvoice({ payment_hash: invoiceData.paymentHash });
 
       setInvoiceState("cancelled");
@@ -295,7 +290,7 @@ function AlicePanel() {
         addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
       }
 
-      addTransaction({
+      updateTransaction(txId, {
         type: "payment_failed",
         status: "success",
         description: `Hold invoice cancelled - Bob refunded ${invoiceData.amount} sats`,
@@ -318,8 +313,7 @@ function AlicePanel() {
       console.error("Failed to cancel hold invoice:", err);
       setError(err instanceof Error ? err.message : "Failed to cancel");
 
-      addTransaction({
-        type: "payment_failed",
+      updateTransaction(txId, {
         status: "error",
         description: "Failed to cancel hold invoice",
       });
@@ -587,7 +581,7 @@ function BobPanel() {
 
   const { invoiceData, invoiceState } = useHoldInvoiceStore();
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const invoiceToUse = invoiceInput || invoiceData?.invoice || "";
@@ -613,26 +607,26 @@ function BobPanel() {
     setIsPaying(true);
     setError(null);
 
+    const amount = invoiceData?.amount || 0;
+
+    const txId = addTransaction({
+      type: "payment_sent",
+      status: "pending",
+      fromWallet: "bob",
+      toWallet: "alice",
+      amount,
+      description: `Paying hold invoice for ${amount} sats...`,
+    });
+
+    addFlowStep({
+      fromWallet: "bob",
+      toWallet: "alice",
+      label: `Paying hold invoice: ${amount} sats`,
+      direction: "left",
+      status: "pending",
+    });
+
     try {
-      const amount = invoiceData?.amount || 0;
-
-      addTransaction({
-        type: "payment_sent",
-        status: "pending",
-        fromWallet: "bob",
-        toWallet: "alice",
-        amount,
-        description: `Paying hold invoice for ${amount} sats...`,
-      });
-
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
-        label: `Paying hold invoice: ${amount} sats`,
-        direction: "left",
-        status: "pending",
-      });
-
       // Pay the invoice - this will block until settled or cancelled
       await client.payInvoice({ invoice: invoiceToUse });
 
@@ -642,22 +636,16 @@ function BobPanel() {
       setWalletBalance("bob", bobBalanceSats);
       addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
 
-      addTransaction({
-        type: "payment_sent",
+      updateTransaction(txId, {
         status: "success",
-        fromWallet: "bob",
-        toWallet: "alice",
-        amount,
         description: `Payment completed (${amount} sats)`,
       });
     } catch (err) {
       console.error("Failed to pay:", err);
       setError(err instanceof Error ? err.message : "Payment failed");
 
-      addTransaction({
-        type: "payment_failed",
+      updateTransaction(txId, {
         status: "error",
-        fromWallet: "bob",
         description: "Payment failed",
       });
 

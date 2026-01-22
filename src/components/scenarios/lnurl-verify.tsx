@@ -60,7 +60,7 @@ function AlicePanel() {
   const [error, setError] = useState<string | null>(null);
 
   const { getNWCClient, setWalletBalance, getWallet } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const bobWallet = getWallet("bob");
@@ -75,23 +75,23 @@ function AlicePanel() {
     setVerifyStatus(null);
     setVerifyResponse(null);
 
+    const satoshi = parseInt(amount);
+
+    const txId = addTransaction({
+      type: "invoice_created",
+      status: "pending",
+      description: `Fetching invoice from ${addressToUse}...`,
+    });
+
+    addFlowStep({
+      fromWallet: "alice",
+      toWallet: "bob",
+      label: `Request invoice: ${satoshi} sats`,
+      direction: "right",
+      status: "pending",
+    });
+
     try {
-      const satoshi = parseInt(amount);
-
-      addTransaction({
-        type: "invoice_created",
-        status: "pending",
-        description: `Fetching invoice from ${addressToUse}...`,
-      });
-
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: `Request invoice: ${satoshi} sats`,
-        direction: "right",
-        status: "pending",
-      });
-
       const ln = new LightningAddress(addressToUse);
       await ln.fetch();
 
@@ -107,8 +107,7 @@ function AlicePanel() {
         paymentHash: invoice.paymentHash,
       });
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "success",
         description: `Invoice received (${satoshi} sats)${hasVerify ? " with verify URL" : ""}`,
       });
@@ -133,8 +132,7 @@ function AlicePanel() {
       console.error("Failed to fetch invoice:", err);
       setError(err instanceof Error ? err.message : "Failed to fetch invoice");
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "error",
         description: "Failed to fetch invoice",
       });
@@ -160,24 +158,24 @@ function AlicePanel() {
     setIsPaying(true);
     setError(null);
 
+    const txId = addTransaction({
+      type: "payment_sent",
+      status: "pending",
+      fromWallet: "bob",
+      toWallet: "alice",
+      amount: storedInvoice.amount,
+      description: `Paying ${storedInvoice.amount} sats...`,
+    });
+
+    addFlowStep({
+      fromWallet: "alice",
+      toWallet: "bob",
+      label: `Pay: ${storedInvoice.amount} sats`,
+      direction: "right",
+      status: "pending",
+    });
+
     try {
-      addTransaction({
-        type: "payment_sent",
-        status: "pending",
-        fromWallet: "bob",
-        toWallet: "alice",
-        amount: storedInvoice.amount,
-        description: `Paying ${storedInvoice.amount} sats...`,
-      });
-
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: `Pay: ${storedInvoice.amount} sats`,
-        direction: "right",
-        status: "pending",
-      });
-
       await client.payInvoice({
         invoice: storedInvoice.invoice.paymentRequest,
       });
@@ -196,12 +194,8 @@ function AlicePanel() {
         addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
       }
 
-      addTransaction({
-        type: "payment_sent",
+      updateTransaction(txId, {
         status: "success",
-        fromWallet: "bob",
-        toWallet: "alice",
-        amount: storedInvoice.amount,
         description: `Payment sent! Use verify URL to confirm.`,
       });
 
@@ -218,11 +212,8 @@ function AlicePanel() {
       console.error("Failed to pay:", err);
       setError(err instanceof Error ? err.message : "Payment failed");
 
-      addTransaction({
-        type: "payment_failed",
+      updateTransaction(txId, {
         status: "error",
-        fromWallet: "bob",
-        toWallet: "alice",
         description: "Payment failed",
       });
 
@@ -251,21 +242,21 @@ function AlicePanel() {
     setIsVerifying(true);
     setError(null);
 
+    const txId = addTransaction({
+      type: "invoice_created",
+      status: "pending",
+      description: `Verifying payment via LNURL-Verify...`,
+    });
+
+    addFlowStep({
+      fromWallet: "alice",
+      toWallet: "bob",
+      label: "GET verify URL",
+      direction: "right",
+      status: "pending",
+    });
+
     try {
-      addTransaction({
-        type: "invoice_created",
-        status: "pending",
-        description: `Verifying payment via LNURL-Verify...`,
-      });
-
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: "GET verify URL",
-        direction: "right",
-        status: "pending",
-      });
-
       const isPaid = await storedInvoice.invoice.isPaid();
 
       if (isPaid) {
@@ -276,8 +267,7 @@ function AlicePanel() {
           pr: storedInvoice.invoice.paymentRequest,
         });
 
-        addTransaction({
-          type: "invoice_created",
+        updateTransaction(txId, {
           status: "success",
           description: `Payment verified: SETTLED`,
         });
@@ -296,9 +286,8 @@ function AlicePanel() {
           pr: storedInvoice.invoice.paymentRequest,
         });
 
-        addTransaction({
-          type: "invoice_created",
-          status: "pending",
+        updateTransaction(txId, {
+          status: "success",
           description: `Payment verified: PENDING`,
         });
 
@@ -314,8 +303,7 @@ function AlicePanel() {
       console.error("Failed to verify:", err);
       setError(err instanceof Error ? err.message : "Verification failed");
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "error",
         description: "Verification failed",
       });

@@ -49,7 +49,7 @@ function AlicePanel() {
   } | null>(null);
 
   const { getNWCClient, setWalletBalance, getWallet } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const bobWallet = getWallet("bob");
@@ -65,24 +65,24 @@ function AlicePanel() {
     setError(null);
     setLastPayment(null);
 
+    const txId = addTransaction({
+      type: "payment_sent",
+      status: "pending",
+      fromWallet: "alice",
+      toWallet: "bob",
+      amount: satoshi,
+      description: `Alice paying ${satoshi} sats to Bob...`,
+    });
+
+    addFlowStep({
+      fromWallet: "alice",
+      toWallet: "bob",
+      label: `Requesting invoice for ${satoshi} sats...`,
+      direction: "right",
+      status: "pending",
+    });
+
     try {
-      addTransaction({
-        type: "payment_sent",
-        status: "pending",
-        fromWallet: "alice",
-        toWallet: "bob",
-        amount: satoshi,
-        description: `Alice paying ${satoshi} sats to Bob...`,
-      });
-
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: `Requesting invoice for ${satoshi} sats...`,
-        direction: "right",
-        status: "pending",
-      });
-
       const ln = new LightningAddress(addressToUse);
       await ln.fetch();
 
@@ -121,12 +121,8 @@ function AlicePanel() {
         addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
       }
 
-      addTransaction({
-        type: "payment_sent",
+      updateTransaction(txId, {
         status: "success",
-        fromWallet: "alice",
-        toWallet: "bob",
-        amount: satoshi,
         description: `Alice paid ${satoshi} sats to Bob`,
       });
 
@@ -144,11 +140,8 @@ function AlicePanel() {
       setError(err instanceof Error ? err.message : "Payment failed");
       setLastPayment({ amount: satoshi, success: false });
 
-      addTransaction({
-        type: "payment_failed",
+      updateTransaction(txId, {
         status: "error",
-        fromWallet: "alice",
-        toWallet: "bob",
         description: "Payment failed",
       });
 
@@ -245,7 +238,7 @@ function BobPanel() {
   const forwardPercentRef = useRef(forwardPercent);
 
   const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const bobWallet = getWallet("bob");
@@ -273,24 +266,24 @@ function BobPanel() {
         return;
       }
 
+      const txId = addTransaction({
+        type: "payment_sent",
+        status: "pending",
+        fromWallet: "bob",
+        toWallet: "charlie",
+        amount: forwardAmount,
+        description: `Bob forwarding ${forwardAmount} sats (${percent}%) to Charlie...`,
+      });
+
+      addFlowStep({
+        fromWallet: "bob",
+        toWallet: "charlie",
+        label: `Forwarding ${forwardAmount} sats (${percent}%)...`,
+        direction: "right",
+        status: "pending",
+      });
+
       try {
-        addTransaction({
-          type: "payment_sent",
-          status: "pending",
-          fromWallet: "bob",
-          toWallet: "charlie",
-          amount: forwardAmount,
-          description: `Bob forwarding ${forwardAmount} sats (${percent}%) to Charlie...`,
-        });
-
-        addFlowStep({
-          fromWallet: "bob",
-          toWallet: "charlie",
-          label: `Forwarding ${forwardAmount} sats (${percent}%)...`,
-          direction: "right",
-          status: "pending",
-        });
-
         // Get invoice from Charlie's lightning address
         const ln = new LightningAddress(charlieWallet.lightningAddress);
         await ln.fetch();
@@ -324,12 +317,8 @@ function BobPanel() {
 
         setForwardedPayments((prev) => [payment, ...prev]);
 
-        addTransaction({
-          type: "payment_sent",
+        updateTransaction(txId, {
           status: "success",
-          fromWallet: "bob",
-          toWallet: "charlie",
-          amount: forwardAmount,
           description: `Bob forwarded ${forwardAmount} sats to Charlie (kept ${keptAmount} sats)`,
         });
 
@@ -343,11 +332,8 @@ function BobPanel() {
       } catch (err) {
         console.error("Failed to forward payment:", err);
 
-        addTransaction({
-          type: "payment_failed",
+        updateTransaction(txId, {
           status: "error",
-          fromWallet: "bob",
-          toWallet: "charlie",
           description: `Failed to forward payment: ${err instanceof Error ? err.message : "Unknown error"}`,
         });
 
@@ -431,21 +417,20 @@ function BobPanel() {
     setIsStarting(true);
     setError(null);
 
-    try {
-      addTransaction({
-        type: "invoice_created",
-        status: "pending",
-        description: "Bob subscribing to payment notifications...",
-      });
+    const txId = addTransaction({
+      type: "invoice_created",
+      status: "pending",
+      description: "Bob subscribing to payment notifications...",
+    });
 
+    try {
       const unsub = await client.subscribeNotifications(handleNotification, [
         "payment_received",
       ]);
       unsubRef.current = unsub;
       setIsListening(true);
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "success",
         description: `Bob listening - will forward ${forwardPercent}% to Charlie`,
       });
@@ -461,8 +446,7 @@ function BobPanel() {
       console.error("Failed to subscribe to notifications:", err);
       setError(err instanceof Error ? err.message : "Failed to subscribe");
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "error",
         description: "Failed to subscribe to notifications",
       });

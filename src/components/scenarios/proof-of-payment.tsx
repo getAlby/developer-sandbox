@@ -20,7 +20,7 @@ export function ProofOfPaymentScenario() {
     description: string | null;
   } | null>(null);
 
-  const { addTransaction, addFlowStep } = useTransactionStore();
+  const { addTransaction, updateTransaction, addFlowStep } = useTransactionStore();
 
   const verifyProof = async () => {
     if (!invoice || !preimage) {
@@ -32,21 +32,21 @@ export function ProofOfPaymentScenario() {
     setError(null);
     setResult("idle");
 
+    const txId = addTransaction({
+      type: "payment_received",
+      status: "pending",
+      description: "Verifying proof of payment...",
+    });
+
+    addFlowStep({
+      fromWallet: "alice",
+      toWallet: "bob",
+      label: "Verifying preimage...",
+      direction: "right",
+      status: "pending",
+    });
+
     try {
-      addTransaction({
-        type: "payment_received",
-        status: "pending",
-        description: "Verifying proof of payment...",
-      });
-
-      addFlowStep({
-        fromWallet: "alice",
-        toWallet: "bob",
-        label: "Verifying preimage...",
-        direction: "right",
-        status: "pending",
-      });
-
       // Parse the invoice
       const parsedInvoice = new Invoice({ pr: invoice });
 
@@ -62,8 +62,7 @@ export function ProofOfPaymentScenario() {
       if (isValid) {
         setResult("success");
 
-        addTransaction({
-          type: "payment_received",
+        updateTransaction(txId, {
           status: "success",
           amount: parsedInvoice.satoshi,
           description: `Valid proof of payment verified for ${parsedInvoice.satoshi} sats`,
@@ -79,7 +78,7 @@ export function ProofOfPaymentScenario() {
       } else {
         setResult("error");
 
-        addTransaction({
+        updateTransaction(txId, {
           type: "payment_failed",
           status: "error",
           description: "Invalid preimage - does not match payment hash",
@@ -102,8 +101,7 @@ export function ProofOfPaymentScenario() {
           : "Failed to verify proof of payment",
       );
 
-      addTransaction({
-        type: "payment_failed",
+      updateTransaction(txId, {
         status: "error",
         description: "Verification failed - invalid invoice format",
       });

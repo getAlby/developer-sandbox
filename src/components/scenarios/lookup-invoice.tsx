@@ -75,7 +75,7 @@ function AlicePanel() {
   const [lookupInvoiceInput, setLookupInvoiceInput] = useState("");
 
   const { getNWCClient } = useWalletStore();
-  const { addTransaction, addFlowStep } = useTransactionStore();
+  const { addTransaction, updateTransaction, addFlowStep } = useTransactionStore();
 
   const handleCreateInvoice = async () => {
     const client = getNWCClient("alice");
@@ -84,16 +84,16 @@ function AlicePanel() {
     setIsCreating(true);
     setInvoiceStatus(null);
 
-    try {
-      addTransaction({
-        type: "invoice_created",
-        status: "pending",
-        toWallet: "alice",
-        amount: parseInt(amount),
-        description: "Creating invoice...",
-      });
+    const amountSats = parseInt(amount);
+    const txId = addTransaction({
+      type: "invoice_created",
+      status: "pending",
+      toWallet: "alice",
+      amount: amountSats,
+      description: "Creating invoice...",
+    });
 
-      const amountSats = parseInt(amount);
+    try {
       const amountMillisats = amountSats * 1000;
 
       const invoice = await client.makeInvoice({
@@ -105,11 +105,8 @@ function AlicePanel() {
       setLookupInvoiceInput(invoice.invoice);
       setSharedInvoice(invoice.invoice, amountSats);
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "success",
-        toWallet: "alice",
-        amount: amountSats,
         description: `Invoice created for ${amountSats} sats`,
       });
 
@@ -122,10 +119,8 @@ function AlicePanel() {
       });
     } catch (error) {
       console.error("Failed to create invoice:", error);
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "error",
-        toWallet: "alice",
         description: "Failed to create invoice",
       });
     } finally {
@@ -140,14 +135,14 @@ function AlicePanel() {
 
     setIsLookingUp(true);
 
-    try {
-      addTransaction({
-        type: "invoice_created",
-        status: "pending",
-        toWallet: "alice",
-        description: "Looking up invoice status...",
-      });
+    const txId = addTransaction({
+      type: "invoice_created",
+      status: "pending",
+      toWallet: "alice",
+      description: "Looking up invoice status...",
+    });
 
+    try {
       const result = await client.lookupInvoice({ invoice: invoiceToLookup });
 
       setInvoiceStatus(result.state);
@@ -161,10 +156,8 @@ function AlicePanel() {
               ? "Accepted (Hold)"
               : "Failed";
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "success",
-        toWallet: "alice",
         amount: Math.floor(result.amount / 1000),
         description: `Invoice status: ${statusLabel}`,
       });
@@ -178,10 +171,8 @@ function AlicePanel() {
       });
     } catch (error) {
       console.error("Failed to lookup invoice:", error);
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "error",
-        toWallet: "alice",
         description: "Failed to lookup invoice",
       });
     } finally {
@@ -374,7 +365,7 @@ function BobPanel() {
   const { invoice: sharedInv, amount: sharedAmt } = useSharedInvoice();
 
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const invoiceToUse = invoice || sharedInv || "";
@@ -385,24 +376,24 @@ function BobPanel() {
 
     setIsPaying(true);
 
+    const txId = addTransaction({
+      type: "payment_sent",
+      status: "pending",
+      fromWallet: "bob",
+      toWallet: "alice",
+      amount: sharedAmt ?? undefined,
+      description: "Paying invoice...",
+    });
+
+    addFlowStep({
+      fromWallet: "bob",
+      toWallet: "alice",
+      label: "Paying invoice...",
+      direction: "left",
+      status: "pending",
+    });
+
     try {
-      addTransaction({
-        type: "payment_sent",
-        status: "pending",
-        fromWallet: "bob",
-        toWallet: "alice",
-        amount: sharedAmt ?? undefined,
-        description: "Paying invoice...",
-      });
-
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
-        label: "Paying invoice...",
-        direction: "left",
-        status: "pending",
-      });
-
       const result = await client.payInvoice({ invoice: invoiceToUse });
 
       const bobBalance = await client.getBalance();
@@ -418,12 +409,8 @@ function BobPanel() {
         addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
       }
 
-      addTransaction({
-        type: "payment_sent",
+      updateTransaction(txId, {
         status: "success",
-        fromWallet: "bob",
-        toWallet: "alice",
-        amount: sharedAmt ?? undefined,
         description: `Payment confirmed! Preimage: ${result.preimage}`,
       });
 
@@ -443,11 +430,8 @@ function BobPanel() {
       setSharedInvoice(null, null);
     } catch (error) {
       console.error("Failed to pay invoice:", error);
-      addTransaction({
-        type: "payment_failed",
+      updateTransaction(txId, {
         status: "error",
-        fromWallet: "bob",
-        toWallet: "alice",
         description: "Payment failed",
       });
 

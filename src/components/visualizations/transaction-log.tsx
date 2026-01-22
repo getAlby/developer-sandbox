@@ -88,10 +88,12 @@ function TransactionRow({ transaction }: { transaction: Transaction }) {
 function StatusIcon({ status }: { status: Transaction["status"] }) {
   switch (status) {
     case "success":
-      return <Check className="h-4 w-4 text-green-500" />;
+      return <Check className="h-4 w-4 text-green-500 shrink-0" />;
     case "error":
-      return <X className="h-4 w-4 text-destructive" />;
+      return <X className="h-4 w-4 text-destructive shrink-0" />;
     case "pending":
-      return <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />;
+      return (
+        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground shrink-0" />
+      );
   }
 }

@@ -150,7 +150,7 @@ function BobPanel() {
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+  const { addTransaction, updateTransaction, addFlowStep, addBalanceSnapshot } =
     useTransactionStore();
 
   const config = useSubscriptionConfig();
@@ -166,24 +166,24 @@ function BobPanel() {
       return false;
     }
 
+    const txId = addTransaction({
+      type: "payment_sent",
+      status: "pending",
+      fromWallet: "alice",
+      toWallet: "bob",
+      amount: config.amount,
+      description: `Subscription charge: ${config.amount} sats`,
+    });
+
+    addFlowStep({
+      fromWallet: "bob",
+      toWallet: "alice",
+      label: `Requesting invoice for ${config.amount} sats...`,
+      direction: "left",
+      status: "pending",
+    });
+
     try {
-      addTransaction({
-        type: "payment_sent",
-        status: "pending",
-        fromWallet: "alice",
-        toWallet: "bob",
-        amount: config.amount,
-        description: `Subscription charge: ${config.amount} sats`,
-      });
-
-      addFlowStep({
-        fromWallet: "bob",
-        toWallet: "alice",
-        label: `Requesting invoice for ${config.amount} sats...`,
-        direction: "left",
-        status: "pending",
-      });
-
       // Bob requests an invoice from his own lightning address
       const ln = new LightningAddress(bobAddress);
       await ln.fetch();
@@ -228,12 +228,9 @@ function BobPanel() {
       };
       setReceivedPayments((prev) => [payment, ...prev]);
 
-      addTransaction({
+      updateTransaction(txId, {
         type: "payment_received",
         status: "success",
-        fromWallet: "alice",
-        toWallet: "bob",
-        amount: config.amount,
         description: `Subscription payment received: ${config.amount} sats`,
       });
 
@@ -250,11 +247,8 @@ function BobPanel() {
       console.error("Subscription charge failed:", err);
       setError(err instanceof Error ? err.message : "Charge failed");
 
-      addTransaction({
-        type: "payment_failed",
+      updateTransaction(txId, {
         status: "error",
-        fromWallet: "alice",
-        toWallet: "bob",
         description: "Subscription charge failed",
       });
 
@@ -274,6 +268,7 @@ function BobPanel() {
     getNWCClient,
     setWalletBalance,
     addTransaction,
+    updateTransaction,
     addFlowStep,
     addBalanceSnapshot,
   ]);
@@ -290,7 +285,7 @@ function BobPanel() {
       status: "success",
     });
 
-    addTransaction({
+    const txId = addTransaction({
       type: "invoice_created",
       status: "pending",
       description: "Starting subscription charges...",
@@ -303,8 +298,7 @@ function BobPanel() {
       setIsCharging(true);
       setNextChargeIn(config.interval);
 
-      addTransaction({
-        type: "invoice_created",
+      updateTransaction(txId, {
         status: "success",
         description: `Subscription active: ${config.amount} sats every ${config.interval}s`,
       });
@@ -321,6 +315,11 @@ function BobPanel() {
           prev !== null && prev > 0 ? prev - 1 : null,
         );
       }, 1000);
+    } else {
+      updateTransaction(txId, {
+        status: "error",
+        description: "Failed to start subscription",
+      });
     }
 
     setIsStarting(false);
