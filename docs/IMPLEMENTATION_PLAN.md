@@ -168,6 +168,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [ ] Add tooltips explaining NWC concepts
 - [ ] Add "Learn More" links to Alby documentation
 - [ ] Display code snippets showing how each operation works
+- [ ] Display example prompts showing how to add a scenario to your app
 
 ### 7.3 Final Touches
 
@@ -180,29 +181,30 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 - [ ] add success state to simple payment scenario
 - [ ] use a hash router for navigating scenarios
-- [ ] On the payment log there are logs of a Loader even when the payment has either failed or succeeded, this is confusing. (e.g. "Creating invoice..." which still shows a loading spinner when the next line is "Invoice created for 1000 sats" which shows a check)
-- [ ] Add a way to copy NWC connection from a wallet card, and also a way to topup the wallet (via the faucet API)
-- [ ] fix the flow diagram view (broken)
-- [ ] fix the balance chart lines not showing
+- [x] On the payment log there are logs of a Loader even when the payment has either failed or succeeded, this is confusing. (e.g. "Creating invoice..." which still shows a loading spinner when the next line is "Invoice created for 1000 sats" which shows a check)
+- [ ] Add a way to copy NWC connection from a wallet card
+- [ ] Add a way to topup the wallet (via the faucet API)
+- [x] fix the flow diagram view (broken)
+- [x] fix the balance chart lines not showing
 
 ## Phase 8: Github Pages
 
-- [ ] Make necessary changes so the app is automatically deployed. The repository name is developer-sandbox and the organization is getAlby.
+- [x] Make necessary changes so the app is automatically deployed. The repository name is developer-sandbox and the organization is getAlby.
 
 ---
 
 ## Progress Summary
 
-| Phase                             | Status                                         |
-| --------------------------------- | ---------------------------------------------- |
-| Phase 1: Foundation & Layout      | ✅ Complete                                    |
-| Phase 2: Wallet System            | ✅ Complete                                    |
-| Phase 3: Visualization Components | ✅ Complete                                    |
-| Phase 4: Scenario System          | ✅ Complete                                    |
-| Phase 5: Core Scenarios           | ✅ Complete                                    |
-| Phase 6: Advanced NWC Features    | 🟡 Core operations done, notifications pending |
-| Phase 7: Polish & UX              | ⬜ Not started                                 |
-| Phase 8: Github Pages             | ⬜ Not started                                 |
+| Phase                             | Status         |
+| --------------------------------- | -------------- |
+| Phase 1: Foundation & Layout      | ✅ Complete    |
+| Phase 2: Wallet System            | ✅ Complete    |
+| Phase 3: Visualization Components | ✅ Complete    |
+| Phase 4: Scenario System          | ✅ Complete    |
+| Phase 5: Core Scenarios           | ✅ Complete    |
+| Phase 6: Advanced NWC Features    | ✅ Complete    |
+| Phase 7: Polish & UX              | ⬜ Not started |
+| Phase 8: Github Pages             | ✅ Complete    |
 
 ---
 
