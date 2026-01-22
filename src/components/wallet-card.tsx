@@ -1,20 +1,20 @@
-import { useState, useEffect, useRef } from 'react';
-import { Loader2, Wallet, Unplug, Rocket, Mail } from 'lucide-react';
-import { NWCClient } from '@getalby/sdk/nwc';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import type { Wallet as WalletType } from '@/types';
-import { useWalletStore, useTransactionStore } from '@/stores';
-import { useFiatValue } from '@/hooks/use-fiat';
+import { useState, useEffect, useRef } from "react";
+import { Loader2, Wallet, Unplug, Rocket, Mail } from "lucide-react";
+import { NWCClient } from "@getalby/sdk/nwc";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import type { Wallet as WalletType } from "@/types";
+import { useWalletStore, useTransactionStore } from "@/stores";
+import { useFiatValue } from "@/hooks/use-fiat";
 
 interface WalletCardProps {
   wallet: WalletType;
 }
 
 export function WalletCard({ wallet }: WalletCardProps) {
-  const [connectionInput, setConnectionInput] = useState('');
+  const [connectionInput, setConnectionInput] = useState("");
   const [isCreatingWallet, setIsCreatingWallet] = useState(false);
   const reconnectAttempted = useRef(false);
   const {
@@ -45,15 +45,19 @@ export function WalletCard({ wallet }: WalletCardProps) {
       const lightningAddress = client.lud16 || null;
 
       // Update wallet state
-      setWalletConnection(wallet.id, connectionSecret, lightningAddress ?? undefined);
+      setWalletConnection(
+        wallet.id,
+        connectionSecret,
+        lightningAddress ?? undefined,
+      );
       setWalletBalance(wallet.id, balanceSats);
 
       // Record initial balance for visualizations
       addBalanceSnapshot({ walletId: wallet.id, balance: balanceSats });
 
-      setConnectionInput('');
+      setConnectionInput("");
     } catch (error) {
-      console.error('Failed to connect wallet:', error);
+      console.error("Failed to connect wallet:", error);
       throw error;
     }
   };
@@ -62,14 +66,14 @@ export function WalletCard({ wallet }: WalletCardProps) {
   useEffect(() => {
     if (
       wallet.connectionString &&
-      wallet.status === 'disconnected' &&
+      wallet.status === "disconnected" &&
       !getNWCClient(wallet.id) &&
       !reconnectAttempted.current
     ) {
       reconnectAttempted.current = true;
-      setWalletStatus(wallet.id, 'connecting');
+      setWalletStatus(wallet.id, "connecting");
       connectWithNWC(wallet.connectionString).catch(() => {
-        setWalletStatus(wallet.id, 'error', 'Failed to reconnect wallet');
+        setWalletStatus(wallet.id, "error", "Failed to reconnect wallet");
       });
     }
   }, [wallet.id, wallet.connectionString, wallet.status]);
@@ -77,43 +81,54 @@ export function WalletCard({ wallet }: WalletCardProps) {
   const handleConnect = async (connectionString: string) => {
     if (!connectionString.trim()) return;
 
-    setWalletStatus(wallet.id, 'connecting');
+    setWalletStatus(wallet.id, "connecting");
 
     try {
       await connectWithNWC(connectionString.trim());
     } catch {
-      setWalletStatus(wallet.id, 'error', 'Failed to connect wallet');
+      setWalletStatus(wallet.id, "error", "Failed to connect wallet");
     }
   };
 
   const handleCreateTestWallet = async () => {
     setIsCreatingWallet(true);
-    setWalletStatus(wallet.id, 'connecting');
+    setWalletStatus(wallet.id, "connecting");
+    let connectionSecret: string | undefined;
 
     try {
       // Create test wallet via faucet API
       // Returns plaintext NWC connection secret with lud16 parameter
-      const response = await fetch('https://faucet.nwc.dev?balance=10000', {
-        method: 'POST',
+      const response = await fetch("https://faucet.nwc.dev?balance=10000", {
+        method: "POST",
       });
 
       if (!response.ok) {
-        throw new Error('Failed to create test wallet');
+        throw new Error("Failed to create test wallet");
       }
 
       // Response is plaintext connection secret
-      const connectionSecret = await response.text();
+      connectionSecret = await response.text();
 
-      if (!connectionSecret || !connectionSecret.startsWith('nostr+walletconnect://')) {
-        throw new Error('Invalid connection secret received');
+      if (
+        !connectionSecret ||
+        !connectionSecret.startsWith("nostr+walletconnect://")
+      ) {
+        throw new Error("Invalid connection secret received");
       }
-
-      await connectWithNWC(connectionSecret.trim());
     } catch (error) {
-      console.error('Failed to create test wallet:', error);
-      setWalletStatus(wallet.id, 'error', 'Failed to create test wallet');
+      console.error("Failed to create test wallet:", error);
+      setWalletStatus(wallet.id, "error", "Failed to create test wallet");
     } finally {
       setIsCreatingWallet(false);
+    }
+    if (!connectionSecret) {
+      return;
+    }
+    try {
+      await connectWithNWC(connectionSecret);
+    } catch (error) {
+      console.error("Failed to connect to test wallet:", error);
+      setWalletStatus(wallet.id, "error", "Failed to connect to test wallet");
     }
   };
 
@@ -121,9 +136,10 @@ export function WalletCard({ wallet }: WalletCardProps) {
     disconnectWallet(wallet.id);
   };
 
-  const isConnecting = wallet.status === 'connecting';
-  const isConnected = wallet.status === 'connected';
-  const hasError = wallet.status === 'error';
+  const isConnecting = wallet.status === "connecting";
+  const isConnected = wallet.status === "connected";
+  const hasConnection = !!wallet.connectionString;
+  const hasError = wallet.status === "error";
 
   return (
     <Card className="flex flex-col">
@@ -143,12 +159,15 @@ export function WalletCard({ wallet }: WalletCardProps) {
         ) : (
           <DisconnectedState
             wallet={wallet}
+            hasConnection={hasConnection}
             connectionInput={connectionInput}
             isCreatingWallet={isCreatingWallet}
             isConnecting={isConnecting}
             hasError={hasError}
             onConnectionInputChange={setConnectionInput}
-            onConnect={() => handleConnect(connectionInput)}
+            onConnect={() =>
+              handleConnect(wallet.connectionString || connectionInput)
+            }
             onCreateTestWallet={handleCreateTestWallet}
           />
         )}
@@ -157,17 +176,17 @@ export function WalletCard({ wallet }: WalletCardProps) {
   );
 }
 
-function StatusBadge({ status }: { status: WalletType['status'] }) {
+function StatusBadge({ status }: { status: WalletType["status"] }) {
   switch (status) {
-    case 'connected':
+    case "connected":
       return (
         <Badge variant="default" className="bg-green-500">
           Connected
         </Badge>
       );
-    case 'connecting':
+    case "connecting":
       return <Badge variant="secondary">Connecting...</Badge>;
-    case 'error':
+    case "error":
       return <Badge variant="destructive">Error</Badge>;
     default:
       return <Badge variant="outline">Disconnected</Badge>;
@@ -190,7 +209,7 @@ function ConnectedState({ wallet, onDisconnect }: ConnectedStateProps) {
           <span>NWC</span>
         </div>
         <div className="text-2xl font-bold">
-          {wallet.balance?.toLocaleString() ?? '—'} sats
+          {wallet.balance?.toLocaleString() ?? "—"} sats
         </div>
         <div className="text-sm text-muted-foreground">{fiatValue}</div>
         {wallet.lightningAddress && (
@@ -201,7 +220,12 @@ function ConnectedState({ wallet, onDisconnect }: ConnectedStateProps) {
         )}
       </div>
 
-      <Button variant="outline" size="sm" onClick={onDisconnect} className="w-full">
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={onDisconnect}
+        className="w-full"
+      >
         <Unplug className="mr-2 h-4 w-4" />
         Disconnect Wallet
       </Button>
@@ -215,6 +239,7 @@ interface DisconnectedStateProps {
   isCreatingWallet: boolean;
   isConnecting: boolean;
   hasError: boolean;
+  hasConnection: boolean;
   onConnectionInputChange: (value: string) => void;
   onConnect: () => void;
   onCreateTestWallet: () => void;
@@ -226,6 +251,7 @@ function DisconnectedState({
   isCreatingWallet,
   isConnecting,
   hasError,
+  hasConnection,
   onConnectionInputChange,
   onConnect,
   onCreateTestWallet,
@@ -242,37 +268,59 @@ function DisconnectedState({
         Connect {wallet.name}'s wallet to try this scenario
       </p>
 
-      <Button
-        onClick={onCreateTestWallet}
-        disabled={isConnecting || isCreatingWallet}
-        className="w-full"
-      >
-        {isCreatingWallet ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Creating...
-          </>
-        ) : (
-          <>
-            <Rocket className="mr-2 h-4 w-4" />
-            Create Test Wallet
-          </>
-        )}
-      </Button>
-
-      <div className="space-y-2">
-        <p className="text-xs text-muted-foreground">Or paste connection secret:</p>
-        <Input
-          placeholder="nostr+walletconnect://..."
-          value={connectionInput}
-          onChange={(e) => onConnectionInputChange(e.target.value)}
-          disabled={isConnecting}
-        />
+      {!hasConnection && (
+        <>
+          <Button
+            onClick={onCreateTestWallet}
+            disabled={isConnecting || isCreatingWallet}
+            className="w-full"
+          >
+            {isCreatingWallet ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              <>
+                <Rocket className="mr-2 h-4 w-4" />
+                Create Test Wallet
+              </>
+            )}
+          </Button>
+          <div className="space-y-2">
+            <p className="text-xs text-muted-foreground">
+              Or paste connection secret:
+            </p>
+            <Input
+              placeholder="nostr+walletconnect://..."
+              value={connectionInput}
+              onChange={(e) => onConnectionInputChange(e.target.value)}
+              disabled={isConnecting}
+            />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onConnect}
+              disabled={!connectionInput.trim() || isConnecting}
+              className="w-full"
+            >
+              {isConnecting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Connecting...
+                </>
+              ) : (
+                "Connect"
+              )}
+            </Button>
+          </div>
+        </>
+      )}
+      {hasConnection && (
         <Button
-          variant="outline"
           size="sm"
           onClick={onConnect}
-          disabled={!connectionInput.trim() || isConnecting}
+          disabled={isConnecting}
           className="w-full"
         >
           {isConnecting ? (
@@ -281,10 +329,10 @@ function DisconnectedState({
               Connecting...
             </>
           ) : (
-            'Connect'
+            "Reconnect"
           )}
         </Button>
-      </div>
+      )}
     </>
   );
 }
