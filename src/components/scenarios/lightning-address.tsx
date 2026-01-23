@@ -98,6 +98,7 @@ function BobPanel() {
       type: "invoice_created",
       status: "pending",
       description: `Looking up ${addressToUse}...`,
+      snippetIds: ["fetch-lightning-address"],
     });
 
     try {
@@ -156,6 +157,7 @@ function BobPanel() {
       toWallet: "alice",
       amount: satoshi,
       description: `Paying ${satoshi} sats to ${addressToUse}...`,
+      snippetIds: ["pay-lightning-address"],
     });
 
     const requestFlowStepId = addFlowStep({

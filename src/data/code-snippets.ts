@@ -7,8 +7,43 @@ export type SnippetCategory =
   | 'fiat'
   | 'advanced';
 
+/**
+ * Valid snippet IDs - use this type for type-safe snippet references
+ */
+export type SnippetId =
+  // Getting Started
+  | 'browser-console'
+  | 'available-globals'
+  // Basics
+  | 'get-balance'
+  | 'get-info'
+  | 'list-transactions'
+  // Payments
+  | 'make-invoice'
+  | 'pay-invoice'
+  | 'pay-keysend'
+  // Invoices
+  | 'lookup-invoice'
+  | 'decode-invoice'
+  | 'validate-preimage'
+  // Lightning Address
+  | 'fetch-lightning-address'
+  | 'request-invoice-from-address'
+  | 'pay-lightning-address'
+  | 'lnurl-verify'
+  // Fiat
+  | 'get-fiat-currencies'
+  | 'sats-to-fiat'
+  | 'fiat-to-sats'
+  | 'get-btc-rate'
+  // Advanced
+  | 'subscribe-notifications'
+  | 'multi-pay'
+  | 'sign-message'
+  | 'hold-invoice';
+
 export interface CodeSnippet {
-  id: string;
+  id: SnippetId;
   title: string;
   description: string;
   code: string;
@@ -283,6 +318,21 @@ if (isPaid && invoice.preimage) {
 
   // Fiat Conversion
   {
+    id: 'get-fiat-currencies',
+    title: 'Get Available Currencies',
+    description: 'Fetch the list of supported fiat currencies for conversion',
+    code: `import { getFiatCurrencies } from '@getalby/lightning-tools/fiat'
+
+const currencies = await getFiatCurrencies()
+
+// currencies is an array of { code, name, symbol, priority }
+currencies.forEach(currency => {
+  console.log(currency.code, currency.name, currency.symbol)
+})
+// e.g., "USD", "US Dollar", "$"`,
+    category: 'fiat',
+  },
+  {
     id: 'sats-to-fiat',
     title: 'Convert Sats to Fiat',
     description: 'Convert a satoshi amount to fiat currency',
@@ -399,7 +449,7 @@ const invoice = await alice.makeInvoice({
 /**
  * Get snippets by their IDs (primary lookup method)
  */
-export function getSnippetsById(ids: string[]): CodeSnippet[] {
+export function getSnippetsById(ids: SnippetId[]): CodeSnippet[] {
   return ids
     .map((id) => CODE_SNIPPETS.find((snippet) => snippet.id === id))
     .filter((snippet): snippet is CodeSnippet => snippet !== undefined);
@@ -408,7 +458,7 @@ export function getSnippetsById(ids: string[]): CodeSnippet[] {
 /**
  * Get a single snippet by ID
  */
-export function getSnippetById(id: string): CodeSnippet | undefined {
+export function getSnippetById(id: SnippetId): CodeSnippet | undefined {
   return CODE_SNIPPETS.find((snippet) => snippet.id === id);
 }
 

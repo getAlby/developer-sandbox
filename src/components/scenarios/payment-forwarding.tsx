@@ -77,6 +77,7 @@ function AlicePanel() {
       toWallet: "bob",
       amount: satoshi,
       description: `Alice paying ${satoshi} sats to Bob...`,
+      snippetIds: ["pay-lightning-address"],
     });
 
     const requestFlowStepId = addFlowStep({
@@ -289,6 +290,7 @@ function BobPanel() {
         toWallet: "charlie",
         amount: forwardAmount,
         description: `Bob forwarding ${forwardAmount} sats (${percent}%) to Charlie...`,
+        snippetIds: ["pay-invoice"],
       });
 
       const flowStepId = addFlowStep({
@@ -385,6 +387,7 @@ function BobPanel() {
           toWallet: "bob",
           amount: amountSats,
           description: `Bob received ${amountSats} sats`,
+          snippetIds: ["subscribe-notifications"],
         });
 
         addFlowStep({
@@ -439,6 +442,7 @@ function BobPanel() {
       type: "invoice_created",
       status: "pending",
       description: "Bob subscribing to payment notifications...",
+      snippetIds: ["subscribe-notifications"],
     });
 
     try {
@@ -485,6 +489,7 @@ function BobPanel() {
       type: "invoice_created",
       status: "success",
       description: "Bob stopped forwarding payments",
+      snippetIds: ["subscribe-notifications"],
     });
 
     addFlowStep({

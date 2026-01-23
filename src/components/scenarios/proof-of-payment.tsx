@@ -36,6 +36,7 @@ export function ProofOfPaymentScenario() {
       type: "payment_received",
       status: "pending",
       description: "Verifying proof of payment...",
+      snippetIds: ["validate-preimage"],
     });
 
     const flowStepId = addFlowStep({

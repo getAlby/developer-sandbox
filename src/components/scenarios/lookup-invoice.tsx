@@ -91,6 +91,7 @@ function AlicePanel() {
       toWallet: "alice",
       amount: amountSats,
       description: "Creating invoice...",
+      snippetIds: ["make-invoice"],
     });
 
     try {
@@ -141,6 +142,7 @@ function AlicePanel() {
       status: "pending",
       toWallet: "alice",
       description: "Looking up invoice status...",
+      snippetIds: ["lookup-invoice"],
     });
 
     try {
@@ -385,6 +387,7 @@ function BobPanel() {
       toWallet: "alice",
       amount: sharedAmt ?? undefined,
       description: "Paying invoice...",
+      snippetIds: ["pay-invoice"],
     });
 
     const flowStepId = addFlowStep({

@@ -603,7 +603,17 @@ const unsub = await alice.subscribeNotifications((n) => {
 - [x] Payment to lightning address (e.g. in Notifications scenario) only shows a "Pay Invoice" snippet. It should also show the snippet for fetching an invoice from a lightning address (show multiple snippets)
 - [x] Notifications scenario "start listening" shows the wrong code snippet (it shows "Create Invoice", should be "Subscribe to Notifications")
 - [x] there is a problem that it's guessing what code snippets to use. Remove "OperationType" and pass a list of snippet IDs instead for new transaction log and flow diagram entries. This way we have full control.
-- [ ] some scenarios are not adding code snippets to the transaction log: lookup-invoice, lightning-address, decode-bolt11-invoice, proof-of-payment, payment-forwarding, hold-invoice, payment-prisms.
-- [ ] fiat conversion scenario is not showing that it fetched the list of currencies in the transaction log
-- [ ] "Bob received 100 sats via notification" is not showing the code example (should be "Subscribe to Notifications")
-- [ ] snippet IDs should not be considered a string, use proper type checking so that only real snippet ids can be used
+- [x] some scenarios are not adding code snippets to the transaction log: lookup-invoice, lightning-address, decode-bolt11-invoice, proof-of-payment, payment-forwarding, hold-invoice, payment-prisms.
+- [x] fiat conversion scenario is not showing that it fetched the list of currencies in the transaction log
+- [x] "Bob received 100 sats via notification" is not showing the code example (should be "Subscribe to Notifications")
+- [x] snippet IDs should not be considered a string, use proper type checking so that only real snippet ids can be used
+- [x] some example snippets are missing from the Code Snippets tab. For example, getting a list of fiat currencies.
+
+---
+
+- [ ] add a ? button on the flow diagram code snippet
+- [ ] validate preimage snippet is not using the alby agent skill (please read it to use the correct code)
+- [ ] in the "payment-forwarding" scenario transaction log, "Charlie received 10 sats" is not showing the code example (should be "Subscribe to Notifications")
+- [ ] HOLD invoice code snippet is incorrect (creating the invoice, and subscribing to notifications for accepted payments, cancelling hold invoice, settling hold invoice). Check the alby agent skill.
+- [ ] Wrong code snippet for "Prism split: Charlie 5 sats, David 10 sats, kept 85 sats" - should be pay to lightning address
+- [ ] payment-prisms: "Charlie received 5 sats" is showing 2 times, the second without a code example. Remove the second one. Also in the flow diagram the notifications for charlie and david are buggy. It shows 3 entries for charlie to receive 1 payment (+5 sats, Charlie received 5 sats, +5 sats), and 2 duplicated entries for David (+10 sats).

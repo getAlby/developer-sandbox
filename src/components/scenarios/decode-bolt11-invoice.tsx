@@ -39,6 +39,7 @@ export function DecodeBolt11InvoiceScenario() {
       type: "invoice_created",
       status: "pending",
       description: "Decoding BOLT-11 invoice...",
+      snippetIds: ["decode-invoice"],
     });
 
     try {
@@ -71,6 +72,7 @@ export function DecodeBolt11InvoiceScenario() {
         label: `Decoded: ${decoded.satoshi} sats`,
         direction: "right",
         status: "success",
+        snippetIds: ["decode-invoice"],
       });
     } catch (err) {
       const errorMessage =
@@ -88,6 +90,7 @@ export function DecodeBolt11InvoiceScenario() {
         label: "Decode failed",
         direction: "right",
         status: "error",
+        snippetIds: ["decode-invoice"],
       });
     } finally {
       setIsDecoding(false);

@@ -48,6 +48,22 @@ export function FiatConversionScenario() {
           return a.code.localeCompare(b.code);
         });
         setCurrencies(sorted);
+
+        addTransaction({
+          type: "fiat_conversion",
+          status: "success",
+          description: `Loaded ${sorted.length} supported currencies`,
+          snippetIds: ["get-fiat-currencies"],
+        });
+
+        addFlowStep({
+          fromWallet: "alice",
+          toWallet: "alice",
+          label: `Loaded ${sorted.length} currencies`,
+          direction: "right",
+          status: "success",
+          snippetIds: ["get-fiat-currencies"],
+        });
       } catch (error) {
         console.error("Failed to load currencies:", error);
         // Fallback to basic currencies
@@ -59,7 +75,7 @@ export function FiatConversionScenario() {
       }
     }
     loadCurrencies();
-  }, []);
+  }, [addTransaction, addFlowStep]);
 
   // Fetch BTC rate for display
   const fetchBtcRate = useCallback(async (currency: string) => {

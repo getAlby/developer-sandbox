@@ -259,6 +259,7 @@ function BobPanel() {
           toWallet: "bob",
           amount: amountSats,
           description: `Bob received ${amountSats} sats via notification`,
+          snippetIds: ["subscribe-notifications"],
         });
 
         addFlowStep({

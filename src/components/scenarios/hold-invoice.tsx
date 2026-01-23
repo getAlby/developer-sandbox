@@ -92,6 +92,7 @@ function AlicePanel() {
           toWallet: "alice",
           amount: currentInvoiceData.amount,
           description: `Hold invoice payment held (${currentInvoiceData.amount} sats)`,
+          snippetIds: ["subscribe-notifications"],
         });
         heldTxIdRef.current = txId;
 
@@ -124,6 +125,7 @@ function AlicePanel() {
       type: "invoice_created",
       status: "pending",
       description: `Creating hold invoice for ${satoshi} sats...`,
+      snippetIds: ["hold-invoice"],
     });
 
     try {
@@ -604,6 +606,7 @@ function BobPanel() {
       toWallet: "alice",
       amount,
       description: `Paying hold invoice for ${amount} sats...`,
+      snippetIds: ["pay-invoice"],
     });
 
     const flowStepId = addFlowStep({

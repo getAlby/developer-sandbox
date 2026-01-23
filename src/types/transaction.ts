@@ -1,3 +1,5 @@
+import type { SnippetId } from '@/data/code-snippets';
+
 export type TransactionStatus = 'pending' | 'success' | 'error';
 
 export type TransactionType =
@@ -22,7 +24,7 @@ export interface Transaction {
   description: string;
   metadata?: Record<string, unknown>;
   /** Explicit code snippet IDs to show for this transaction */
-  snippetIds?: string[];
+  snippetIds?: SnippetId[];
 }
 
 export interface FlowStep {
@@ -33,7 +35,7 @@ export interface FlowStep {
   direction: 'left' | 'right';
   status: TransactionStatus;
   /** Explicit code snippet IDs to show for this flow step */
-  snippetIds?: string[];
+  snippetIds?: SnippetId[];
 }
 
 export interface BalanceSnapshot {
