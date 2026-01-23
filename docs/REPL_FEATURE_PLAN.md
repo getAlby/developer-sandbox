@@ -614,8 +614,5 @@ const unsub = await alice.subscribeNotifications((n) => {
 - [x] HOLD invoice code snippet is incorrect (creating the invoice, and subscribing to notifications for accepted payments, cancelling hold invoice, settling hold invoice). Check the alby agent skill.
 - [ ] Wrong code snippet for "Prism split: Charlie 5 sats, David 10 sats, kept 85 sats" - should be pay to lightning address
 - [x] payment-prisms: "Charlie received 5 sats" is showing 2 times, the second without a code example. Remove the second one. Also in the flow diagram the notifications for charlie and david are buggy. It shows 3 entries for charlie to receive 1 payment (+5 sats, Charlie received 5 sats, +5 sats), and 2 duplicated entries for David (+10 sats).
-
----
-
-- [ ] subscription payments scenario does not show code snippets in transaction log
-- [ ] current scenario is not highlighted in the list
+- [x] subscription payments scenario does not show code snippets in transaction log
+- [x] current scenario is not highlighted in the list

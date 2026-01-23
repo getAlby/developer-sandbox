@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -45,7 +45,9 @@ const externalLinks = [
 ];
 
 export function AppSidebar() {
-  const { scenarioId } = useParams<{ scenarioId: string }>();
+  const location = useLocation();
+  // Extract scenarioId from pathname (e.g., "/simple-payment" or "/#/simple-payment")
+  const scenarioId = location.pathname.split("/").filter(Boolean)[0];
 
   return (
     <Sidebar>
