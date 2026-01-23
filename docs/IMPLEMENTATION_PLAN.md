@@ -157,12 +157,6 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ## Phase 7: Polish & UX
 
-### 7.1 Loading & Error States
-
-- [ ] Add skeleton loaders during wallet connection
-- [ ] Implement error boundaries
-- [ ] Add toast notifications for actions (install Shadcn Sonner)
-
 ### 7.2 Educational Enhancements
 
 - [ ] Add tooltips explaining NWC concepts
@@ -172,9 +166,8 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 7.3 Final Touches
 
-- [ ] Dark mode toggle (theme already supports it)
+- [ ] Fix dark mode support (doesn't work)
 - [ ] Mobile responsiveness testing
-- [ ] Performance optimization
 - [ ] Accessibility review (keyboard navigation, screen readers)
 
 ## Phase 8: Github Pages
