@@ -203,6 +203,7 @@ function AlicePanel() {
 function BobPanel() {
   const [invoice, setInvoice] = useState("");
   const [isPaying, setIsPaying] = useState(false);
+  const [paymentResult, setPaymentResult] = useState<{ preimage: string; amount: number } | null>(null);
   const { invoice: sharedInv, amount: sharedAmt } = useSharedInvoice();
 
   const { getNWCClient, setWalletBalance } = useWalletStore();
@@ -268,6 +269,9 @@ function BobPanel() {
         status: "success",
       });
 
+      // Store payment result for success display
+      setPaymentResult({ preimage: result.preimage, amount: sharedAmt ?? 0 });
+
       // Clear the invoice
       setInvoice("");
       setSharedInvoice(null, null);
@@ -332,6 +336,27 @@ function BobPanel() {
             </>
           )}
         </Button>
+
+        {paymentResult && (
+          <div className="space-y-2 pt-2 border-t">
+            <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
+              <Check className="h-4 w-4" />
+              <span className="text-sm font-medium">
+                Payment successful! ({paymentResult.amount.toLocaleString()} sats)
+              </span>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs text-muted-foreground">
+                Payment Preimage
+              </label>
+              <Input
+                value={paymentResult.preimage}
+                readOnly
+                className="font-mono text-xs"
+              />
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
