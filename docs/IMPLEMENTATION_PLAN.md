@@ -189,11 +189,12 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [x] fix the flow diagram view (broken)
 - [x] fix the balance chart lines not showing
 - [ ] add a way to specify invoice expiry (toggle between 24 hours and 30 seconds) in the simple payment under the Description (Optional) field
-- [ ] Add a REPL tab
-- [ ] Add way to display & copy code for each step
-- [ ] Split some unclear/combined steps (for example prism does not show fetching invoices to pay Charlie and David, LNURL-Pay does not show fetch)
+- [x] Add a REPL tab
+- [x] Add way to display & copy code for each step
+- [x] Split some unclear/combined steps (for example prism does not show fetching invoices to pay Charlie and David, LNURL-Pay does not show fetch) _Update: a single step supports multiple code snippets_
 - [ ] Add a way to copy NWC connection from a wallet card
 - [ ] Add a way to topup the wallet (via the faucet API)
+- [ ] Add animated emojis of the 4 users wallets (2x2) that show requests to eachother (network request animation) and lightning payments to eachother (animated lightning strike) on a floating panel on the top right corner (shows only while scenario is running)
 
 ---
 

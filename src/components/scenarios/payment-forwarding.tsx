@@ -290,7 +290,7 @@ function BobPanel() {
         toWallet: "charlie",
         amount: forwardAmount,
         description: `Bob forwarding ${forwardAmount} sats (${percent}%) to Charlie...`,
-        snippetIds: ["pay-invoice"],
+        snippetIds: ["pay-lightning-address"],
       });
 
       const flowStepId = addFlowStep({
@@ -636,7 +636,8 @@ function CharliePanel() {
   const seenPaymentsRef = useRef<Set<string>>(new Set());
 
   const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
-  const { addFlowStep, addBalanceSnapshot } = useTransactionStore();
+  const { addTransaction, addFlowStep, addBalanceSnapshot } =
+    useTransactionStore();
 
   const charlieWallet = getWallet("charlie");
 
@@ -659,8 +660,15 @@ function CharliePanel() {
           ...prev,
         ]);
 
-        // Note: We don't add a transaction here because BobPanel already logs
-        // the successful forward. This notification just updates Charlie's UI.
+        // Add transaction for Charlie receiving the payment
+        addTransaction({
+          type: "payment_received",
+          status: "success",
+          toWallet: "charlie",
+          amount: amountSats,
+          description: `Charlie received ${amountSats} sats`,
+          snippetIds: ["subscribe-notifications"],
+        });
 
         addFlowStep({
           fromWallet: "charlie",
@@ -682,7 +690,13 @@ function CharliePanel() {
         }
       }
     },
-    [addFlowStep, addBalanceSnapshot, getNWCClient, setWalletBalance],
+    [
+      addTransaction,
+      addFlowStep,
+      addBalanceSnapshot,
+      getNWCClient,
+      setWalletBalance,
+    ],
   );
 
   const startListening = useCallback(

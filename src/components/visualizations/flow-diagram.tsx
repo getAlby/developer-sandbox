@@ -8,12 +8,14 @@ import {
   Copy,
   Code2,
   Trash2,
+  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   useTransactionStore,
   useScenarioStore,
   useWalletStore,
+  useUIStore,
 } from "@/stores";
 import type { FlowStep } from "@/types";
 import { WALLET_PERSONAS } from "@/types";
@@ -118,6 +120,7 @@ interface FlowStepRowProps {
 function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { openCodeSnippetsHelp } = useUIStore();
 
   if (!walletList.length) {
     return null;
@@ -275,6 +278,18 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
                   ) : (
                     <Copy className="h-3 w-3" />
                   )}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 p-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openCodeSnippetsHelp();
+                  }}
+                  title="View all code snippets"
+                >
+                  <HelpCircle className="h-3 w-3" />
                 </Button>
                 <Button
                   variant="ghost"

@@ -59,8 +59,13 @@ function AlicePanel() {
   const heldFlowStepIdRef = useRef<string | null>(null);
 
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, updateFlowStep, addBalanceSnapshot } =
-    useTransactionStore();
+  const {
+    addTransaction,
+    updateTransaction,
+    addFlowStep,
+    updateFlowStep,
+    addBalanceSnapshot,
+  } = useTransactionStore();
   const {
     invoiceData,
     invoiceState,
@@ -92,7 +97,7 @@ function AlicePanel() {
           toWallet: "alice",
           amount: currentInvoiceData.amount,
           description: `Hold invoice payment held (${currentInvoiceData.amount} sats)`,
-          snippetIds: ["subscribe-notifications"],
+          snippetIds: ["subscribe-hold-notifications"],
         });
         heldTxIdRef.current = txId;
 
@@ -102,7 +107,7 @@ function AlicePanel() {
           label: `🔒 Payment held: ${currentInvoiceData.amount} sats`,
           direction: "left",
           status: "pending",
-          snippetIds: ["subscribe-notifications"],
+          snippetIds: ["subscribe-hold-notifications"],
         });
         heldFlowStepIdRef.current = flowStepId;
       }
@@ -172,7 +177,7 @@ function AlicePanel() {
         label: `⏳ Created hold invoice: ${satoshi} sats`,
         direction: "right",
         status: "success",
-        snippetIds: ["make-invoice"],
+        snippetIds: ["hold-invoice"],
       });
 
       // Subscribe to notifications
@@ -229,6 +234,7 @@ function AlicePanel() {
         updateTransaction(heldTxIdRef.current, {
           status: "success",
           description: `Hold invoice settled - Alice received ${invoiceData.amount} sats`,
+          snippetIds: ["hold-invoice-settle"],
         });
         heldTxIdRef.current = null;
       }
@@ -238,6 +244,7 @@ function AlicePanel() {
         updateFlowStep(heldFlowStepIdRef.current, {
           label: `✅ Settled: +${invoiceData.amount} sats`,
           status: "success",
+          snippetIds: ["hold-invoice-settle"],
         });
         heldFlowStepIdRef.current = null;
       }
@@ -284,6 +291,7 @@ function AlicePanel() {
           type: "payment_failed",
           status: "error",
           description: `Hold invoice cancelled - Bob refunded ${invoiceData.amount} sats`,
+          snippetIds: ["hold-invoice-cancel"],
         });
         heldTxIdRef.current = null;
       }
@@ -293,6 +301,7 @@ function AlicePanel() {
         updateFlowStep(heldFlowStepIdRef.current, {
           label: `❌ Cancelled: refund ${invoiceData.amount} sats`,
           status: "error",
+          snippetIds: ["hold-invoice-cancel"],
         });
         heldFlowStepIdRef.current = null;
       }
@@ -571,8 +580,13 @@ function BobPanel() {
 
   const { invoiceData, invoiceState } = useHoldInvoiceStore();
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, updateFlowStep, addBalanceSnapshot } =
-    useTransactionStore();
+  const {
+    addTransaction,
+    updateTransaction,
+    addFlowStep,
+    updateFlowStep,
+    addBalanceSnapshot,
+  } = useTransactionStore();
 
   const invoiceToUse = invoiceInput || invoiceData?.invoice || "";
 

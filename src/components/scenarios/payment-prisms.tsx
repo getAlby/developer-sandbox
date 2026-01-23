@@ -322,7 +322,7 @@ function BobPanel() {
         status: "pending",
         fromWallet: "bob",
         description: `Bob splitting ${amountSats} sats via prism...`,
-        snippetIds: ["pay-invoice"],
+        snippetIds: ["pay-lightning-address"],
       });
 
       const charlieFlowStepId = addFlowStep({
@@ -331,7 +331,7 @@ function BobPanel() {
         label: `Splitting ${charlieAmount} sats (${cPercent}%)...`,
         direction: "right",
         status: "pending",
-        snippetIds: ["pay-invoice"],
+        snippetIds: ["pay-lightning-address"],
       });
 
       // Pay Charlie
@@ -364,7 +364,7 @@ function BobPanel() {
         label: `Splitting ${davidAmount} sats (${dPercent}%)...`,
         direction: "right",
         status: "pending",
-        snippetIds: ["pay-invoice"],
+        snippetIds: ["pay-lightning-address"],
       });
 
       // Pay David
@@ -707,10 +707,10 @@ function RecipientPanel({ walletId }: RecipientPanelProps) {
   const [error, setError] = useState<string | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
   const hasAutoStartedRef = useRef(false);
+  const seenPaymentsRef = useRef<Set<string>>(new Set());
 
   const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
-  const { addTransaction, addFlowStep, addBalanceSnapshot } =
-    useTransactionStore();
+  const { addFlowStep, addBalanceSnapshot } = useTransactionStore();
 
   const wallet = getWallet(walletId);
   const persona = WALLET_PERSONAS[walletId];
@@ -723,23 +723,25 @@ function RecipientPanel({ walletId }: RecipientPanelProps) {
     if (notification.notification_type === "payment_received") {
       const tx = notification.notification;
       const amountSats = Math.floor(tx.amount / 1000);
+      const paymentId = tx.payment_hash || Date.now().toString();
+
+      // Deduplicate - only process if this payment hasn't been seen yet
+      if (seenPaymentsRef.current.has(paymentId)) {
+        return;
+      }
+      seenPaymentsRef.current.add(paymentId);
 
       const payment: ReceivedPayment = {
-        id: tx.payment_hash || Date.now().toString(),
+        id: paymentId,
         amount: amountSats,
         timestamp: new Date(),
       };
 
       setReceivedPayments((prev) => [payment, ...prev]);
 
-      addTransaction({
-        type: "payment_received",
-        status: "success",
-        toWallet: walletId,
-        amount: amountSats,
-        description: `${persona.name} received ${amountSats} sats`,
-        snippetIds: ["subscribe-notifications"],
-      });
+      // Note: We don't add a transaction here because BobPanel already logs
+      // the prism split. This notification just updates the recipient's UI
+      // and flow diagram.
 
       addFlowStep({
         fromWallet: walletId,
