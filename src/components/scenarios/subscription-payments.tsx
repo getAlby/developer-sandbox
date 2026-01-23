@@ -150,8 +150,13 @@ function BobPanel() {
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, updateFlowStep, addBalanceSnapshot } =
-    useTransactionStore();
+  const {
+    addTransaction,
+    updateTransaction,
+    addFlowStep,
+    updateFlowStep,
+    addBalanceSnapshot,
+  } = useTransactionStore();
 
   const config = useSubscriptionConfig();
   const bobWallet = getWallet("bob");
@@ -173,6 +178,7 @@ function BobPanel() {
       toWallet: "bob",
       amount: config.amount,
       description: `Subscription charge: ${config.amount} sats`,
+      snippetIds: ["pay-lightning-address"],
     });
 
     const requestFlowStepId = addFlowStep({
@@ -296,6 +302,7 @@ function BobPanel() {
       type: "invoice_created",
       status: "pending",
       description: "Starting subscription charges...",
+      snippetIds: ["subscribe-notifications"],
     });
 
     // Charge immediately first
@@ -348,6 +355,7 @@ function BobPanel() {
       type: "invoice_created",
       status: "success",
       description: "Subscription stopped",
+      snippetIds: ["subscribe-notifications"],
     });
 
     addFlowStep({
