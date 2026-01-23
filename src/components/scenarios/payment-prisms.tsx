@@ -334,6 +334,33 @@ function BobPanel() {
         snippetIds: ["pay-lightning-address"],
       });
 
+      const charlieTxId = addTransaction({
+        type: "payment_sent",
+        status: "pending",
+        fromWallet: "bob",
+        toWallet: "charlie",
+        description: `Bob splitting ${amountSats} sats via prism...`,
+        snippetIds: ["pay-lightning-address"],
+      });
+
+      const davidFlowStepId = addFlowStep({
+        fromWallet: "bob",
+        toWallet: "david",
+        label: `Splitting ${davidAmount} sats (${dPercent}%)...`,
+        direction: "right",
+        status: "pending",
+        snippetIds: ["pay-lightning-address"],
+      });
+
+      const davidTxId = addTransaction({
+        type: "payment_sent",
+        status: "pending",
+        fromWallet: "bob",
+        toWallet: "david",
+        description: `Bob splitting ${amountSats} sats via prism...`,
+        snippetIds: ["pay-lightning-address"],
+      });
+
       // Pay Charlie
       let charlieSuccess = false;
       if (charlieAmount >= 1) {
@@ -350,6 +377,13 @@ function BobPanel() {
             : "❌ Charlie failed",
           status: charlieSuccess ? "success" : "error",
         });
+
+        updateTransaction(charlieTxId, {
+          description: charlieSuccess
+            ? `✅ Charlie: ${charlieAmount} sats`
+            : "❌ Charlie failed",
+          status: charlieSuccess ? "success" : "error",
+        });
       } else {
         // Amount too small, mark as success (skipped)
         updateFlowStep(charlieFlowStepId, {
@@ -357,15 +391,6 @@ function BobPanel() {
           status: "success",
         });
       }
-
-      const davidFlowStepId = addFlowStep({
-        fromWallet: "bob",
-        toWallet: "david",
-        label: `Splitting ${davidAmount} sats (${dPercent}%)...`,
-        direction: "right",
-        status: "pending",
-        snippetIds: ["pay-lightning-address"],
-      });
 
       // Pay David
       let davidSuccess = false;
@@ -379,6 +404,13 @@ function BobPanel() {
         // Update flow step to success or error
         updateFlowStep(davidFlowStepId, {
           label: davidSuccess
+            ? `✅ David: ${davidAmount} sats`
+            : "❌ David failed",
+          status: davidSuccess ? "success" : "error",
+        });
+
+        updateTransaction(davidTxId, {
+          description: davidSuccess
             ? `✅ David: ${davidAmount} sats`
             : "❌ David failed",
           status: davidSuccess ? "success" : "error",

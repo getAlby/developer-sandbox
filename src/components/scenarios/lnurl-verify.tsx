@@ -85,6 +85,8 @@ function AlicePanel() {
     const txId = addTransaction({
       type: "invoice_created",
       status: "pending",
+      fromWallet: "alice",
+      toWallet: "bob",
       description: `Fetching invoice from ${addressToUse}...`,
       snippetIds: ["request-invoice-from-address"],
     });
@@ -127,7 +129,7 @@ function AlicePanel() {
       });
 
       if (!hasVerify) {
-        addTransaction({
+        updateTransaction(txId, {
           type: "invoice_created",
           status: "pending",
           description:
@@ -165,8 +167,8 @@ function AlicePanel() {
     const txId = addTransaction({
       type: "payment_sent",
       status: "pending",
-      fromWallet: "bob",
-      toWallet: "alice",
+      fromWallet: "alice",
+      toWallet: "bob",
       amount: storedInvoice.amount,
       description: `Paying ${storedInvoice.amount} sats...`,
       snippetIds: ["pay-invoice"],
@@ -246,6 +248,8 @@ function AlicePanel() {
     setError(null);
 
     const txId = addTransaction({
+      fromWallet: "alice",
+      toWallet: "bob",
       type: "lnurl_verify",
       status: "pending",
       description: `Verifying payment via LNURL-Verify...`,

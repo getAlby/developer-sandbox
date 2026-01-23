@@ -1,5 +1,6 @@
 import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 import { AppSidebar } from './app-sidebar';
+import { FloatingActivityPanel } from './floating-activity-panel';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export function Layout({ children }: LayoutProps) {
         </header>
         <main className="flex-1 overflow-auto">{children}</main>
       </SidebarInset>
+      <FloatingActivityPanel />
     </SidebarProvider>
   );
 }

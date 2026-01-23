@@ -59,7 +59,8 @@ function AlicePanel() {
   const [copied, setCopied] = useState(false);
 
   const { getNWCClient } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep } = useTransactionStore();
+  const { addTransaction, updateTransaction, addFlowStep } =
+    useTransactionStore();
 
   const handleCreateInvoice = async () => {
     const client = getNWCClient("alice");
@@ -72,6 +73,7 @@ function AlicePanel() {
     const txId = addTransaction({
       type: "invoice_created",
       status: "pending",
+      fromWallet: "bob",
       toWallet: "alice",
       amount: amountSats,
       description: "Creating invoice...",
@@ -205,12 +207,20 @@ function AlicePanel() {
 function BobPanel() {
   const [invoice, setInvoice] = useState("");
   const [isPaying, setIsPaying] = useState(false);
-  const [paymentResult, setPaymentResult] = useState<{ preimage: string; amount: number } | null>(null);
+  const [paymentResult, setPaymentResult] = useState<{
+    preimage: string;
+    amount: number;
+  } | null>(null);
   const { invoice: sharedInv, amount: sharedAmt } = useSharedInvoice();
 
   const { getNWCClient, setWalletBalance } = useWalletStore();
-  const { addTransaction, updateTransaction, addFlowStep, updateFlowStep, addBalanceSnapshot } =
-    useTransactionStore();
+  const {
+    addTransaction,
+    updateTransaction,
+    addFlowStep,
+    updateFlowStep,
+    addBalanceSnapshot,
+  } = useTransactionStore();
 
   // Use shared invoice if available and local input is empty
   const invoiceToUse = invoice || sharedInv || "";
@@ -346,7 +356,8 @@ function BobPanel() {
             <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
               <Check className="h-4 w-4" />
               <span className="text-sm font-medium">
-                Payment successful! ({paymentResult.amount.toLocaleString()} sats)
+                Payment successful! ({paymentResult.amount.toLocaleString()}{" "}
+                sats)
               </span>
             </div>
             <div className="space-y-1">

@@ -128,3 +128,106 @@
     cursor: pointer;
   }
 }
+
+/* Floating Activity Panel Animations */
+@keyframes lightning-strike {
+  0% {
+    opacity: 0;
+    stroke-width: 1;
+  }
+  20% {
+    opacity: 1;
+    stroke-width: 4;
+  }
+  40% {
+    opacity: 1;
+    stroke-width: 2;
+  }
+  60% {
+    opacity: 1;
+    stroke-width: 5;
+  }
+  80% {
+    opacity: 0.8;
+    stroke-width: 3;
+  }
+  100% {
+    opacity: 0;
+    stroke-width: 1;
+  }
+}
+
+@keyframes travel-oneway {
+  0% {
+    transform: translate(var(--from-x), var(--from-y));
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--to-x), var(--to-y));
+    opacity: 0;
+  }
+}
+
+@keyframes travel-roundtrip {
+  0% {
+    transform: translate(var(--from-x), var(--from-y));
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  45% {
+    transform: translate(var(--to-x), var(--to-y));
+    opacity: 1;
+  }
+  55% {
+    transform: translate(var(--to-x), var(--to-y));
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--from-x), var(--from-y));
+    opacity: 0;
+  }
+}
+
+@keyframes dash-travel {
+  0% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.8;
+  }
+  100% {
+    stroke-dashoffset: -32;
+    opacity: 0;
+  }
+}
+
+.animate-lightning-strike {
+  animation: lightning-strike 0.8s ease-out forwards;
+}
+
+.animate-travel-dot {
+  animation: travel-roundtrip 1.5s ease-in-out forwards;
+}
+
+.animate-travel-bolt {
+  animation: travel-oneway 0.6s ease-out forwards;
+}
+
+.animate-dash-travel {
+  animation: dash-travel 1.5s linear forwards;
+}
