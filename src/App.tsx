@@ -1,25 +1,47 @@
+import { useEffect } from 'react';
+import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Layout } from '@/components/layout';
 import { ScenarioInfo } from '@/components/scenario-info';
 import { ScenarioPanel } from '@/components/scenario-panel';
 import { WalletGrid } from '@/components/wallet-grid';
 import { VisualizationPanel } from '@/components/visualization-panel';
+import { scenarios } from '@/data/scenarios';
+import { useScenarioStore } from '@/stores';
+
+function ScenarioRoute() {
+  const { scenarioId } = useParams<{ scenarioId: string }>();
+  const setCurrentScenario = useScenarioStore((state) => state.setCurrentScenario);
+
+  useEffect(() => {
+    if (scenarioId) {
+      setCurrentScenario(scenarioId);
+    }
+  }, [scenarioId, setCurrentScenario]);
+
+  return (
+    <div className="flex h-full flex-col">
+      {/* Top section: Scenario info and wallets */}
+      <div className="flex-shrink-0 space-y-6 border-b p-6">
+        <ScenarioInfo />
+        <WalletGrid />
+        <ScenarioPanel />
+      </div>
+
+      {/* Bottom section: Visualizations */}
+      <div className="min-h-0 flex-1">
+        <VisualizationPanel />
+      </div>
+    </div>
+  );
+}
 
 function App() {
   return (
     <Layout>
-      <div className="flex h-full flex-col">
-        {/* Top section: Scenario info and wallets */}
-        <div className="flex-shrink-0 space-y-6 border-b p-6">
-          <ScenarioInfo />
-          <WalletGrid />
-          <ScenarioPanel />
-        </div>
-
-        {/* Bottom section: Visualizations */}
-        <div className="min-h-0 flex-1">
-          <VisualizationPanel />
-        </div>
-      </div>
+      <Routes>
+        <Route path="/" element={<Navigate to={`/${scenarios[0].id}`} replace />} />
+        <Route path="/:scenarioId" element={<ScenarioRoute />} />
+      </Routes>
     </Layout>
   );
 }

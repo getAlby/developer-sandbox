@@ -1,4 +1,5 @@
 import { ExternalLink } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -12,7 +13,6 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { scenarios } from "@/data/scenarios";
-import { useScenarioStore } from "@/stores";
 import { AlbyIcon } from "@/icons/AlbyIcon";
 import { AlbyHubIcon } from "@/icons/AlbyHubIcon";
 
@@ -45,7 +45,7 @@ const externalLinks = [
 ];
 
 export function AppSidebar() {
-  const { currentScenario, setCurrentScenario } = useScenarioStore();
+  const { scenarioId } = useParams<{ scenarioId: string }>();
 
   return (
     <Sidebar>
@@ -70,11 +70,13 @@ export function AppSidebar() {
               {scenarios.map((scenario) => (
                 <SidebarMenuItem key={scenario.id}>
                   <SidebarMenuButton
-                    isActive={currentScenario.id === scenario.id}
-                    onClick={() => setCurrentScenario(scenario.id)}
+                    asChild
+                    isActive={scenarioId === scenario.id}
                   >
-                    <span>{scenario.icon}</span>
-                    <span>{scenario.title}</span>
+                    <Link to={`/${scenario.id}`}>
+                      <span>{scenario.icon}</span>
+                      <span>{scenario.title}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

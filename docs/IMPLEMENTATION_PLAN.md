@@ -177,19 +177,19 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [ ] Performance optimization
 - [ ] Accessibility review (keyboard navigation, screen readers)
 
-### 7.4 Misc feedback
+## Phase 8: Github Pages
+
+- [x] Make necessary changes so the app is automatically deployed. The repository name is developer-sandbox and the organization is getAlby.
+
+## Phase 9: User Feedback
 
 - [ ] add success state to simple payment scenario
-- [ ] use a hash router for navigating scenarios
+- [x] use a hash router for navigating scenarios
 - [x] On the payment log there are logs of a Loader even when the payment has either failed or succeeded, this is confusing. (e.g. "Creating invoice..." which still shows a loading spinner when the next line is "Invoice created for 1000 sats" which shows a check)
 - [ ] Add a way to copy NWC connection from a wallet card
 - [ ] Add a way to topup the wallet (via the faucet API)
 - [x] fix the flow diagram view (broken)
 - [x] fix the balance chart lines not showing
-
-## Phase 8: Github Pages
-
-- [x] Make necessary changes so the app is automatically deployed. The repository name is developer-sandbox and the organization is getAlby.
 
 ---
 
