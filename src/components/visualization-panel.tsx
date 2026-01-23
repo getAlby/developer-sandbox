@@ -1,10 +1,17 @@
-import { FileText, GitBranch, LineChart } from "lucide-react";
+import { FileText, GitBranch, LineChart, Code2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TransactionLog, FlowDiagram, BalanceChart } from "./visualizations";
+import { TransactionLog, FlowDiagram, BalanceChart, CodeSnippets } from "./visualizations";
+import { useUIStore } from "@/stores";
 
 export function VisualizationPanel() {
+  const { visualizationTab, setVisualizationTab } = useUIStore();
+
   return (
-    <Tabs defaultValue="log" className="flex h-full flex-col py-4">
+    <Tabs
+      value={visualizationTab}
+      onValueChange={(value) => setVisualizationTab(value as typeof visualizationTab)}
+      className="flex h-full flex-col py-4"
+    >
       <TabsList className="mx-4 w-fit">
         <TabsTrigger value="log" className="gap-2">
           <FileText className="h-4 w-4" />
@@ -18,6 +25,10 @@ export function VisualizationPanel() {
           <LineChart className="h-4 w-4" />
           Balance Chart
         </TabsTrigger>
+        <TabsTrigger value="snippets" className="gap-2">
+          <Code2 className="h-4 w-4" />
+          Code Snippets
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="log" className="mt-0 flex-1 overflow-hidden">
@@ -30,6 +41,10 @@ export function VisualizationPanel() {
 
       <TabsContent value="chart" className="mt-0 flex-1 overflow-hidden">
         <BalanceChart />
+      </TabsContent>
+
+      <TabsContent value="snippets" className="mt-0 flex-1 overflow-hidden">
+        <CodeSnippets />
       </TabsContent>
     </Tabs>
   );

@@ -6,7 +6,10 @@ export type TransactionType =
   | 'payment_sent'
   | 'payment_received'
   | 'payment_failed'
-  | 'balance_updated';
+  | 'balance_updated'
+  | 'fiat_conversion'
+  | 'subscription_started'
+  | 'lnurl_verify';
 
 export interface Transaction {
   id: string;
@@ -18,6 +21,8 @@ export interface Transaction {
   amount?: number;
   description: string;
   metadata?: Record<string, unknown>;
+  /** Explicit code snippet IDs to show for this transaction */
+  snippetIds?: string[];
 }
 
 export interface FlowStep {
@@ -27,6 +32,8 @@ export interface FlowStep {
   label: string;
   direction: 'left' | 'right';
   status: TransactionStatus;
+  /** Explicit code snippet IDs to show for this flow step */
+  snippetIds?: string[];
 }
 
 export interface BalanceSnapshot {

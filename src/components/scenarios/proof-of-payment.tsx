@@ -44,6 +44,7 @@ export function ProofOfPaymentScenario() {
       label: "Verifying preimage...",
       direction: "right",
       status: "pending",
+      snippetIds: ["validate-preimage"],
     });
 
     try {

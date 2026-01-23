@@ -92,9 +92,10 @@ export function FiatConversionScenario() {
         setFiatAmount(fiatValue.toFixed(2));
 
         addTransaction({
-          type: "balance_updated",
+          type: "fiat_conversion",
           status: "success",
           description: `Converted ${satsNum.toLocaleString()} sats to ${fiatValue.toFixed(2)} ${currency}`,
+          snippetIds: ["sats-to-fiat"],
         });
       } catch (error) {
         console.error("Conversion failed:", error);
@@ -124,9 +125,10 @@ export function FiatConversionScenario() {
         setSatsAmount(Math.round(satsValue).toString());
 
         addTransaction({
-          type: "balance_updated",
+          type: "fiat_conversion",
           status: "success",
           description: `Converted ${fiatNum.toFixed(2)} ${currency} to ${Math.round(satsValue).toLocaleString()} sats`,
+          snippetIds: ["fiat-to-sats"],
         });
       } catch (error) {
         console.error("Conversion failed:", error);
@@ -159,6 +161,7 @@ export function FiatConversionScenario() {
         label: `Rate loaded: 1 BTC = ${selectedCurrency}`,
         direction: "right",
         status: "success",
+        snippetIds: ["get-btc-rate"],
       });
     }
     initialize();
@@ -199,9 +202,10 @@ export function FiatConversionScenario() {
     setSelectedCurrency(currency);
 
     addTransaction({
-      type: "balance_updated",
+      type: "fiat_conversion",
       status: "pending",
       description: `Switching to ${currency}...`,
+      snippetIds: ["get-btc-rate"],
     });
   };
 
@@ -218,9 +222,10 @@ export function FiatConversionScenario() {
     setIsLoading(false);
 
     addTransaction({
-      type: "balance_updated",
+      type: "fiat_conversion",
       status: "success",
       description: "Exchange rate refreshed",
+      snippetIds: ["get-btc-rate"],
     });
   };
 

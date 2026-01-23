@@ -101,6 +101,7 @@ function AlicePanel() {
           label: `🔒 Payment held: ${currentInvoiceData.amount} sats`,
           direction: "left",
           status: "pending",
+          snippetIds: ["subscribe-notifications"],
         });
         heldFlowStepIdRef.current = flowStepId;
       }
@@ -169,6 +170,7 @@ function AlicePanel() {
         label: `⏳ Created hold invoice: ${satoshi} sats`,
         direction: "right",
         status: "success",
+        snippetIds: ["make-invoice"],
       });
 
       // Subscribe to notifications
@@ -610,6 +612,7 @@ function BobPanel() {
       label: `Paying hold invoice: ${amount} sats`,
       direction: "left",
       status: "pending",
+      snippetIds: ["pay-invoice"],
     });
 
     try {

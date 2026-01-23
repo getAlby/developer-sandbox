@@ -181,6 +181,7 @@ function BobPanel() {
       label: `Requesting invoice for ${config.amount} sats...`,
       direction: "left",
       status: "pending",
+      snippetIds: ["request-invoice-from-address"],
     });
 
     let payFlowStepId = "";
@@ -203,6 +204,7 @@ function BobPanel() {
         label: "Paying subscription...",
         direction: "right",
         status: "pending",
+        snippetIds: ["pay-invoice"],
       });
 
       // Use Alice's NWC connection to pay the invoice (Bob charges Alice)
@@ -287,6 +289,7 @@ function BobPanel() {
       label: `Subscription started`,
       direction: "right",
       status: "success",
+      snippetIds: ["subscribe-notifications"],
     });
 
     const txId = addTransaction({
@@ -353,6 +356,7 @@ function BobPanel() {
       label: "Subscription stopped",
       direction: "right",
       status: "success",
+      snippetIds: ["subscribe-notifications"],
     });
   };
 

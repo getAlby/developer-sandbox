@@ -86,6 +86,7 @@ function AlicePanel() {
       type: "invoice_created",
       status: "pending",
       description: `Fetching invoice from ${addressToUse}...`,
+      snippetIds: ["request-invoice-from-address"],
     });
 
     const flowStepId = addFlowStep({
@@ -94,6 +95,7 @@ function AlicePanel() {
       label: `Request invoice: ${satoshi} sats`,
       direction: "right",
       status: "pending",
+      snippetIds: ["request-invoice-from-address"],
     });
 
     try {
@@ -167,6 +169,7 @@ function AlicePanel() {
       toWallet: "alice",
       amount: storedInvoice.amount,
       description: `Paying ${storedInvoice.amount} sats...`,
+      snippetIds: ["pay-invoice"],
     });
 
     const flowStepId = addFlowStep({
@@ -175,6 +178,7 @@ function AlicePanel() {
       label: `Pay: ${storedInvoice.amount} sats`,
       direction: "right",
       status: "pending",
+      snippetIds: ["pay-invoice"],
     });
 
     try {
@@ -242,9 +246,10 @@ function AlicePanel() {
     setError(null);
 
     const txId = addTransaction({
-      type: "invoice_created",
+      type: "lnurl_verify",
       status: "pending",
       description: `Verifying payment via LNURL-Verify...`,
+      snippetIds: ["lnurl-verify"],
     });
 
     const flowStepId = addFlowStep({
@@ -253,6 +258,7 @@ function AlicePanel() {
       label: "GET verify URL",
       direction: "right",
       status: "pending",
+      snippetIds: ["lnurl-verify"],
     });
 
     try {

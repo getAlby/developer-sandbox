@@ -12,6 +12,7 @@ interface TransactionState {
   updateFlowStep: (id: string, updates: Partial<Omit<FlowStep, 'id'>>) => void;
   addBalanceSnapshot: (snapshot: Omit<BalanceSnapshot, 'timestamp'>) => void;
   clearAll: () => void;
+  clearFlowSteps: () => void;
 }
 
 let transactionCounter = 0;
@@ -80,6 +81,13 @@ export const useTransactionStore = create<TransactionState>((set) => ({
       transactions: [],
       flowSteps: [],
       balanceHistory: [],
+    });
+  },
+
+  clearFlowSteps: () => {
+    flowStepCounter = 0;
+    set({
+      flowSteps: [],
     });
   },
 }));

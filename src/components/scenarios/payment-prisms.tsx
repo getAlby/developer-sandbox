@@ -92,6 +92,7 @@ function AlicePanel() {
       label: `Requesting invoice for ${satoshi} sats...`,
       direction: "right",
       status: "pending",
+      snippetIds: ["request-invoice-from-address"],
     });
 
     let payFlowStepId = "";
@@ -115,6 +116,7 @@ function AlicePanel() {
         label: "Paying invoice...",
         direction: "right",
         status: "pending",
+        snippetIds: ["pay-invoice"],
       });
 
       await client.payInvoice({ invoice: invoice.paymentRequest });
@@ -327,6 +329,7 @@ function BobPanel() {
         label: `Splitting ${charlieAmount} sats (${cPercent}%)...`,
         direction: "right",
         status: "pending",
+        snippetIds: ["pay-invoice"],
       });
 
       // Pay Charlie
@@ -359,6 +362,7 @@ function BobPanel() {
         label: `Splitting ${davidAmount} sats (${dPercent}%)...`,
         direction: "right",
         status: "pending",
+        snippetIds: ["pay-invoice"],
       });
 
       // Pay David
@@ -442,6 +446,7 @@ function BobPanel() {
           label: `🔔 Received ${amountSats} sats`,
           direction: "right",
           status: "success",
+          snippetIds: ["subscribe-notifications"],
         });
 
         // Update Bob's balance
@@ -510,6 +515,7 @@ function BobPanel() {
         label: `🔺 Prism active`,
         direction: "right",
         status: "success",
+        snippetIds: ["subscribe-notifications"],
       });
     } catch (err) {
       console.error("Failed to subscribe to notifications:", err);
@@ -543,6 +549,7 @@ function BobPanel() {
       label: "🔺 Prism stopped",
       direction: "right",
       status: "success",
+      snippetIds: ["subscribe-notifications"],
     });
   };
 
@@ -734,6 +741,7 @@ function RecipientPanel({ walletId }: RecipientPanelProps) {
         label: `🔔 ${persona.name}: +${amountSats} sats`,
         direction: "right",
         status: "success",
+        snippetIds: ["subscribe-notifications"],
       });
 
       // Update balance

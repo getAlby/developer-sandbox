@@ -64,6 +64,7 @@ function AlicePanel() {
       toWallet: "bob",
       amount: satoshi,
       description: `Paying ${satoshi} sats to ${addressToUse}...`,
+      snippetIds: ["pay-lightning-address"],
     });
 
     const requestFlowStepId = addFlowStep({
@@ -72,6 +73,7 @@ function AlicePanel() {
       label: `Requesting invoice for ${satoshi} sats...`,
       direction: "right",
       status: "pending",
+      snippetIds: ["request-invoice-from-address"],
     });
 
     let payFlowStepId = "";
@@ -96,6 +98,7 @@ function AlicePanel() {
         label: "Paying invoice...",
         direction: "right",
         status: "pending",
+        snippetIds: ["pay-invoice"],
       });
 
       await client.payInvoice({ invoice: invoice.paymentRequest });
@@ -264,6 +267,7 @@ function BobPanel() {
           label: `🔔 Notification: +${amountSats} sats`,
           direction: "right",
           status: "success",
+          snippetIds: ["subscribe-notifications"],
         });
 
         // Update Bob's balance
@@ -297,9 +301,10 @@ function BobPanel() {
     setError(null);
 
     const txId = addTransaction({
-      type: "invoice_created",
+      type: "subscription_started",
       status: "pending",
       description: "Bob subscribing to payment notifications...",
+      snippetIds: ["subscribe-notifications"],
     });
 
     try {
@@ -320,6 +325,7 @@ function BobPanel() {
         label: "🔔 Subscribed to notifications",
         direction: "right",
         status: "success",
+        snippetIds: ["subscribe-notifications"],
       });
     } catch (err) {
       console.error("Failed to subscribe to notifications:", err);
@@ -342,9 +348,10 @@ function BobPanel() {
     setIsListening(false);
 
     addTransaction({
-      type: "invoice_created",
+      type: "subscription_started",
       status: "success",
       description: "Bob stopped listening for notifications",
+      snippetIds: ["subscribe-notifications"],
     });
 
     addFlowStep({
@@ -353,6 +360,7 @@ function BobPanel() {
       label: "🔕 Unsubscribed from notifications",
       direction: "right",
       status: "success",
+      snippetIds: ["subscribe-notifications"],
     });
   };
 

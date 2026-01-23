@@ -183,13 +183,17 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ## Phase 9: User Feedback
 
-- [ ] add success state to simple payment scenario
+- [x] add success state to simple payment scenario
 - [x] use a hash router for navigating scenarios
 - [x] On the payment log there are logs of a Loader even when the payment has either failed or succeeded, this is confusing. (e.g. "Creating invoice..." which still shows a loading spinner when the next line is "Invoice created for 1000 sats" which shows a check)
-- [ ] Add a way to copy NWC connection from a wallet card
-- [ ] Add a way to topup the wallet (via the faucet API)
 - [x] fix the flow diagram view (broken)
 - [x] fix the balance chart lines not showing
+- [ ] add a way to specify invoice expiry (toggle between 24 hours and 30 seconds) in the simple payment under the Description (Optional) field
+- [ ] Add a REPL tab
+- [ ] Add way to display & copy code for each step
+- [ ] Split some unclear/combined steps (for example prism does not show fetching invoices to pay Charlie and David, LNURL-Pay does not show fetch)
+- [ ] Add a way to copy NWC connection from a wallet card
+- [ ] Add a way to topup the wallet (via the faucet API)
 
 ---
 

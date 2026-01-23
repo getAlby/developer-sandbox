@@ -1,4 +1,15 @@
-import { Check, X, Loader2 } from "lucide-react";
+import { useState } from "react";
+import {
+  Check,
+  X,
+  Loader2,
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  Code2,
+  Trash2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   useTransactionStore,
   useScenarioStore,
@@ -6,9 +17,10 @@ import {
 } from "@/stores";
 import type { FlowStep } from "@/types";
 import { WALLET_PERSONAS } from "@/types";
+import { getSnippetsById } from "@/data/code-snippets";
 
 export function FlowDiagram() {
-  const { flowSteps } = useTransactionStore();
+  const { flowSteps, clearFlowSteps } = useTransactionStore();
   const { currentScenario } = useScenarioStore();
   const { wallets } = useWalletStore();
 
@@ -47,6 +59,13 @@ export function FlowDiagram() {
 
   return (
     <div className="flex h-full flex-col">
+      <div className="flex items-center justify-between border-b px-4 py-2">
+        <h3 className="font-medium">Flow Diagram</h3>
+        <Button variant="ghost" size="sm" onClick={clearFlowSteps}>
+          <Trash2 className="mr-2 h-4 w-4" />
+          Clear
+        </Button>
+      </div>
       <div className="flex-1 overflow-auto p-4">
         <div className="flex justify-around">
           {walletList.map((wallet) => (
@@ -97,6 +116,9 @@ interface FlowStepRowProps {
 }
 
 function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
+
   if (!walletList.length) {
     return null;
   }
@@ -106,6 +128,22 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
   if (fromIndex < 0 || toIndex < 0) {
     return null;
   }
+
+  // Get code snippets by explicit IDs
+  const snippets = step.snippetIds ? getSnippetsById(step.snippetIds) : [];
+  const primarySnippet = snippets[0];
+
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!primarySnippet) return;
+    try {
+      await navigator.clipboard.writeText(primarySnippet.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
 
   // Calculate horizontal position based on wallet positions
   // Use percentage-based positioning: left wallet at 16.66%, right at 83.34% for 6 wallets
@@ -123,86 +161,140 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
   const isLeftToRight = step.direction === "right"; //fromIndex < toIndex;
 
   return (
-    <div className="relative h-12 w-full">
-      {/* Draw arrow line between wallets */}
-      <div
-        className="absolute top-5 h-0.5 bg-border"
-        style={{
-          left: `${leftPosition}%`,
-          right: `${100 - rightPosition}%`,
-        }}
-      />
-
-      {/* Arrow head at the destination wallet end */}
-      {leftWallet !== rightWallet && (
+    <div className={`relative w-full ${isExpanded ? "mb-4" : ""}`}>
+      <div className="relative h-12 w-full">
+        {/* Draw arrow line between wallets */}
         <div
-          className="absolute"
+          className="absolute top-5 h-0.5 bg-border"
           style={{
-            top: "15px",
-            left: isLeftToRight
-              ? `calc(${rightPosition}% + 2px)`
-              : `${leftPosition}%`,
-            transform: isLeftToRight
-              ? "translateX(-100%)"
-              : "translateX(-2px) rotate(180deg)",
+            left: `${leftPosition}%`,
+            right: `${100 - rightPosition}%`,
+          }}
+        />
+
+        {/* Arrow head at the destination wallet end */}
+        {leftWallet !== rightWallet && (
+          <div
+            className="absolute"
+            style={{
+              top: "15px",
+              left: isLeftToRight
+                ? `calc(${rightPosition}% + 2px)`
+                : `${leftPosition}%`,
+              transform: isLeftToRight
+                ? "translateX(-100%)"
+                : "translateX(-2px) rotate(180deg)",
+            }}
+          >
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M0 6L10 6M10 6L5 2M10 6L5 10"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-border"
+              />
+            </svg>
+          </div>
+        )}
+
+        {/* Step indicator at the center */}
+        <div
+          className="absolute left-1/2 top-1 -translate-x-1/2 transform"
+          style={{
+            left: `${centerPosition}%`,
+            width: stepWidth * Math.max(rightWallet - leftWallet, 1) + "%",
           }}
         >
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0 6L10 6M10 6L5 2M10 6L5 10"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="text-border"
-            />
-          </svg>
-        </div>
-      )}
-
-      {/* Step indicator at the center */}
-      <div
-        className="absolute left-1/2 top-1 -translate-x-1/2 transform"
-        style={{
-          left: `${centerPosition}%`,
-          width: stepWidth * Math.max(rightWallet - leftWallet, 1) + "%",
-        }}
-      >
-        <div className="flex flex-col items-center">
-          <div className="flex h-6 w-6">{/* for arrow */}</div>
-          <div
-            className="mt-1 flex flex-1 w-full items-center gap-1 rounded border bg-background px-2 py-1 shadow-sm"
-            style={{ width: 100 + "%" }}
-          >
-            <span className="absolute -mx-6 text-sm">{index + 1}</span>
-            <span className="text-xs font-medium">
-              {WALLET_PERSONAS[walletList[leftWallet].id]?.name ??
-                walletList[leftWallet]?.id}
-            </span>
-            {rightWallet !== leftWallet && (
-              <>
-                <span className="text-muted-foreground">
-                  {isLeftToRight ? "→" : "←"}
+          <div className="flex flex-col items-center">
+            <div className="flex h-6 w-6">{/* for arrow */}</div>
+            <div
+              className="mt-1 flex flex-1 w-full items-center gap-1 rounded border bg-background px-2 py-1 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors"
+              style={{ width: 100 + "%" }}
+              onClick={() => primarySnippet && setIsExpanded(!isExpanded)}
+            >
+              {primarySnippet && (
+                <span className="text-muted-foreground flex items-center gap-0.5">
+                  <Code2 className="h-3 w-3" />
+                  {isExpanded ? (
+                    <ChevronDown className="h-3 w-3" />
+                  ) : (
+                    <ChevronRight className="h-3 w-3" />
+                  )}
                 </span>
-                <span className="text-xs font-medium">
-                  {WALLET_PERSONAS[walletList[rightWallet].id]?.name ??
-                    walletList[rightWallet]?.id}
-                </span>
-              </>
-            )}
-            <span className="ml-1 text-xs text-muted-foreground">
-              {step.label}
-            </span>
-            <StepStatusIcon status={step.status} />
+              )}
+              <span className="absolute -mx-6 text-sm">{index + 1}</span>
+              <span className="text-xs font-medium">
+                {WALLET_PERSONAS[walletList[leftWallet].id]?.name ??
+                  walletList[leftWallet]?.id}
+              </span>
+              {rightWallet !== leftWallet && (
+                <>
+                  <span className="text-muted-foreground">
+                    {isLeftToRight ? "→" : "←"}
+                  </span>
+                  <span className="text-xs font-medium">
+                    {WALLET_PERSONAS[walletList[rightWallet].id]?.name ??
+                      walletList[rightWallet]?.id}
+                  </span>
+                </>
+              )}
+              <span className="ml-1 text-xs text-muted-foreground">
+                {step.label}
+              </span>
+              <StepStatusIcon status={step.status} />
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Expanded code snippet */}
+      {isExpanded && primarySnippet && (
+        <div className="flex justify-center mt-6">
+          <div className="w-[480px] border rounded-md bg-muted/30 overflow-hidden">
+            <div className="flex items-center justify-between px-3 py-1.5 bg-muted/50 border-b">
+              <span className="text-xs font-medium">
+                {primarySnippet.title}
+              </span>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 px-2"
+                  onClick={handleCopy}
+                >
+                  {copied ? (
+                    <Check className="h-3 w-3 text-green-500" />
+                  ) : (
+                    <Copy className="h-3 w-3" />
+                  )}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-6 w-6 p-0"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsExpanded(false);
+                  }}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </div>
+            </div>
+            <pre className="p-3 text-xs font-mono overflow-x-auto">
+              <code>{primarySnippet.code}</code>
+            </pre>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

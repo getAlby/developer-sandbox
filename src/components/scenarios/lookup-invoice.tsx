@@ -116,6 +116,7 @@ function AlicePanel() {
         label: `Invoice: ${amountSats} sats`,
         direction: "right",
         status: "success",
+        snippetIds: ["make-invoice"],
       });
     } catch (error) {
       console.error("Failed to create invoice:", error);
@@ -168,6 +169,7 @@ function AlicePanel() {
         label: `Status: ${statusLabel}`,
         direction: "right",
         status: result.state === "failed" ? "error" : "success",
+        snippetIds: ["lookup-invoice"],
       });
     } catch (error) {
       console.error("Failed to lookup invoice:", error);
@@ -391,6 +393,7 @@ function BobPanel() {
       label: "Paying invoice...",
       direction: "left",
       status: "pending",
+      snippetIds: ["pay-invoice"],
     });
 
     try {

@@ -75,6 +75,7 @@ function AlicePanel() {
       toWallet: "alice",
       amount: amountSats,
       description: "Creating invoice...",
+      snippetIds: ["make-invoice"],
     });
 
     try {
@@ -102,6 +103,7 @@ function AlicePanel() {
         label: `Invoice: ${amountSats} sats`,
         direction: "right",
         status: "success",
+        snippetIds: ["make-invoice"],
       });
     } catch (error) {
       console.error("Failed to create invoice:", error);
@@ -227,6 +229,7 @@ function BobPanel() {
       toWallet: "alice",
       amount: sharedAmt ?? undefined,
       description: "Paying invoice...",
+      snippetIds: ["pay-invoice"],
     });
 
     // Add flow step for payment initiation
@@ -236,6 +239,7 @@ function BobPanel() {
       label: "Paying invoice...",
       direction: "left",
       status: "pending",
+      snippetIds: ["pay-invoice"],
     });
 
     try {

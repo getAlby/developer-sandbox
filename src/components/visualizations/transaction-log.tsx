@@ -1,5 +1,6 @@
 import { Check, X, Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ExpandableSnippet } from "@/components/ui/expandable-snippet";
 import {
   useScenarioStore,
   useTransactionStore,
@@ -7,6 +8,7 @@ import {
 } from "@/stores";
 import type { Transaction } from "@/types";
 import { WALLET_PERSONAS } from "@/types";
+import { getSnippetsById } from "@/data/code-snippets";
 
 export function TransactionLog() {
   const { transactions, clearAll } = useTransactionStore();
@@ -61,26 +63,45 @@ function TransactionRow({ transaction }: { transaction: Transaction }) {
     return WALLET_PERSONAS[id]?.name ?? id;
   };
 
+  // Get code snippets by explicit IDs
+  const snippets = transaction.snippetIds
+    ? getSnippetsById(transaction.snippetIds)
+    : [];
+
   return (
-    <div className="flex items-start gap-3 rounded-md px-2 py-1.5 hover:bg-muted/50">
-      <StatusIcon status={transaction.status} />
-      <span className="text-sm text-muted-foreground font-mono shrink-0">
-        {formatTime(transaction.timestamp)}
-      </span>
-      {transaction.fromWallet && transaction.toWallet && (
-        <span className="text-sm shrink-0">
-          {getWalletName(transaction.fromWallet)} →{" "}
-          {getWalletName(transaction.toWallet)}
+    <div className="rounded-md px-2 py-1.5 hover:bg-muted/50">
+      <div className="flex items-start gap-3">
+        <StatusIcon status={transaction.status} />
+        <span className="text-sm text-muted-foreground font-mono shrink-0">
+          {formatTime(transaction.timestamp)}
         </span>
-      )}
-      {transaction.amount && (
-        <span className="text-sm font-medium shrink-0">
-          {transaction.amount.toLocaleString()} sats
+        {transaction.fromWallet && transaction.toWallet && (
+          <span className="text-sm shrink-0">
+            {getWalletName(transaction.fromWallet)} →{" "}
+            {getWalletName(transaction.toWallet)}
+          </span>
+        )}
+        {transaction.amount && (
+          <span className="text-sm font-medium shrink-0">
+            {transaction.amount.toLocaleString()} sats
+          </span>
+        )}
+        <span className="text-sm text-muted-foreground break-all">
+          {transaction.description}
         </span>
+      </div>
+      {snippets.length > 0 && (
+        <div className="ml-7 mt-1 space-y-1">
+          {snippets.map((snippet) => (
+            <ExpandableSnippet
+              key={snippet.id}
+              code={snippet.code}
+              title={snippet.title}
+              variant="inline"
+            />
+          ))}
+        </div>
       )}
-      <span className="text-sm text-muted-foreground break-all">
-        {transaction.description}
-      </span>
     </div>
   );
 }

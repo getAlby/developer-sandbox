@@ -125,6 +125,7 @@ function BobPanel() {
         label: `Lookup: ${addressToUse}`,
         direction: "left",
         status: "success",
+        snippetIds: ["fetch-lightning-address"],
       });
     } catch (err) {
       console.error("Failed to lookup address:", err);
@@ -163,6 +164,7 @@ function BobPanel() {
       label: `Requesting invoice...`,
       direction: "left",
       status: "pending",
+      snippetIds: ["request-invoice-from-address"],
     });
 
     let payFlowStepId = "";
@@ -191,6 +193,7 @@ function BobPanel() {
         label: "Paying invoice...",
         direction: "left",
         status: "pending",
+        snippetIds: ["pay-invoice"],
       });
 
       await client.payInvoice({ invoice: invoice.paymentRequest });

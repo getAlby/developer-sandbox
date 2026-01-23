@@ -7,6 +7,7 @@ import { WalletGrid } from '@/components/wallet-grid';
 import { VisualizationPanel } from '@/components/visualization-panel';
 import { scenarios } from '@/data/scenarios';
 import { useScenarioStore } from '@/stores';
+import { useDevConsole } from '@/hooks/use-dev-console';
 
 function ScenarioRoute() {
   const { scenarioId } = useParams<{ scenarioId: string }>();
@@ -36,6 +37,9 @@ function ScenarioRoute() {
 }
 
 function App() {
+  // Expose wallet clients and Lightning tools on window for browser console use
+  useDevConsole();
+
   return (
     <Layout>
       <Routes>

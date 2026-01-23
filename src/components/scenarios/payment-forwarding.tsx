@@ -85,6 +85,7 @@ function AlicePanel() {
       label: `Requesting invoice for ${satoshi} sats...`,
       direction: "right",
       status: "pending",
+      snippetIds: ["request-invoice-from-address"],
     });
 
     let payFlowStepId = "";
@@ -108,6 +109,7 @@ function AlicePanel() {
         label: "Paying invoice...",
         direction: "right",
         status: "pending",
+        snippetIds: ["pay-invoice"],
       });
 
       await client.payInvoice({ invoice: invoice.paymentRequest });
@@ -295,6 +297,7 @@ function BobPanel() {
         label: `Forwarding ${forwardAmount} sats (${percent}%)...`,
         direction: "right",
         status: "pending",
+        snippetIds: ["pay-invoice"],
       });
 
       try {
@@ -390,6 +393,7 @@ function BobPanel() {
           label: `🔔 Received ${amountSats} sats`,
           direction: "right",
           status: "success",
+          snippetIds: ["subscribe-notifications"],
         });
 
         // Update Bob's balance
@@ -455,6 +459,7 @@ function BobPanel() {
         label: `🔔 Listening (${forwardPercent}% → Charlie)`,
         direction: "right",
         status: "success",
+        snippetIds: ["subscribe-notifications"],
       });
     } catch (err) {
       console.error("Failed to subscribe to notifications:", err);
@@ -488,6 +493,7 @@ function BobPanel() {
       label: "🔕 Stopped forwarding",
       direction: "right",
       status: "success",
+      snippetIds: ["subscribe-notifications"],
     });
   };
 
@@ -657,6 +663,7 @@ function CharliePanel() {
           label: `🔔 Charlie received ${amountSats} sats`,
           direction: "right",
           status: "success",
+          snippetIds: ["subscribe-notifications"],
         });
 
         // Update Charlie's balance
@@ -704,6 +711,7 @@ function CharliePanel() {
           label: "🔔 Charlie listening",
           direction: "right",
           status: "success",
+          snippetIds: ["subscribe-notifications"],
         });
       } catch (err) {
         console.error("Failed to subscribe to notifications:", err);
