@@ -40,7 +40,7 @@ export function Layout({ children }: LayoutProps) {
           <span className="inline-flex items-center gap-1">
             Powered by
             <a
-              href="https://getalby.com/alby-hub"
+              href="https://getalby.com/alby-hub?ref=sandbox"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"

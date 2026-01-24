@@ -147,7 +147,7 @@ export function ProductionWallet() {
             <div className="flex items-center gap-2">
               <Button asChild variant="default" size="sm" className="gap-2">
                 <a
-                  href="https://getalby.com/alby-hub"
+                  href="https://getalby.com/alby-hub?ref=sandbox"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
