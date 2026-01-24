@@ -1,4 +1,4 @@
-# Alby Developer Sandbox - Development Guide
+# Alby Sandbox - Development Guide
 
 ## Project Overview
 

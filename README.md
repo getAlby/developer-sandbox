@@ -1,4 +1,4 @@
-# Alby Developer Sandbox
+# Alby Sandbox
 
 Educational Lightning Network payment demo application that allows users to try scenarios that simulate
 Lightning payments between wallets and learn about usecases supported by Alby
@@ -7,4 +7,4 @@ and understand Lightning payment flows and capabilities.
 
 **[Try it here](https://getAlby.github.io/sandbox/)**
 
-The Alby Developer Sandbox was vibe coded using the [Alby Agent Skill](https://github.com/getAlby/alby-agent-skill)
+The Alby Sandbox was vibe coded using the [Alby Agent Skill](https://github.com/getAlby/alby-agent-skill)

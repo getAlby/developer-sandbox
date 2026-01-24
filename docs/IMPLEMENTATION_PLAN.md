@@ -1,4 +1,4 @@
-# Alby Developer Sandbox - Implementation Plan
+# Alby Sandbox - Implementation Plan
 
 Based on the current state (empty Vite React TypeScript app with Shadcn configured) and the design documentation, here's the implementation checklist.
 

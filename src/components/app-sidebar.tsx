@@ -55,7 +55,7 @@ export function AppSidebar() {
         <div className="flex items-center gap-2">
           <AlbyIcon className="size-6" />
           <div>
-            <h1 className="font-semibold">Alby Developer Sandbox</h1>
+            <h1 className="font-semibold">Alby Sandbox</h1>
             <p className="text-xs text-muted-foreground">
               Explore Lightning App Scenarios
             </p>

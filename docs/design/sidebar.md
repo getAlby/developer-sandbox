@@ -18,7 +18,7 @@ Links:
 ```txt
 ┌─────────────────────────────────┐
 │                                 │
-│  ⚡ Alby Developer Sandbox      │
+│  ⚡ Alby Sandbox      │
 │     Learn & Build with NWC      │
 │                                 │
 ├─────────────────────────────────┤

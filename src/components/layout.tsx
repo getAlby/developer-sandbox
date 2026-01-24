@@ -20,7 +20,7 @@ export function Layout({ children }: LayoutProps) {
       <SidebarInset>
         <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 md:hidden">
           <SidebarTrigger className="-ml-2" />
-          <span className="font-semibold">Alby Developer Sandbox</span>
+          <span className="font-semibold">Alby Sandbox</span>
         </header>
         <main className="flex-1 overflow-auto">{children}</main>
         <footer className="shrink-0 border-t px-4 py-3 flex items-center justify-center gap-2 text-xs text-muted-foreground/70 flex-wrap">
