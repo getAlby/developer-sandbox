@@ -1,4 +1,10 @@
-import { ExternalLink } from "lucide-react";
+import {
+  BotIcon,
+  CodeIcon,
+  DropletsIcon,
+  ExternalLink,
+  HelpCircleIcon,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -14,33 +20,27 @@ import {
 } from "@/components/ui/sidebar";
 import { scenarios } from "@/data/scenarios";
 import { AlbyIcon } from "@/icons/AlbyIcon";
-import { AlbyHubIcon } from "@/icons/AlbyHubIcon";
 
 const externalLinks = [
   {
-    title: "Alby Hub",
-    url: "https://getalby.com/alby-hub",
-    icon: <AlbyHubIcon className="size-4" />,
-  },
-  {
     title: "Alby Agent Skill",
     url: "https://github.com/getalby/alby-agent-skill",
-    icon: "🤖",
+    icon: <BotIcon className="size-4" />,
   },
   {
     title: "NWC Faucet",
     url: "https://faucet.nwc.dev",
-    icon: "💧",
+    icon: <DropletsIcon className="size-4" />,
   },
   {
     title: "Sandbox Source Code",
     url: "https://github.com/getAlby/developer-sandbox",
-    icon: "💻",
+    icon: <CodeIcon className="size-4" />,
   },
   {
-    title: "Alby Developers",
-    url: "https://getalby.com/developers",
-    icon: "🔨",
+    title: "Help",
+    url: "https://support.getalby.com",
+    icon: <HelpCircleIcon className="size-4" />,
   },
 ];
 
