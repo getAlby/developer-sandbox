@@ -172,7 +172,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ## Phase 8: Github Pages
 
-- [x] Make necessary changes so the app is automatically deployed. The repository name is developer-sandbox and the organization is getAlby.
+- [x] Make necessary changes so the app is automatically deployed. The repository name is sandbox and the organization is getAlby.
 
 ## Phase 9: User Feedback
 

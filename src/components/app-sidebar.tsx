@@ -34,7 +34,7 @@ const externalLinks = [
   },
   {
     title: "Sandbox Source Code",
-    url: "https://github.com/getAlby/developer-sandbox",
+    url: "https://github.com/getAlby/sandbox",
     icon: <CodeIcon className="size-4" />,
   },
   {
