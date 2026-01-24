@@ -5,6 +5,7 @@ import {
   Zap,
   Shield,
   Server,
+  LightbulbIcon,
 } from "lucide-react";
 import {
   Card,
@@ -43,7 +44,7 @@ export function ProductionWallet() {
             <ul className="space-y-2 text-muted-foreground">
               <li className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
-                <span>Isolated test network - no real Bitcoin</span>
+                <span>Isolated testing ecosystem - no real Bitcoin</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
@@ -55,7 +56,16 @@ export function ProductionWallet() {
               </li>
               <li className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
-                <span>Created instantly via faucet.nwc.dev</span>
+                <span>
+                  Created instantly via{" "}
+                  <a
+                    href="https://faucet.nwc.dev"
+                    target="_blank"
+                    className="underline"
+                  >
+                    NWC Faucet
+                  </a>
+                </span>
               </li>
             </ul>
           </CardContent>
@@ -125,6 +135,9 @@ export function ProductionWallet() {
               <span className="inline-flex items-center gap-1 rounded-full bg-purple-500/10 px-2 py-1 text-xs text-purple-600">
                 <Wallet className="h-3 w-3" /> Full NWC support
               </span>
+              <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs text-green-600">
+                Free self-hosted
+              </span>
             </div>
             <p className="text-muted-foreground">
               Run your own Lightning node with an easy-to-use interface. Perfect
@@ -175,8 +188,8 @@ export function ProductionWallet() {
                 </span>
               </div>
               <p className="text-muted-foreground">
-                Quick setup with NWC support. Good for getting started quickly
-                with isolated sub-wallets called "vaults".
+                Quick setup with NWC support. Supports isolated sub-wallets
+                called "vaults".
               </p>
               <Button asChild variant="outline" size="sm" className="gap-2">
                 <a
@@ -225,11 +238,12 @@ export function ProductionWallet() {
       </div>
 
       <Card className="mt-auto bg-muted/50">
-        <CardContent className="py-4">
+        <CardContent className="">
           <p className="text-sm text-muted-foreground">
-            <strong>Good news:</strong> The code you write using test wallets
-            works exactly the same with production wallets. Just swap out the
-            NWC connection string and you're ready to handle real payments!
+            <LightbulbIcon className="size-4 inline mr-1 mb-1" />
+            The code you write using test wallets works exactly the same with
+            production wallets. Just swap out the NWC connection string and
+            you're ready to handle real payments!
           </p>
         </CardContent>
       </Card>
