@@ -1,6 +1,6 @@
-import { FileText, GitBranch, LineChart, Code2 } from "lucide-react";
+import { FileText, GitBranch, LineChart, Code2, Rocket } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TransactionLog, FlowDiagram, BalanceChart, CodeSnippets } from "./visualizations";
+import { TransactionLog, FlowDiagram, BalanceChart, CodeSnippets, ProductionWallet } from "./visualizations";
 import { useUIStore } from "@/stores";
 
 export function VisualizationPanel() {
@@ -29,6 +29,10 @@ export function VisualizationPanel() {
           <Code2 className="h-4 w-4" />
           Code Snippets
         </TabsTrigger>
+        <TabsTrigger value="production" className="gap-2">
+          <Rocket className="h-4 w-4" />
+          Production Wallet
+        </TabsTrigger>
       </TabsList>
 
       <TabsContent value="log" className="mt-0 flex-1 overflow-hidden">
@@ -45,6 +49,10 @@ export function VisualizationPanel() {
 
       <TabsContent value="snippets" className="mt-0 flex-1 overflow-hidden">
         <CodeSnippets />
+      </TabsContent>
+
+      <TabsContent value="production" className="mt-0 flex-1 overflow-hidden">
+        <ProductionWallet />
       </TabsContent>
     </Tabs>
   );
