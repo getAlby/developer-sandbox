@@ -41,20 +41,20 @@ export function ProductionWallet() {
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <ul className="space-y-2 text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
                 <span>Isolated test network - no real Bitcoin</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
                 <span>Cannot send/receive from external wallets</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
                 <span>Perfect for learning and prototyping</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-orange-500 shrink-0" />
                 <span>Created instantly via faucet.nwc.dev</span>
               </li>
             </ul>
@@ -71,20 +71,20 @@ export function ProductionWallet() {
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <ul className="space-y-2 text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-yellow-500 shrink-0" />
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 shrink-0" />
                 <span>Real bitcoin on the lightning network</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-yellow-500 shrink-0" />
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 shrink-0" />
                 <span>Earn revenue from your users</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-yellow-500 shrink-0" />
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 shrink-0" />
                 <span>Routing fees based on payment route</span>
               </li>
-              <li className="flex items-start gap-2">
-                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-yellow-500 shrink-0" />
+              <li className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-yellow-500 shrink-0" />
                 <span>Your code works the same way!</span>
               </li>
             </ul>
@@ -169,6 +169,9 @@ export function ProductionWallet() {
                 </span>
                 <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-1 text-xs text-blue-600">
                   Multiple vaults
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs text-green-600">
+                  Free to start
                 </span>
               </div>
               <p className="text-muted-foreground">
