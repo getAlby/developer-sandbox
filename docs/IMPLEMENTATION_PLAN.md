@@ -189,7 +189,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [ ] Add prompt examples
 - [ ] Add a way to copy NWC connection from a wallet card
 - [ ] Add a way to topup the wallet (via the faucet API)
-- [ ] update URL to sandbox.getalby.com
+- [x] update URL to sandbox.albylabs.com
 - [x] Add a floating panel on the top right corner of animated emojis of up to 4 user's wallets (displayed as 2x2 square) that show requests to eachother (network request animation) and lightning payments to eachother (animated lightning strike) - only show while scenario is running (do this by each time a new transaction item added to the log, reset the timer for the floating panel to fade away). It should not be clickable / ignore user input
 
 ---
