@@ -111,41 +111,73 @@ export function ProductionWallet() {
       </div>
 
       <div className="grid gap-4">
-        <Card className="border-yellow-500/50 bg-yellow-500/5">
-          <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <AlbyHubIcon className="h-5 w-5 fill-current" />
-              Alby Hub
-              <span className="ml-auto text-xs font-normal text-muted-foreground">
-                Recommended
-              </span>
-            </CardTitle>
-            <CardDescription>
-              Self-custodial wallet with the most complete NWC implementation
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div className="flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs text-green-600">
-                <Shield className="h-3 w-3" /> Self-custodial
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-1 text-xs text-blue-600">
-                <Server className="h-3 w-3" /> Multiple sub-wallets
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-purple-500/10 px-2 py-1 text-xs text-purple-600">
-                <Wallet className="h-3 w-3" /> Full NWC support
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs text-green-600">
-                Free self-hosted
-              </span>
-            </div>
-            <p className="text-muted-foreground">
-              Run your own Lightning node with an easy-to-use interface. Perfect
-              for developers who want full control over their funds and the most
-              comprehensive NWC feature set.
-            </p>
-            <div className="flex items-center gap-2">
+        <div className="grid gap-4 md:grid-cols-2">
+          <Card className="border-yellow-500/50 bg-yellow-500/5">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <AlbyHubIcon className="h-5 w-5 fill-current" />
+                Alby Hub - Cloud
+                <span className="ml-auto text-xs font-normal text-muted-foreground">
+                  Recommended
+                </span>
+              </CardTitle>
+              <CardDescription>Managed hosting with zero setup</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs text-green-600">
+                  <Shield className="h-3 w-3" /> Self-custodial
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-1 text-xs text-blue-600">
+                  <Server className="h-3 w-3" /> Multiple sub-wallets
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-purple-500/10 px-2 py-1 text-xs text-purple-600">
+                  <Wallet className="h-3 w-3" /> Full NWC support
+                </span>
+              </div>
+              <p className="text-muted-foreground">
+                Get started in minutes with Alby-managed infrastructure. Deploy
+                in seconds, great reliability, one-click updates, and
+                professional support.
+              </p>
               <Button asChild variant="default" size="sm" className="gap-2">
+                <a
+                  href="https://getalby.com/subscription/new?coupon=SANDBOX"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <AlbyIcon className="size-3.5" />
+                  10% off first 3 months
+                </a>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <AlbyHubIcon className="h-5 w-5 fill-current" />
+                Alby Hub - Self Hosted
+              </CardTitle>
+              <CardDescription>Full control on your own server</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs text-green-600">
+                  <Shield className="h-3 w-3" /> Self-custodial
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-1 text-xs text-blue-600">
+                  <Server className="h-3 w-3" /> Multiple sub-wallets
+                </span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-purple-500/10 px-2 py-1 text-xs text-purple-600">
+                  <Wallet className="h-3 w-3" /> Full NWC support
+                </span>
+              </div>
+              <p className="text-muted-foreground">
+                Run your own Lightning node with complete control. Deploy on any
+                server, Raspberry Pi, or home hardware.
+              </p>
+              <Button asChild variant="outline" size="sm" className="gap-2">
                 <a
                   href="https://getalby.com/alby-hub?ref=sandbox"
                   target="_blank"
@@ -153,27 +185,18 @@ export function ProductionWallet() {
                 >
                   <AlbyHubIcon className="size-3.5" />
                   Get Alby Hub
+                  <ExternalLink className="h-3 w-3" />
                 </a>
               </Button>
-              <Button asChild variant="outline" size="sm" className="gap-2">
-                <a
-                  href="https://getalby.com/subscription/new?coupon=SANDBOX"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <AlbyIcon className="size-3.5 text-[#ffc800] dark:text-[#ffe480]" />
-                  10% off first 3 months Alby Cloud
-                </a>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
 
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base">Rizful</CardTitle>
-              <CardDescription>Free to start, custodial wallet</CardDescription>
+              <CardDescription>Free, custodial wallet</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex flex-wrap gap-2">
@@ -184,7 +207,7 @@ export function ProductionWallet() {
                   Multiple vaults
                 </span>
                 <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs text-green-600">
-                  Free to start
+                  Free
                 </span>
               </div>
               <p className="text-muted-foreground">
@@ -207,7 +230,7 @@ export function ProductionWallet() {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base">CoinOS</CardTitle>
-              <CardDescription>Free to start, custodial wallet</CardDescription>
+              <CardDescription>Free, custodial wallet</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
               <div className="flex flex-wrap gap-2">
@@ -215,7 +238,7 @@ export function ProductionWallet() {
                   Custodial
                 </span>
                 <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-1 text-xs text-green-600">
-                  Free to start
+                  Free
                 </span>
               </div>
               <p className="text-muted-foreground">
