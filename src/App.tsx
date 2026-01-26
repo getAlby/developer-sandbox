@@ -1,17 +1,19 @@
-import { useEffect } from 'react';
-import { Routes, Route, Navigate, useParams } from 'react-router-dom';
-import { Layout } from '@/components/layout';
-import { ScenarioInfo } from '@/components/scenario-info';
-import { ScenarioPanel } from '@/components/scenario-panel';
-import { WalletGrid } from '@/components/wallet-grid';
-import { VisualizationPanel } from '@/components/visualization-panel';
-import { scenarios } from '@/data/scenarios';
-import { useScenarioStore } from '@/stores';
-import { useDevConsole } from '@/hooks/use-dev-console';
+import { useEffect } from "react";
+import { Routes, Route, Navigate, useParams } from "react-router-dom";
+import { Layout } from "@/components/layout";
+import { GettingStarted } from "@/components/getting-started";
+import { ScenarioInfo } from "@/components/scenario-info";
+import { ScenarioPanel } from "@/components/scenario-panel";
+import { WalletGrid } from "@/components/wallet-grid";
+import { VisualizationPanel } from "@/components/visualization-panel";
+import { useScenarioStore } from "@/stores";
+import { useDevConsole } from "@/hooks/use-dev-console";
 
 function ScenarioRoute() {
   const { scenarioId } = useParams<{ scenarioId: string }>();
-  const setCurrentScenario = useScenarioStore((state) => state.setCurrentScenario);
+  const setCurrentScenario = useScenarioStore(
+    (state) => state.setCurrentScenario,
+  );
 
   useEffect(() => {
     if (scenarioId) {
@@ -43,7 +45,8 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Navigate to={`/${scenarios[0].id}`} replace />} />
+        <Route path="/" element={<Navigate to="/getting-started" replace />} />
+        <Route path="/getting-started" element={<GettingStarted />} />
         <Route path="/:scenarioId" element={<ScenarioRoute />} />
       </Routes>
     </Layout>

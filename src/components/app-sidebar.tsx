@@ -69,6 +69,17 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={scenarioId === "getting-started"}
+                >
+                  <Link to="/getting-started">
+                    <span>👋</span>
+                    <span>Getting Started</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
               {scenarios.map((scenario) => (
                 <SidebarMenuItem key={scenario.id}>
                   <SidebarMenuButton
