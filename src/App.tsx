@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Routes, Route, Navigate, useParams } from "react-router-dom";
+import { Routes, Route, useParams } from "react-router-dom";
 import { Layout } from "@/components/layout";
 import { GettingStarted } from "@/components/getting-started";
 import { ScenarioInfo } from "@/components/scenario-info";
