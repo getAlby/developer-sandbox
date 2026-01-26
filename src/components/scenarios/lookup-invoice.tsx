@@ -10,10 +10,16 @@ import {
   Clock,
   CheckCircle,
   XCircle,
+  ChevronDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { useWalletStore, useTransactionStore } from "@/stores";
 import { WALLET_PERSONAS } from "@/types";
 
@@ -72,6 +78,10 @@ function AlicePanel() {
   const [invoiceStatus, setInvoiceStatus] = useState<
     "pending" | "settled" | "failed" | "accepted" | null
   >(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [lookupResult, setLookupResult] = useState<Record<string, any> | null>(
+    null,
+  );
   const [lookupInvoiceInput, setLookupInvoiceInput] = useState("");
 
   const { getNWCClient } = useWalletStore();
@@ -150,6 +160,7 @@ function AlicePanel() {
       const result = await client.lookupInvoice({ invoice: invoiceToLookup });
 
       setInvoiceStatus(result.state);
+      setLookupResult(result as Record<string, unknown>);
 
       const statusLabel =
         result.state === "settled"
@@ -353,6 +364,50 @@ function AlicePanel() {
                 {getStatusIcon()}
                 <span className="font-medium">{getStatusText()}</span>
               </div>
+              {lookupResult && (
+                <Collapsible>
+                  <CollapsibleTrigger className="flex items-center gap-1 text-xs text-muted-foreground mt-2 hover:text-foreground transition-colors cursor-pointer">
+                    <ChevronDown className="h-3 w-3 transition-transform duration-200 [[data-state=open]>&]:rotate-180" />
+                    Transaction details
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="mt-2 space-y-1 text-xs font-mono">
+                      {Object.entries(lookupResult).map(([key, value]) => {
+                        let displayValue: string;
+                        if (value === undefined || value === null) {
+                          displayValue = "—";
+                        } else if (key === "amount" || key === "fees_paid") {
+                          displayValue = `${value} msats (${Math.floor(Number(value) / 1000)} sats)`;
+                        } else if (
+                          key === "settled_at" ||
+                          key === "created_at" ||
+                          key === "expires_at" ||
+                          key === "settle_deadline"
+                        ) {
+                          displayValue = value
+                            ? new Date(Number(value) * 1000).toLocaleString()
+                            : "—";
+                        } else if (typeof value === "object") {
+                          displayValue = JSON.stringify(value, null, 2);
+                        } else {
+                          displayValue = String(value);
+                        }
+                        return (
+                          <div
+                            key={key}
+                            className="flex flex-col gap-0.5 py-1 border-b border-border/50 last:border-0"
+                          >
+                            <span className="text-muted-foreground font-sans text-[11px]">
+                              {key}
+                            </span>
+                            <span className="break-all">{displayValue}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+              )}
             </div>
           )}
         </div>
