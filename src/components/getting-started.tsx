@@ -22,6 +22,25 @@ const slides = [
         <p className="text-center text-lg text-muted-foreground">
           They'll be sending payments to each other.
         </p>
+
+        <div />
+        <p className="text-center text-sm text-muted-foreground">
+          ...and later some more friends will join too.
+        </p>
+        <div className="flex items-center gap-6 text-3xl">
+          <div className="flex flex-col items-center gap-1">
+            <span>{WALLET_PERSONAS.charlie.emoji}</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              Charlie
+            </span>
+          </div>
+          <div className="flex flex-col items-center gap-1">
+            <span>{WALLET_PERSONAS.david.emoji}</span>
+            <span className="text-sm font-medium text-muted-foreground">
+              David
+            </span>
+          </div>
+        </div>
       </div>
     ),
   },
@@ -73,7 +92,7 @@ export function GettingStarted() {
       <div className="flex max-w-2xl flex-col items-center gap-10">
         <div
           key={currentSlide}
-          className="flex h-96 sm:h-80 animate-in fade-in duration-300 flex-col items-center justify-center gap-6"
+          className="flex h-96 animate-in fade-in duration-300 flex-col items-center justify-center gap-6"
         >
           <h1 className="text-3xl font-bold text-center">
             {slides[currentSlide].title}
