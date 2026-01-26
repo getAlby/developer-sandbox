@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
-import { Loader2, FileText, Send, Copy, Check, ArrowRight } from "lucide-react";
+import { Loader2, FileText, Send, Copy, Check, ArrowRight, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { useWalletStore, useTransactionStore } from "@/stores";
 import { WALLET_PERSONAS } from "@/types";
 
@@ -54,6 +60,9 @@ function useSharedInvoice() {
 function AlicePanel() {
   const [amount, setAmount] = useState("1000");
   const [description, setDescription] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [metadata, setMetadata] = useState("");
+  const [advancedOpen, setAdvancedOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [createdInvoice, setCreatedInvoice] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -84,9 +93,21 @@ function AlicePanel() {
       // Create invoice (amount in millisats)
       const amountMillisats = amountSats * 1000;
 
+      // Parse optional metadata JSON
+      let parsedMetadata: Record<string, unknown> | undefined;
+      if (metadata.trim()) {
+        try {
+          parsedMetadata = JSON.parse(metadata.trim());
+        } catch {
+          throw new Error("Invalid JSON metadata");
+        }
+      }
+
       const invoice = await client.makeInvoice({
         amount: amountMillisats,
         description: description || `Payment of ${amountSats} sats`,
+        ...(expiry ? { expiry: parseInt(expiry) } : {}),
+        ...(parsedMetadata ? { metadata: parsedMetadata } : {}),
       });
 
       setCreatedInvoice(invoice.invoice);
@@ -156,6 +177,40 @@ function AlicePanel() {
             disabled={isCreating}
           />
         </div>
+        <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
+          <CollapsibleTrigger className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <ChevronRight
+              className={`h-3 w-3 transition-transform ${advancedOpen ? "rotate-90" : ""}`}
+            />
+            Advanced
+          </CollapsibleTrigger>
+          <CollapsibleContent className="space-y-3 pt-2">
+            <div className="space-y-1">
+              <label className="text-xs text-muted-foreground">
+                Expiry (seconds)
+              </label>
+              <Input
+                type="number"
+                value={expiry}
+                onChange={(e) => setExpiry(e.target.value)}
+                placeholder="3600"
+                disabled={isCreating}
+              />
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs text-muted-foreground">
+                Metadata (JSON)
+              </label>
+              <Textarea
+                value={metadata}
+                onChange={(e) => setMetadata(e.target.value)}
+                placeholder={'{"key": "value"}'}
+                disabled={isCreating}
+                className="font-mono text-xs min-h-[60px]"
+              />
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
         <Button
           onClick={handleCreateInvoice}
           disabled={isCreating || !amount}
