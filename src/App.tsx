@@ -45,8 +45,7 @@ function App() {
   return (
     <Layout>
       <Routes>
-        <Route path="/" element={<Navigate to="/getting-started" replace />} />
-        <Route path="/getting-started" element={<GettingStarted />} />
+        <Route path="/" element={<GettingStarted />} />
         <Route path="/:scenarioId" element={<ScenarioRoute />} />
       </Routes>
     </Layout>

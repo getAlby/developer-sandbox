@@ -75,7 +75,9 @@ export function GettingStarted() {
           key={currentSlide}
           className="flex h-96 sm:h-80 animate-in fade-in duration-300 flex-col items-center justify-center gap-6"
         >
-          <h1 className="text-3xl font-bold">{slides[currentSlide].title}</h1>
+          <h1 className="text-3xl font-bold text-center">
+            {slides[currentSlide].title}
+          </h1>
           {slides[currentSlide].content}
         </div>
 
