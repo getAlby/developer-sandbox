@@ -70,7 +70,7 @@ function TransactionRow({ transaction }: { transaction: Transaction }) {
 
   return (
     <div className="rounded-md px-2 py-1.5 hover:bg-muted/50">
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
         <StatusIcon status={transaction.status} />
         <span className="text-sm text-muted-foreground font-mono shrink-0">
           {formatTime(transaction.timestamp)}
@@ -86,7 +86,7 @@ function TransactionRow({ transaction }: { transaction: Transaction }) {
             {transaction.amount.toLocaleString()} sats
           </span>
         )}
-        <span className="text-sm text-muted-foreground break-all">
+        <span className="text-sm text-muted-foreground break-all min-w-0">
           {transaction.description}
         </span>
       </div>

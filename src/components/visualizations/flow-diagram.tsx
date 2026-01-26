@@ -83,7 +83,7 @@ export function FlowDiagram() {
           ))}
         </div>
 
-        <div className="relative pt-8 space-y-4 pb-8">
+        <div className="relative pt-8 space-y-6 pb-8">
           {/* Vertical lifelines for each wallet */}
           {walletList.map((wallet, idx) => {
             const walletCount = walletList.length || 1;
@@ -165,7 +165,7 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
 
   return (
     <div className={`relative w-full ${isExpanded ? "mb-4" : ""}`}>
-      <div className="relative h-12 w-full">
+      <div className="relative w-full" style={{ minHeight: "4.5rem" }}>
         {/* Draw arrow line between wallets */}
         <div
           className="absolute top-5 h-0.5 bg-border"
@@ -210,58 +210,49 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
 
         {/* Step indicator at the center */}
         <div
-          className="absolute left-1/2 top-1 -translate-x-1/2 transform"
+          className="absolute top-1 -translate-x-1/2 transform flex flex-col items-center"
           style={{
             left: `${centerPosition}%`,
-            width: stepWidth * Math.max(rightWallet - leftWallet, 1) + "%",
           }}
         >
-          <div className="flex flex-col items-center">
-            <div className="flex h-6 w-6">{/* for arrow */}</div>
-            <div
-              className="mt-1 flex flex-1 w-full items-center gap-1 rounded border bg-background px-2 py-1 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors"
-              style={{ width: 100 + "%" }}
-              onClick={() => primarySnippet && setIsExpanded(!isExpanded)}
-            >
-              {primarySnippet && (
-                <span className="text-muted-foreground flex items-center gap-0.5">
-                  <Code2 className="h-3 w-3" />
-                  {isExpanded ? (
-                    <ChevronDown className="h-3 w-3" />
-                  ) : (
-                    <ChevronRight className="h-3 w-3" />
-                  )}
+          <div className="h-6 w-6">{/* spacer for arrow */}</div>
+          <div
+            className="mt-1 flex max-w-[35vw] items-center gap-1 rounded border bg-background px-2 py-1 shadow-sm cursor-pointer hover:bg-muted/30 transition-colors flex-wrap"
+            onClick={() => primarySnippet && setIsExpanded(!isExpanded)}
+          >
+            {primarySnippet && (
+              <span className="text-muted-foreground flex items-center gap-0.5">
+                <Code2 className="h-3 w-3" />
+              </span>
+            )}
+            <span className="text-xs text-muted-foreground">{index + 1}</span>
+            <span className="text-xs font-medium">
+              {WALLET_PERSONAS[walletList[leftWallet].id]?.name ??
+                walletList[leftWallet]?.id}
+            </span>
+            {rightWallet !== leftWallet && (
+              <>
+                <span className="text-muted-foreground">
+                  {isLeftToRight ? "→" : "←"}
                 </span>
-              )}
-              <span className="absolute -mx-6 text-sm">{index + 1}</span>
-              <span className="text-xs font-medium">
-                {WALLET_PERSONAS[walletList[leftWallet].id]?.name ??
-                  walletList[leftWallet]?.id}
-              </span>
-              {rightWallet !== leftWallet && (
-                <>
-                  <span className="text-muted-foreground">
-                    {isLeftToRight ? "→" : "←"}
-                  </span>
-                  <span className="text-xs font-medium">
-                    {WALLET_PERSONAS[walletList[rightWallet].id]?.name ??
-                      walletList[rightWallet]?.id}
-                  </span>
-                </>
-              )}
-              <span className="ml-1 text-xs text-muted-foreground">
-                {step.label}
-              </span>
-              <StepStatusIcon status={step.status} />
-            </div>
+                <span className="text-xs font-medium">
+                  {WALLET_PERSONAS[walletList[rightWallet].id]?.name ??
+                    walletList[rightWallet]?.id}
+                </span>
+              </>
+            )}
+            <span className="ml-1 text-xs text-muted-foreground">
+              {step.label}
+            </span>
+            <StepStatusIcon status={step.status} />
           </div>
         </div>
       </div>
 
       {/* Expanded code snippet */}
       {isExpanded && primarySnippet && (
-        <div className="flex justify-center mt-6">
-          <div className="w-[480px] border rounded-md bg-muted/30 overflow-hidden">
+        <div className="flex justify-center mt-6 px-2">
+          <div className="w-full max-w-[480px] border rounded-md bg-muted/30 overflow-hidden">
             <div className="flex items-center justify-between px-3 py-1.5 bg-muted/50 border-b">
               <span className="text-xs font-medium">
                 {primarySnippet.title}

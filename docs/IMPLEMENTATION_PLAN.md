@@ -186,7 +186,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [x] Add way to display & copy code for each step
 - [x] Split some unclear/combined steps (for example prism does not show fetching invoices to pay Charlie and David, LNURL-Pay does not show fetch) _Update: a single step supports multiple code snippets_
 - [x] Add support / contact link
-- [ ] fix mobile responsiveness of visualization tabs
+- [x] fix mobile responsiveness of visualization tabs
 - [ ] Add prompt examples
 - [ ] Allow choosing the wallet topup amount (default 10,000 sats)
 - [ ] Add a way to copy NWC connection from a wallet card

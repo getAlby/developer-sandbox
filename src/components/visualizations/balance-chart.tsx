@@ -48,11 +48,11 @@ export function BalanceChart() {
   );
 
   return (
-    <div className="h-full p-4">
+    <div className="h-full p-0 sm:p-4">
       <ChartContainer config={chartConfig} className="h-full w-full">
         <LineChart
           data={chartData}
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+          margin={{ top: 20, right: 20, bottom: 20, left: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis
