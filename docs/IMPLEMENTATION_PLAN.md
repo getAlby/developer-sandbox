@@ -161,14 +161,14 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 - [ ] Add tooltips explaining NWC concepts
 - [ ] Add "Learn More" links to Alby documentation
-- [ ] Display code snippets showing how each operation works
+- [x] Display code snippets showing how each operation works
 - [ ] Display example prompts showing how to add a scenario to your app
 
 ### 7.3 Final Touches
 
 - [x] Fix dark mode support (doesn't work)
-- [ ] Mobile responsiveness testing
-- [ ] Accessibility review (keyboard navigation, screen readers)
+- [x] Mobile responsiveness testing
+- [x] Accessibility review (keyboard navigation, screen readers)
 
 ## Phase 8: Github Pages
 
