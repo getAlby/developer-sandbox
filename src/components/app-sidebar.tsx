@@ -74,7 +74,7 @@ export function AppSidebar() {
                   asChild
                   isActive={scenarioId === "getting-started"}
                 >
-                  <Link to="/getting-started">
+                  <Link to="/">
                     <span>👋</span>
                     <span>Getting Started</span>
                   </Link>
