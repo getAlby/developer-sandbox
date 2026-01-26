@@ -151,23 +151,24 @@ function AlicePanel() {
       setLastPayment({ amount: satoshi, success: true });
     } catch (err) {
       console.error("Failed to pay:", err);
-      setError(err instanceof Error ? err.message : "Payment failed");
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
       setLastPayment({ amount: satoshi, success: false });
 
       updateTransaction(txId, {
         status: "error",
-        description: "Payment failed",
+        description: `Payment failed: ${errorMessage}`,
       });
 
       // Update the appropriate flow step to error
       if (payFlowStepId) {
         updateFlowStep(payFlowStepId, {
-          label: "Payment failed",
+          label: `Payment failed: ${errorMessage}`,
           status: "error",
         });
       } else {
         updateFlowStep(requestFlowStepId, {
-          label: "Request failed",
+          label: `Request failed: ${errorMessage}`,
           status: "error",
         });
       }
@@ -555,11 +556,12 @@ function BobPanel() {
       });
     } catch (err) {
       console.error("Failed to subscribe to notifications:", err);
-      setError(err instanceof Error ? err.message : "Failed to subscribe");
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
 
       updateTransaction(txId, {
         status: "error",
-        description: "Failed to subscribe to notifications",
+        description: `Failed to subscribe to notifications: ${errorMessage}`,
       });
     } finally {
       setIsStarting(false);

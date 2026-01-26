@@ -138,11 +138,12 @@ function AlicePanel() {
       }
     } catch (err) {
       console.error("Failed to fetch invoice:", err);
-      setError(err instanceof Error ? err.message : "Failed to fetch invoice");
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
 
       updateTransaction(txId, {
         status: "error",
-        description: "Failed to fetch invoice",
+        description: `Failed to fetch invoice: ${errorMessage}`,
       });
 
       // Update flow step to error
@@ -216,16 +217,17 @@ function AlicePanel() {
       setVerifyStatus("unknown");
     } catch (err) {
       console.error("Failed to pay:", err);
-      setError(err instanceof Error ? err.message : "Payment failed");
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
 
       updateTransaction(txId, {
         status: "error",
-        description: "Payment failed",
+        description: `Payment failed: ${errorMessage}`,
       });
 
       // Update flow step to error
       updateFlowStep(flowStepId, {
-        label: "Payment failed",
+        label: `Payment failed: ${errorMessage}`,
         status: "error",
       });
     } finally {
@@ -308,16 +310,17 @@ function AlicePanel() {
       }
     } catch (err) {
       console.error("Failed to verify:", err);
-      setError(err instanceof Error ? err.message : "Verification failed");
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
 
       updateTransaction(txId, {
         status: "error",
-        description: "Verification failed",
+        description: `Verification failed: ${errorMessage}`,
       });
 
       // Update flow step to error
       updateFlowStep(flowStepId, {
-        label: "Verify failed",
+        label: `Verify failed: ${errorMessage}`,
         status: "error",
       });
     } finally {

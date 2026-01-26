@@ -253,20 +253,21 @@ function BobPanel() {
       console.error("Subscription charge failed:", err);
       setError(err instanceof Error ? err.message : "Charge failed");
 
+      const errorMessage = err instanceof Error ? err.message : String(err);
       updateTransaction(txId, {
         status: "error",
-        description: "Subscription charge failed",
+        description: `Subscription charge failed: ${errorMessage}`,
       });
 
       // Update the appropriate flow step to error
       if (payFlowStepId) {
         updateFlowStep(payFlowStepId, {
-          label: "Payment failed",
+          label: `Payment failed: ${errorMessage}`,
           status: "error",
         });
       } else {
         updateFlowStep(requestFlowStepId, {
-          label: "Request failed",
+          label: `Request failed: ${errorMessage}`,
           status: "error",
         });
       }

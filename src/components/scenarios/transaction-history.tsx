@@ -107,12 +107,13 @@ function WalletTransactionHistory({ walletId }: WalletTransactionHistoryProps) {
       });
     } catch (err) {
       console.error('Failed to fetch transactions:', err);
-      setError(err instanceof Error ? err.message : 'Failed to fetch transactions');
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
 
       addLogTransaction({
         type: 'payment_failed',
         status: 'error',
-        description: `Failed to fetch ${persona.name}'s transaction history`,
+        description: `Failed to fetch ${persona.name}'s transaction history: ${errorMessage}`,
       });
     } finally {
       setIsLoading(false);

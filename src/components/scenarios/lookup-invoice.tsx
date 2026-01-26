@@ -121,9 +121,10 @@ function AlicePanel() {
       });
     } catch (error) {
       console.error("Failed to create invoice:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       updateTransaction(txId, {
         status: "error",
-        description: "Failed to create invoice",
+        description: `Failed to create invoice: ${errorMessage}`,
       });
     } finally {
       setIsCreating(false);
@@ -175,9 +176,10 @@ function AlicePanel() {
       });
     } catch (error) {
       console.error("Failed to lookup invoice:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       updateTransaction(txId, {
         status: "error",
-        description: "Failed to lookup invoice",
+        description: `Failed to lookup invoice: ${errorMessage}`,
       });
     } finally {
       setIsLookingUp(false);
@@ -434,14 +436,15 @@ function BobPanel() {
       setSharedInvoice(null, null);
     } catch (error) {
       console.error("Failed to pay invoice:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       updateTransaction(txId, {
         status: "error",
-        description: "Payment failed",
+        description: `Payment failed: ${errorMessage}`,
       });
 
       // Update flow step to error
       updateFlowStep(flowStepId, {
-        label: "Payment failed",
+        label: `Payment failed: ${errorMessage}`,
         status: "error",
       });
     } finally {

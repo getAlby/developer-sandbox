@@ -187,13 +187,12 @@ function AlicePanel() {
       unsubRef.current = unsub;
     } catch (err) {
       console.error("Failed to create hold invoice:", err);
-      setError(
-        err instanceof Error ? err.message : "Failed to create hold invoice",
-      );
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
 
       updateTransaction(txId, {
         status: "error",
-        description: "Failed to create hold invoice",
+        description: `Failed to create hold invoice: ${errorMessage}`,
       });
     } finally {
       setIsCreating(false);
@@ -654,16 +653,17 @@ function BobPanel() {
       });
     } catch (err) {
       console.error("Failed to pay:", err);
-      setError(err instanceof Error ? err.message : "Payment failed");
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
 
       updateTransaction(txId, {
         status: "error",
-        description: "Payment failed",
+        description: `Payment failed: ${errorMessage}`,
       });
 
       // Update flow step to error
       updateFlowStep(flowStepId, {
-        label: "Payment failed",
+        label: `Payment failed: ${errorMessage}`,
         status: "error",
       });
     } finally {

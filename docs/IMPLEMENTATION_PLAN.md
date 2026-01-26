@@ -180,14 +180,13 @@ While implementing, if there is something missing from the documentation (CLAUDE
 - [x] On the payment log there are logs of a Loader even when the payment has either failed or succeeded, this is confusing. (e.g. "Creating invoice..." which still shows a loading spinner when the next line is "Invoice created for 1000 sats" which shows a check)
 - [x] fix the flow diagram view (broken)
 - [x] fix the balance chart lines not showing
-- [ ] add a way to specify invoice expiry (toggle between 24 hours and 30 seconds) in the simple payment under the Description (Optional) field
+- [x] add a way to specify invoice expiry (toggle between 24 hours and 30 seconds) in the simple payment under the Description (Optional) field
 - [x] Add a REPL tab
 - [x] Add way to display & copy code for each step
 - [x] Split some unclear/combined steps (for example prism does not show fetching invoices to pay Charlie and David, LNURL-Pay does not show fetch) _Update: a single step supports multiple code snippets_
 - [x] Add support / contact link
 - [x] fix mobile responsiveness of visualization tabs
 - [x] Add prompt examples
-- [ ] Allow choosing the wallet topup amount (default 10,000 sats)
 - [ ] Add a way to copy NWC connection from a wallet card
 - [ ] Add a way to topup the wallet (via the faucet API)
 - [x] update URL to sandbox.albylabs.com
@@ -197,17 +196,17 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ## Progress Summary
 
-| Phase                             | Status         |
-| --------------------------------- | -------------- |
-| Phase 1: Foundation & Layout      | ✅ Complete    |
-| Phase 2: Wallet System            | ✅ Complete    |
-| Phase 3: Visualization Components | ✅ Complete    |
-| Phase 4: Scenario System          | ✅ Complete    |
-| Phase 5: Core Scenarios           | ✅ Complete    |
-| Phase 6: Advanced NWC Features    | ✅ Complete    |
-| Phase 7: Polish & UX              | ⬜ Not started |
-| Phase 8: Github Pages             | ✅ Complete    |
-| Phase 9: User Feedback            | ⬜ WIP         |
+| Phase                             | Status      |
+| --------------------------------- | ----------- |
+| Phase 1: Foundation & Layout      | ✅ Complete |
+| Phase 2: Wallet System            | ✅ Complete |
+| Phase 3: Visualization Components | ✅ Complete |
+| Phase 4: Scenario System          | ✅ Complete |
+| Phase 5: Core Scenarios           | ✅ Complete |
+| Phase 6: Advanced NWC Features    | ✅ Complete |
+| Phase 7: Polish & UX              | ✅ Complete |
+| Phase 8: Github Pages             | ✅ Complete |
+| Phase 9: User Feedback            | ⬜ WIP      |
 
 ---
 

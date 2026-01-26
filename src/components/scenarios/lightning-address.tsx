@@ -130,10 +130,11 @@ function BobPanel() {
       });
     } catch (err) {
       console.error("Failed to lookup address:", err);
-      setError("Failed to lookup Lightning Address");
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(`Failed to lookup Lightning Address: ${errorMessage}`);
       updateTransaction(txId, {
         status: "error",
-        description: "Failed to lookup Lightning Address",
+        description: `Failed to lookup Lightning Address: ${errorMessage}`,
       });
     }
   };
@@ -233,22 +234,23 @@ function BobPanel() {
       setAddressInfo(null);
     } catch (err) {
       console.error("Failed to pay:", err);
-      setError(err instanceof Error ? err.message : "Payment failed");
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
 
       updateTransaction(txId, {
         status: "error",
-        description: "Payment failed",
+        description: `Payment failed: ${errorMessage}`,
       });
 
       // Update the appropriate flow step to error
       if (payFlowStepId) {
         updateFlowStep(payFlowStepId, {
-          label: "Payment failed",
+          label: `Payment failed: ${errorMessage}`,
           status: "error",
         });
       } else {
         updateFlowStep(requestFlowStepId, {
-          label: "Request failed",
+          label: `Request failed: ${errorMessage}`,
           status: "error",
         });
       }
