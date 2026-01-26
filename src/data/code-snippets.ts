@@ -12,6 +12,7 @@ export type SnippetCategory =
  */
 export type SnippetId =
   // Getting Started
+  | "agent-skill"
   | "browser-console"
   | "available-globals"
   // Basics
@@ -68,6 +69,14 @@ export const SNIPPET_CATEGORIES: {
 ];
 
 export const CODE_SNIPPETS: CodeSnippet[] = [
+  {
+    id: "agent-skill",
+    title: "Alby Agent Skill",
+    description:
+      "Let your agent write the code for you, without making mistakes",
+    category: "getting-started",
+    code: "npx skills add getAlby/alby-agent-skill",
+  },
   // Getting Started
   {
     id: "browser-console",
