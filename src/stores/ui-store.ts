@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { SnippetCategory } from '@/data/code-snippets';
 
-type VisualizationTab = 'log' | 'flow' | 'chart' | 'snippets' | 'production';
+type VisualizationTab = 'log' | 'flow' | 'chart' | 'snippets' | 'prompts' | 'production';
 
 interface UIState {
   visualizationTab: VisualizationTab;

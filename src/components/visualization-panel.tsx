@@ -1,6 +1,20 @@
-import { FileText, GitBranch, LineChart, Code2, MessageSquareText, Rocket } from "lucide-react";
+import {
+  FileText,
+  GitBranch,
+  LineChart,
+  Code2,
+  MessageSquareText,
+  Rocket,
+} from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TransactionLog, FlowDiagram, BalanceChart, CodeSnippets, PromptsTab, ProductionWallet } from "./visualizations";
+import {
+  TransactionLog,
+  FlowDiagram,
+  BalanceChart,
+  CodeSnippets,
+  PromptsTab,
+  ProductionWallet,
+} from "./visualizations";
 import { useUIStore } from "@/stores";
 
 export function VisualizationPanel() {
@@ -9,7 +23,9 @@ export function VisualizationPanel() {
   return (
     <Tabs
       value={visualizationTab}
-      onValueChange={(value) => setVisualizationTab(value as typeof visualizationTab)}
+      onValueChange={(value) =>
+        setVisualizationTab(value as typeof visualizationTab)
+      }
       className="flex h-full flex-col py-4"
     >
       <div className="mx-4 overflow-x-auto">
@@ -32,7 +48,7 @@ export function VisualizationPanel() {
           </TabsTrigger>
           <TabsTrigger value="prompts" className="gap-2">
             <MessageSquareText className="h-4 w-4" />
-            <span className="hidden sm:inline">Prompts</span>
+            <span className="hidden sm:inline">Example Prompts</span>
           </TabsTrigger>
           <TabsTrigger value="production" className="gap-2">
             <Rocket className="h-4 w-4" />

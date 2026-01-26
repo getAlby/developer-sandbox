@@ -3,8 +3,6 @@ import {
   Check,
   X,
   Loader2,
-  ChevronDown,
-  ChevronRight,
   Copy,
   Code2,
   Trash2,

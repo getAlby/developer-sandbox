@@ -1,5 +1,11 @@
 export type ScenarioComplexity = "simplest" | "simple" | "medium" | "advanced";
 
+export interface ScenarioPrompt {
+  title: string;
+  description: string;
+  prompt: string;
+}
+
 export interface Scenario {
   id: string;
   title: string;
@@ -9,4 +15,5 @@ export interface Scenario {
   requiredWallets: string[];
   icon: string;
   howItWorks?: { title: string; description: string }[];
+  prompts?: ScenarioPrompt[];
 }

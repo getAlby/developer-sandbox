@@ -161,7 +161,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 - [x] Add tooltips explaining NWC concepts
 - [x] Display code snippets showing how each operation works
-- [ ] Display example prompts showing how to add a scenario to your app
+- [x] Display example prompts showing how to add a scenario to your app
 
 ### 7.3 Final Touches
 

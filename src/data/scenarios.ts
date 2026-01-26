@@ -11,6 +11,28 @@ const unorderedScenarios: Scenario[] = [
     complexity: "simplest",
     requiredWallets: ["alice", "bob"],
     icon: "💸",
+    prompts: [
+      {
+        title: "Pay-to-Continue Minesweeper",
+        description:
+          "Build a minesweeper game where hitting a mine lets you pay sats to resume instead of restarting.",
+        prompt: `Build a minesweeper game where the player can pay a Lightning invoice to continue after hitting a mine.
+
+Requirements:
+- A playable minesweeper grid (e.g. 10x10 with 15 mines)
+- Standard minesweeper rules: reveal tiles, flag mines, number hints
+- When the player hits a mine, show a "Game Over" overlay with two options:
+  - "Restart" (free, resets the board)
+  - "Continue" (costs sats, removes the mine and lets the player keep playing)
+- "Continue" generates a Lightning invoice, displays it as a QR code
+- After payment is confirmed, dismiss the overlay and let the player resume
+- Each continue costs more than the last (e.g. 10, 25, 50, 100 sats)
+- Show a scoreboard with total sats spent and tiles cleared
+- Use React and TypeScript
+
+The flow: Play → hit mine → pay invoice to continue or restart for free.`,
+      },
+    ],
   },
   {
     id: "lookup-invoice",
@@ -22,6 +44,26 @@ const unorderedScenarios: Scenario[] = [
     complexity: "simple",
     requiredWallets: ["alice", "bob"],
     icon: "🔎",
+    prompts: [
+      {
+        title: "Point of Sale Terminal",
+        description:
+          "Build a simple point-of-sale terminal that creates invoices and confirms payment in real time.",
+        prompt: `Build a point-of-sale (PoS) terminal that accepts Lightning payments.
+
+Requirements:
+- A keypad or input to enter the charge amount in sats
+- An optional description field for the item or order
+- A "Charge" button that creates an invoice and displays it as a large QR code
+- Poll the invoice status and show a clear "Pending..." indicator while waiting
+- When paid, show a success screen with a checkmark and the amount received
+- A "New Sale" button to reset and start the next transaction
+- Keep a list of completed sales for the current session
+- Use React and TypeScript
+
+The flow: Enter amount → charge → show QR → poll status → payment confirmed → ready for next sale.`,
+      },
+    ],
   },
   {
     id: "lnurl-verify",
@@ -33,6 +75,28 @@ const unorderedScenarios: Scenario[] = [
     complexity: "medium",
     requiredWallets: ["alice", "bob"],
     icon: "🔎",
+    prompts: [
+      {
+        title: "Tip Jar / Donation Page",
+        description:
+          "Build a public donation page that verifies tips were received using LNURL-verify.",
+        prompt: `Build a tip jar page where users send tips to a Lightning Address and the app verifies payment using LNURL-verify.
+
+Requirements:
+- Display a creator profile (name, avatar placeholder, bio)
+- Input field for tip amount in sats with preset buttons (100, 500, 1000, 5000 sats)
+- Optional message field from the tipper
+- Request an invoice from the creator's Lightning Address
+- Display the invoice as a QR code for the tipper to pay
+- Use the LNURL-verify URL returned with the invoice to poll for payment confirmation (no wallet access needed)
+- Show a thank you screen when LNURL-verify confirms the payment
+- Display a running list of verified tips
+- Use React and TypeScript
+- No backend is needed
+
+The flow: Choose amount → request invoice from Lightning Address → show QR → verify payment via LNURL-verify → show confirmation.`,
+      },
+    ],
   },
   {
     id: "lightning-address",
@@ -44,6 +108,26 @@ const unorderedScenarios: Scenario[] = [
     complexity: "simple",
     requiredWallets: ["alice", "bob"],
     icon: "🔌",
+    prompts: [
+      {
+        title: "Rewards App",
+        description:
+          "Build an app where users register their Lightning Address and earn sats for completing actions.",
+        prompt: `Build a rewards app that pays users to their Lightning Address when they complete actions.
+
+Requirements:
+- A registration form where users enter their name and Lightning Address
+- A list of available tasks/actions (e.g. "Complete survey", "Refer a friend", "Watch a video")
+- Each action has a reward amount in sats
+- When a user completes an action, pay out the reward to their Lightning Address
+- Show a confirmation with the payment details after each payout
+- Display a leaderboard of users and their total earnings
+- Store user profiles and completed actions in local state
+- Use React and TypeScript
+
+The flow: Register Lightning Address → complete an action → receive sats payout → see earnings on leaderboard.`,
+      },
+    ],
   },
   {
     id: "notifications",
@@ -55,6 +139,72 @@ const unorderedScenarios: Scenario[] = [
     complexity: "medium",
     requiredWallets: ["alice", "bob"],
     icon: "🔔",
+    prompts: [
+      {
+        title: "Streamer QR Donation Page",
+        description:
+          "Build a streamer overlay page that shows a QR code and plays alerts when payments arrive.",
+        prompt: `Build a streamer donation page with real-time payment alerts.
+
+Requirements:
+- Display a large QR code for the streamer's Lightning Address or a static invoice
+- Subscribe to payment notifications to react when payments arrive
+- When a payment is received, show an animated alert overlay with the amount and sender message
+- Play a sound effect on each new payment (use a simple beep or chime)
+- Keep a live feed of recent donations scrolling on screen
+- Show running total of donations received in the session
+- Use React and TypeScript
+
+The flow: Show QR → listener receives notification → animate alert → update donation feed.`,
+      },
+      {
+        title: "Zap Lamp",
+        description:
+          "Build a virtual zap lamp that lights up and animates every time a Lightning payment is received.",
+        prompt: `Build a virtual zap lamp that reacts to incoming Lightning payments with light animations.
+
+Requirements:
+- Display a large visual lamp or lightbulb in the center of the screen (use CSS/SVG, no images needed)
+- The lamp starts in an "off" or dim state
+- Subscribe to payment notifications on the connected wallet
+- When a payment is received:
+  - The lamp lights up with a bright glow animation
+  - The color and intensity scale with the payment amount (e.g. small payments = warm yellow, large payments = bright white or electric blue)
+  - Show the amount received as a floating label near the lamp
+  - The glow fades out after a few seconds
+- Display a payment counter and total sats received
+- Show a live feed of recent payments below the lamp
+- Include a "lamp status" indicator: idle, glowing, cooldown
+- Use React and TypeScript
+
+The flow: Connect wallet → subscribe to notifications → receive payment → lamp glows with amount-based intensity → fade back to idle.`,
+      },
+      {
+        title: "Lightning Goats",
+        description:
+          "Build a fun app where goats get fed every time a Lightning payment is received — inspired by the real Lightning Goats project.",
+        prompt: `Build a Lightning Goats app where incoming payments trigger a virtual goat feeding.
+
+Requirements:
+- Display a pasture scene with goat characters (use emoji 🐐 or simple CSS illustrations)
+- Show a feeding trough that starts empty
+- Subscribe to payment notifications on the connected wallet
+- When a payment is received:
+  - Animate food appearing in the trough (amount of food scales with sats received)
+  - Goats walk over to the trough and start eating with a fun animation
+  - Show a "+X sats" popup and a "Nom nom!" message
+  - Play a goat bleat sound effect (optional, use a simple audio tone as fallback)
+- Track feeding stats:
+  - Total sats received
+  - Number of feedings
+  - "Goat happiness" meter that increases with more feedings
+- Show a live log of recent feedings with timestamps and amounts
+- Include a shareable Lightning Address or QR code so anyone can feed the goats
+- Use React and TypeScript
+
+The flow: Display goat pasture → subscribe to notifications → receive payment → animate goat feeding → update stats → wait for next payment.`,
+      },
+    ],
   },
   {
     id: "subscription-payments",
@@ -83,6 +233,44 @@ const unorderedScenarios: Scenario[] = [
     complexity: "medium",
     requiredWallets: ["alice", "bob"],
     icon: "🔄",
+    prompts: [
+      {
+        title: "SaaS Subscription Manager",
+        description:
+          "Build a subscription service that charges users on a recurring schedule via their wallet connection.",
+        prompt: `Build a SaaS subscription manager that charges users recurring Lightning payments.
+
+Requirements:
+- A subscription plan selector (e.g. Basic 1000 sats/month, Pro 5000 sats/month)
+- User provides a wallet connection to authorize recurring charges
+- Service creates invoices on its own wallet and pays them using the user's connection
+- Display subscription status: active, payment due, payment failed
+- Show payment history with dates and amounts
+- A cancel subscription button that stops the recurring charges
+- Use React and TypeScript
+
+The flow: User selects plan → provides wallet connection → service charges on schedule → user sees payment history.`,
+      },
+      {
+        title: "Recurring Donation Platform",
+        description:
+          "Build a platform where users set up recurring donations to any Lightning Address.",
+        prompt: `Build a recurring donation platform that sends scheduled payments to a Lightning Address.
+
+Requirements:
+- Input field for the recipient's Lightning Address
+- Input field for the donation amount in sats
+- Frequency selector (e.g. every 10 seconds for demo, or daily/weekly/monthly)
+- A "Start Donations" button that begins the recurring schedule
+- Each interval, request an invoice from the Lightning Address and pay it
+- Show a live log of each donation sent with timestamp, amount, and status
+- Display a running total of sats donated
+- A "Stop" button to cancel the recurring donations
+- Use React and TypeScript
+
+The flow: Enter Lightning Address, amount, and frequency → start → auto-pay on schedule → see live donation log.`,
+      },
+    ],
   },
   {
     id: "hold-invoice",
@@ -111,6 +299,73 @@ const unorderedScenarios: Scenario[] = [
     complexity: "advanced",
     requiredWallets: ["alice", "bob"],
     icon: "🔒",
+    prompts: [
+      {
+        title: "Coinflip Game",
+        description:
+          "Build a provably fair coinflip game where two players bet sats using hold invoices as escrow, and the winner gets paid.",
+        prompt: `Build a provably fair coinflip game using hold invoices for escrow.
+
+Requirements:
+- Two players each provide a wallet connection
+- Each player commits a bet amount (must match)
+- The house creates a hold invoice for each player, and each player pays it (funds are locked, not yet settled)
+- Flip a coin (use a random number or hash-based fairness scheme)
+- The loser's hold invoice is settled (house collects the funds)
+- The winner's hold invoice is cancelled (refunded) and the house pays the winnings to the winner's Lightning Address
+- Display game state: waiting for bets, both paid, flipping, result, payout
+- Show provably fair verification details
+- Use React and TypeScript
+
+The flow: Both players bet → hold invoices lock funds → coin flips → loser's invoice settled → winner refunded + paid winnings → result shown.`,
+      },
+      {
+        title: "No Delivery, No Pay — Food Delivery",
+        description:
+          "Build a food delivery service where the customer's payment is held until delivery is confirmed, then settled or refunded.",
+        prompt: `Build a food delivery app that uses hold invoices so customers only pay if their order is delivered.
+
+Requirements:
+- Customer places an order by selecting items from a menu (e.g. burger 500 sats, pizza 800 sats, drink 200 sats)
+- The service creates a hold invoice for the order total
+- Customer pays the hold invoice — funds are locked but not yet settled
+- Display the order lifecycle with clear status steps:
+  - "Order placed" → "Payment held" → "Preparing" → "Out for delivery" → "Delivered" / "Cancelled"
+- A delivery driver panel with buttons to advance the order through each stage
+- If the driver marks the order as "Delivered":
+  - Settle the hold invoice (merchant receives the funds)
+  - Show a confirmation receipt to the customer
+- If the order is cancelled at any stage before delivery:
+  - Cancel the hold invoice (customer is refunded)
+  - Show a refund notice to the customer
+- Display a timer showing how long funds have been held
+- Use React and TypeScript
+
+The flow: Customer orders → pays hold invoice → funds locked → driver delivers → settle invoice, or cancel → refund customer.`,
+      },
+      {
+        title: "Lightning Liquidity Service (LSP)",
+        description:
+          "Build an LSP that opens a channel for a client, using a hold invoice so the client only pays if the channel is successfully opened.",
+        prompt: `Build a simulated Lightning Service Provider (LSP) that uses hold invoices so clients only pay if a channel is opened.
+
+Requirements:
+- Client requests a channel by specifying a desired capacity in sats (e.g. 50,000 or 100,000 sats)
+- The LSP calculates a fee (e.g. 1% of capacity) and creates a hold invoice for the fee amount
+- Client pays the hold invoice — funds are locked but not yet settled
+- Display the channel opening lifecycle:
+  - "Fee invoice paid" → "Opening channel..." → "Channel confirmed" / "Channel failed"
+- An LSP operator panel with controls to simulate:
+  - "Channel Opened" — settles the hold invoice, LSP keeps the fee
+  - "Channel Failed" — cancels the hold invoice, client is refunded
+- Show channel details when opened: capacity, channel ID (simulated), node public key
+- If the hold invoice times out before a decision, it is automatically cancelled (refund)
+- Display both client and LSP perspectives side by side
+- Use React and TypeScript
+
+The flow: Client requests channel → pays hold invoice fee → LSP attempts to open channel → if opened, settle (LSP keeps fee) → if failed, cancel (client refunded).`,
+      },
+    ],
   },
   {
     id: "decode-bolt11-invoice",
@@ -122,6 +377,52 @@ const unorderedScenarios: Scenario[] = [
     complexity: "medium",
     requiredWallets: [],
     icon: "🔍",
+    prompts: [
+      {
+        title: "Invoice Inspector Tool",
+        description:
+          "Build a developer tool that decodes and displays all fields of a BOLT-11 Lightning invoice.",
+        prompt: `Build a Lightning invoice inspector/decoder tool.
+
+Requirements:
+- A text input where users can paste a BOLT-11 invoice string
+- Decode the invoice and display all fields in a clear, labeled format:
+  - Amount (in sats and millisats)
+  - Description / purpose
+  - Payment hash
+  - Payee public key
+  - Expiry time and whether it's expired
+  - Creation timestamp
+  - Route hints (if any)
+- Add a "Copy" button for each field value
+- Highlight if the invoice is expired
+- Use React and TypeScript
+
+The flow: Paste invoice → decode → display all fields with labels and copy buttons.`,
+      },
+      {
+        title: "Verify Customer Payout Invoice",
+        description:
+          "Build a service that accepts a customer-provided invoice and verifies its amount and expiry before paying it out.",
+        prompt: `Build a payout verification service that decodes and validates a customer-submitted Lightning invoice before paying it.
+
+Requirements:
+- A form where the customer pastes their BOLT-11 invoice
+- The service has a preconfigured expected payout amount (e.g. set via an input or dropdown: 1000, 5000, 10000 sats)
+- On submission, decode the invoice and display the parsed fields: amount, description, expiry, and payment hash
+- Validate the invoice against business rules:
+  - Amount must exactly match the expected payout amount — reject if it differs
+  - Invoice must not be expired — reject if the expiry time has passed
+  - Invoice must have enough remaining time before expiry (e.g. at least 60 seconds) — warn or reject if too close
+- Show a clear pass/fail status for each validation check with green checkmarks or red crosses
+- If all checks pass, show an "Approve & Pay" button that pays the invoice
+- If any check fails, show an error summary explaining what went wrong and do not allow payment
+- Display the result after payment (success or failure)
+- Use React and TypeScript
+
+The flow: Set expected payout amount → customer pastes invoice → decode → validate amount and expiry → approve and pay or reject with reason.`,
+      },
+    ],
   },
   {
     id: "proof-of-payment",
@@ -133,6 +434,30 @@ const unorderedScenarios: Scenario[] = [
     complexity: "medium",
     requiredWallets: [],
     icon: "✅",
+    prompts: [
+      {
+        title: "Secret Exchange",
+        description:
+          "Build an atomic secret exchange where the seller encrypts data with the preimage and the buyer decrypts it after payment.",
+        prompt: `Build an atomic secret exchange where paying a Lightning invoice reveals the key to decrypt a secret.
+
+Requirements:
+- The seller has secret data (e.g. an API key, download link, or password)
+- The seller generates a random preimage, then encrypts the secret data using the preimage as the symmetric encryption key (e.g. AES-256)
+- The seller also publishes a hash of the plaintext secret, so the buyer can verify correctness after decryption
+- The seller creates an invoice from the preimage hash and shares the encrypted data + plaintext hash + invoice with the buyer
+- The buyer sees the item description, price, encrypted blob, and plaintext hash — but cannot read the secret yet
+- The buyer pays the invoice
+- The payment preimage is atomically revealed upon successful payment
+- The buyer uses the preimage to decrypt the secret data
+- The buyer hashes the decrypted result and compares it to the published plaintext hash to verify they got the correct data
+- Display the decryption step-by-step: preimage → decrypt → verify hash → show secret
+- Note: the plaintext hash commitment makes fraud provable after the fact — the buyer can show that the decrypted data doesn't match the committed hash
+- Use React and TypeScript
+
+The flow: Seller encrypts secret with preimage, publishes ciphertext + plaintext hash → buyer pays → preimage revealed → buyer decrypts and verifies.`,
+      },
+    ],
   },
   // {
   //   id: "transaction-history",
@@ -181,6 +506,29 @@ const unorderedScenarios: Scenario[] = [
     complexity: "medium",
     requiredWallets: ["alice", "bob", "charlie"],
     icon: "🔀",
+    prompts: [
+      {
+        title: "Income Splitter",
+        description:
+          "Build a service that receives payments and automatically forwards a percentage to another Lightning Address.",
+        prompt: `Build an income splitter service that forwards a percentage of incoming payments.
+
+Requirements:
+- Configuration panel to set:
+  - Forwarding recipient (Lightning Address)
+  - Forwarding percentage (e.g. 80%)
+  - Reserve percentage for routing fees (e.g. 1%)
+- Subscribe to incoming payment notifications
+- When a payment is received:
+  - Calculate the forwarding amount based on the configured percentage
+  - Request an invoice from the recipient's Lightning Address and pay it
+- Display a live log of received payments and forwarded amounts
+- Show a running summary: total received, total forwarded, total retained
+- Use React and TypeScript
+
+The flow: Configure split → receive payment → calculate forward amount → pay to Lightning Address → log result.`,
+      },
+    ],
   },
   {
     id: "payment-prisms",
@@ -209,6 +557,30 @@ const unorderedScenarios: Scenario[] = [
     complexity: "advanced",
     requiredWallets: ["alice", "bob", "charlie", "david"],
     icon: "🔺",
+    prompts: [
+      {
+        title: "Band Revenue Splitter",
+        description:
+          "Build a payment page for a band that automatically splits incoming payments among all members.",
+        prompt: `Build a band revenue splitter that distributes incoming payments to multiple members.
+
+Requirements:
+- Configuration panel to set up band members:
+  - Each member has a name, Lightning Address, and split percentage
+  - Support 2-5 members
+  - Percentages must total 100% (minus a reserve for routing fees)
+- A payment page that shows the band name and a QR code / Lightning Address for receiving payments
+- Subscribe to incoming payment notifications
+- When a payment is received:
+  - Calculate each member's share based on their percentage
+  - Request invoices from each member's Lightning Address and pay them
+- Display a live split log showing each distribution
+- Show per-member totals and an overall summary
+- Use React and TypeScript
+
+The flow: Configure members & splits → receive payment → calculate shares → pay each member → log distributions.`,
+      },
+    ],
   },
   {
     id: "fiat-conversion",
@@ -219,6 +591,24 @@ const unorderedScenarios: Scenario[] = [
     complexity: "simple",
     requiredWallets: [],
     icon: "💱",
+    prompts: [
+      {
+        title: "Bitcoin Price Converter",
+        description:
+          "Build a real-time converter tool between sats and multiple fiat currencies.",
+        prompt: `Build a Bitcoin/sats to fiat currency converter.
+
+Requirements:
+- Input field for an amount in sats
+- Dropdown to select fiat currency (USD, EUR, GBP, JPY, etc.)
+- Display the converted fiat amount in real time as the user types
+- Also support reverse conversion: input fiat amount, show equivalent in sats
+- Show the current exchange rate (sats per dollar, etc.)
+- Use React and TypeScript
+
+The flow: Enter amount → select currency → see converted value in real time.`,
+      },
+    ],
   },
 ];
 
