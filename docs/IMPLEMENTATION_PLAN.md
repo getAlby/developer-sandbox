@@ -159,8 +159,7 @@ While implementing, if there is something missing from the documentation (CLAUDE
 
 ### 7.2 Educational Enhancements
 
-- [ ] Add tooltips explaining NWC concepts
-- [ ] Add "Learn More" links to Alby documentation
+- [x] Add tooltips explaining NWC concepts
 - [x] Display code snippets showing how each operation works
 - [ ] Display example prompts showing how to add a scenario to your app
 

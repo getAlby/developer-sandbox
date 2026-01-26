@@ -392,7 +392,7 @@ function AlicePanel() {
             <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-sm text-blue-800 dark:text-blue-200">
               <p>
                 Hold invoices allow conditional payments. You control when to
-                release or refund the funds.
+                settle or refund the funds.
               </p>
             </div>
 

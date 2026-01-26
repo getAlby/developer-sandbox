@@ -1,10 +1,25 @@
 import { useState, useEffect, useRef } from "react";
-import { Loader2, Wallet, Unplug, Rocket, Mail, Plug } from "lucide-react";
+import {
+  Loader2,
+  Wallet,
+  Unplug,
+  Rocket,
+  Mail,
+  Plug,
+  Lightbulb,
+  X,
+  ExternalLink,
+} from "lucide-react";
 import { NWCClient } from "@getalby/sdk/nwc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import type { Wallet as WalletType } from "@/types";
 import { useWalletStore, useTransactionStore } from "@/stores";
 import { useFiatValue } from "@/hooks/use-fiat";
@@ -160,7 +175,7 @@ export function WalletCard({ wallet }: WalletCardProps) {
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">
             <span className="text-2xl">{wallet.emoji}</span>
-            <span>{wallet.name}'s Wallet</span>
+            <span>{wallet.name}</span>
           </CardTitle>
           <StatusBadge status={wallet.status} />
         </div>
@@ -214,6 +229,7 @@ interface ConnectedStateProps {
 
 function ConnectedState({ wallet, onDisconnect }: ConnectedStateProps) {
   const fiatValue = useFiatValue(wallet.balance ?? 0);
+  const [nwcInfoOpen, setNwcInfoOpen] = useState(false);
 
   return (
     <>
@@ -221,6 +237,43 @@ function ConnectedState({ wallet, onDisconnect }: ConnectedStateProps) {
         <div className="flex items-center gap-2 text-muted-foreground text-sm">
           <Wallet className="h-4 w-4" />
           <span>NWC</span>
+          <Popover open={nwcInfoOpen} onOpenChange={setNwcInfoOpen}>
+            <PopoverTrigger asChild>
+              <button
+                className="inline-flex items-center justify-center rounded-full bg-yellow-500/20 p-1 text-yellow-600 hover:bg-yellow-500/30 dark:text-yellow-400 dark:hover:bg-yellow-500/40 transition-colors"
+                aria-label="Learn about NWC"
+              >
+                <Lightbulb className="h-3.5 w-3.5" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 text-sm">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-medium">Nostr Wallet Connect</h4>
+                  <button
+                    onClick={() => setNwcInfoOpen(false)}
+                    className="rounded-sm opacity-70 hover:opacity-100 transition-opacity"
+                    aria-label="Close"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+                <p className="text-muted-foreground">
+                  Nostr Wallet Connect (NWC) is an open protocol to connect
+                  lightning wallets to apps
+                </p>
+                <a
+                  href="https://nwc.dev"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-primary hover:underline font-medium"
+                >
+                  Learn more at nwc.dev
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
         <div className="text-2xl font-bold">
           {wallet.balance?.toLocaleString() ?? "—"} sats
