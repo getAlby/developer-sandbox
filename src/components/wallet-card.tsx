@@ -9,6 +9,9 @@ import {
   Lightbulb,
   X,
   ExternalLink,
+  MoreVertical,
+  Copy,
+  CreditCard,
 } from "lucide-react";
 import { NWCClient } from "@getalby/sdk/nwc";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +23,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import type { Wallet as WalletType } from "@/types";
 import { useWalletStore, useTransactionStore } from "@/stores";
 import { useFiatValue } from "@/hooks/use-fiat";
@@ -160,6 +169,32 @@ export function WalletCard({ wallet }: WalletCardProps) {
     }
   };
 
+  const handleTopUp = async () => {
+    const username = wallet.lightningAddress?.split("@")[0];
+    if (!username) return;
+
+    try {
+      const response = await fetch(
+        `https://faucet.nwc.dev/wallets/${username}/topup?amount=10000`,
+        { method: "POST" },
+      );
+      if (!response.ok) {
+        throw new Error("Top-up request failed");
+      }
+
+      // Refresh balance from the NWC client
+      const client = getNWCClient(wallet.id);
+      if (client) {
+        const { balance: balanceMillisats } = await client.getBalance();
+        const balanceSats = Math.floor(balanceMillisats / 1000);
+        setWalletBalance(wallet.id, balanceSats);
+        addBalanceSnapshot({ walletId: wallet.id, balance: balanceSats });
+      }
+    } catch (error) {
+      console.error("Failed to top up wallet:", error);
+    }
+  };
+
   const handleDisconnect = () => {
     disconnectWallet(wallet.id);
   };
@@ -177,13 +212,49 @@ export function WalletCard({ wallet }: WalletCardProps) {
             <span className="text-2xl">{wallet.emoji}</span>
             <span>{wallet.name}</span>
           </CardTitle>
-          <StatusBadge status={wallet.status} />
+          <div className="flex items-center gap-2">
+            <StatusBadge status={wallet.status} />
+            {isConnected && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 -mr-4 -ml-1"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                    <span className="sr-only">Wallet options</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    onClick={() => {
+                      if (wallet.connectionString) {
+                        navigator.clipboard.writeText(wallet.connectionString);
+                      }
+                    }}
+                  >
+                    <Copy className="mr-2 h-4 w-4" />
+                    Copy Connection Secret
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleTopUp}>
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Top Up Wallet
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleDisconnect}>
+                    <Unplug className="mr-2 h-4 w-4" />
+                    Disconnect Wallet
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
         </div>
       </CardHeader>
 
       <CardContent className="flex-1 space-y-4">
         {isConnected ? (
-          <ConnectedState wallet={wallet} onDisconnect={handleDisconnect} />
+          <ConnectedState wallet={wallet} />
         ) : (
           <DisconnectedState
             wallet={wallet}
@@ -224,10 +295,9 @@ function StatusBadge({ status }: { status: WalletType["status"] }) {
 
 interface ConnectedStateProps {
   wallet: WalletType;
-  onDisconnect: () => void;
 }
 
-function ConnectedState({ wallet, onDisconnect }: ConnectedStateProps) {
+function ConnectedState({ wallet }: ConnectedStateProps) {
   const fiatValue = useFiatValue(wallet.balance ?? 0);
   const [nwcInfoOpen, setNwcInfoOpen] = useState(false);
 
@@ -286,16 +356,6 @@ function ConnectedState({ wallet, onDisconnect }: ConnectedStateProps) {
           </div>
         )}
       </div>
-
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={onDisconnect}
-        className="w-full"
-      >
-        <Unplug className="mr-2 h-4 w-4" />
-        Disconnect Wallet
-      </Button>
     </>
   );
 }
