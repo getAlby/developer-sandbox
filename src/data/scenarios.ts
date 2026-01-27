@@ -31,6 +31,7 @@ Requirements:
 - Each continue costs more than the last (e.g. 10, 25, 50, 100 sats)
 - Show a scoreboard with total sats spent and tiles cleared
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Play → hit mine → pay invoice to continue or restart for free.`,
       },
@@ -63,6 +64,7 @@ Requirements:
 - A "New Sale" button to reset and start the next transaction
 - Keep a list of completed sales for the current session
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Enter amount → charge → show QR → poll status → payment confirmed → ready for next sale.`,
       },
@@ -96,6 +98,7 @@ Requirements:
 - Show a thank you screen when LNURL-verify confirms the payment
 - Display a running list of verified tips
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 - No backend is needed
 
 The flow: Choose amount → request invoice from Lightning Address → show QR → verify payment via LNURL-verify → show confirmation.`,
@@ -129,6 +132,7 @@ Requirements:
 - Display a leaderboard of users and their total earnings
 - Store user profiles and completed actions in local state
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Register Lightning Address → complete an action → receive sats payout → see earnings on leaderboard.`,
       },
@@ -160,6 +164,7 @@ Requirements:
 - Keep a live feed of recent donations scrolling on screen
 - Show running total of donations received in the session
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Show QR → listener receives notification → animate alert → update donation feed.`,
       },
@@ -182,6 +187,7 @@ Requirements:
 - Show a live feed of recent payments below the lamp
 - Include a "lamp status" indicator: idle, glowing, cooldown
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Connect wallet → subscribe to notifications → receive payment → lamp glows with amount-based intensity → fade back to idle.`,
       },
@@ -207,6 +213,7 @@ Requirements:
 - Show a live log of recent feedings with timestamps and amounts
 - Include a shareable Lightning Address or QR code so anyone can feed the goats
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Display goat pasture → subscribe to notifications → receive payment → animate goat feeding → update stats → wait for next payment.`,
       },
@@ -255,6 +262,7 @@ Requirements:
 - Show payment history with dates and amounts
 - A cancel subscription button that stops the recurring charges
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: User selects plan → provides wallet connection → service charges on schedule → user sees payment history.`,
       },
@@ -274,6 +282,7 @@ Requirements:
 - Display a running total of sats donated
 - A "Stop" button to cancel the recurring donations
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Enter Lightning Address, amount, and frequency → start → auto-pay on schedule → see live donation log.`,
       },
@@ -324,6 +333,7 @@ Requirements:
 - Display game state: waiting for bets, both paid, flipping, result, payout
 - Show provably fair verification details
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Both players bet → hold invoices lock funds → coin flips → loser's invoice settled → winner refunded + paid winnings → result shown.`,
       },
@@ -348,6 +358,7 @@ Requirements:
   - Show a refund notice to the customer
 - Display a timer showing how long funds have been held
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Customer orders → pays hold invoice → funds locked → driver delivers → settle invoice, or cancel → refund customer.`,
       },
@@ -370,6 +381,7 @@ Requirements:
 - If the hold invoice times out before a decision, it is automatically cancelled (refund)
 - Display both client and LSP perspectives side by side
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Client requests channel → pays hold invoice fee → LSP attempts to open channel → if opened, settle (LSP keeps fee) → if failed, cancel (client refunded).`,
       },
@@ -406,6 +418,7 @@ Requirements:
 - Add a "Copy" button for each field value
 - Highlight if the invoice is expired
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Paste invoice → decode → display all fields with labels and copy buttons.`,
       },
@@ -428,6 +441,7 @@ Requirements:
 - If any check fails, show an error summary explaining what went wrong and do not allow payment
 - Display the result after payment (success or failure)
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Set expected payout amount → customer pastes invoice → decode → validate amount and expiry → approve and pay or reject with reason.`,
       },
@@ -464,6 +478,7 @@ Requirements:
 - Display the decryption step-by-step: preimage → decrypt → verify hash → show secret
 - Note: the plaintext hash commitment makes fraud provable after the fact — the buyer can show that the decrypted data doesn't match the committed hash
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Seller encrypts secret with preimage, publishes ciphertext + plaintext hash → buyer pays → preimage revealed → buyer decrypts and verifies.`,
       },
@@ -536,6 +551,7 @@ Requirements:
 - Display a live log of received payments and forwarded amounts
 - Show a running summary: total received, total forwarded, total retained
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Configure split → receive payment → calculate forward amount → pay to Lightning Address → log result.`,
       },
@@ -589,6 +605,7 @@ Requirements:
 - Display a live split log showing each distribution
 - Show per-member totals and an overall summary
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Configure members & splits → receive payment → calculate shares → pay each member → log distributions.`,
       },
@@ -618,6 +635,7 @@ Requirements:
 - Also support reverse conversion: input fiat amount, show equivalent in sats
 - Show the current exchange rate (sats per dollar, etc.)
 - Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
 
 The flow: Enter amount → select currency → see converted value in real time.`,
       },
