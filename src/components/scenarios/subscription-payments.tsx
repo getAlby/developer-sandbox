@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Loader2, Play, Square, Zap, Mail } from "lucide-react";
+import { Loader2, Play, Square, Zap } from "lucide-react";
 import { LightningAddress } from "@getalby/lightning-tools";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -392,7 +392,7 @@ function BobPanel() {
       <CardContent className="space-y-4">
         {bobWallet?.lightningAddress && (
           <div className="flex items-center gap-2 p-2 bg-muted rounded-lg text-sm">
-            <Mail className="h-4 w-4 text-muted-foreground" />
+            <Zap className="h-4 w-4 text-muted-foreground" />
             <span className="font-mono text-xs">
               {bobWallet.lightningAddress}
             </span>

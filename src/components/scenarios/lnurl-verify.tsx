@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import {
   Loader2,
   Send,
-  Mail,
+  Zap,
   CheckCircle,
   Clock,
   XCircle,
@@ -561,7 +561,7 @@ function BobPanel() {
         {bobWallet?.lightningAddress ? (
           <div className="space-y-3">
             <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
-              <Mail className="h-5 w-5 text-primary" />
+              <Zap className="h-5 w-5 text-primary" />
               <span className="font-mono text-sm">
                 {bobWallet.lightningAddress}
               </span>

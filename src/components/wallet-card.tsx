@@ -4,7 +4,7 @@ import {
   Wallet,
   Unplug,
   Rocket,
-  Mail,
+  Zap,
   Plug,
   Lightbulb,
   X,
@@ -351,7 +351,7 @@ function ConnectedState({ wallet }: ConnectedStateProps) {
         <div className="text-sm text-muted-foreground">{fiatValue}</div>
         {wallet.lightningAddress && (
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Mail className="h-3 w-3" />
+            <Zap className="h-3 w-3" />
             <span className="truncate">{wallet.lightningAddress}</span>
           </div>
         )}

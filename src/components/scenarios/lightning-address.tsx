@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Loader2, Send, Mail, AtSign } from "lucide-react";
+import { Loader2, Send, Zap, AtSign } from "lucide-react";
 import { LightningAddress } from "@getalby/lightning-tools";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,7 +43,7 @@ function AlicePanel() {
 
         {aliceWallet?.lightningAddress ? (
           <div className="flex items-center gap-2 p-3 bg-muted rounded-lg">
-            <Mail className="h-5 w-5 text-primary" />
+            <Zap className="h-5 w-5 text-primary" />
             <span className="font-mono text-sm">
               {aliceWallet.lightningAddress}
             </span>
