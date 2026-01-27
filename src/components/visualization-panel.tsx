@@ -32,28 +32,28 @@ export function VisualizationPanel() {
       <div className="mx-4 overflow-x-auto">
         <TabsList className="w-fit">
           <TabsTrigger value="log" className="gap-2">
-            <FileText className="h-4 w-4" />
-            <span className="hidden sm:inline">Log</span>
+            <FileText className="h-4 w-4 shrink-0" />
+            Log
           </TabsTrigger>
           <TabsTrigger value="flow" className="gap-2">
-            <GitBranch className="h-4 w-4" />
-            <span className="hidden sm:inline">Flow Diagram</span>
+            <GitBranch className="h-4 w-4 shrink-0" />
+            Flow Diagram
           </TabsTrigger>
           <TabsTrigger value="chart" className="gap-2">
-            <LineChart className="h-4 w-4" />
-            <span className="hidden sm:inline">Balance Chart</span>
+            <LineChart className="h-4 w-4 shrink-0" />
+            Balance Chart
           </TabsTrigger>
           <TabsTrigger value="snippets" className="gap-2">
-            <Code2 className="h-4 w-4" />
-            <span className="hidden sm:inline">Code</span>
+            <Code2 className="h-4 w-4 shrink-0" />
+            Code
           </TabsTrigger>
           <TabsTrigger value="prompts" className="gap-2">
-            <MessageSquareText className="h-4 w-4" />
-            <span className="hidden sm:inline">Example Prompts</span>
+            <MessageSquareText className="h-4 w-4 shrink-0" />
+            Example Prompts
           </TabsTrigger>
           <TabsTrigger value="production" className="gap-2">
-            <Rocket className="h-4 w-4" />
-            <span className="hidden sm:inline">Production</span>
+            <Rocket className="h-4 w-4 shrink-0" />
+            Production
           </TabsTrigger>
         </TabsList>
       </div>
