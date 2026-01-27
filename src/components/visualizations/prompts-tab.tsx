@@ -1,12 +1,33 @@
 import { useState } from 'react';
-import { Copy, Check, MessageSquareText, Terminal } from 'lucide-react';
+import {
+  Play,
+  Rocket,
+  List,
+  Copy,
+  Check,
+  MessageSquareText,
+  Terminal,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useScenarioStore } from '@/stores';
+import { useScenarioStore, useUIStore } from '@/stores';
+import {
+  PROMPT_CATEGORIES,
+  getAllPrompts,
+  type PromptCategory,
+  type PromptWithScenario,
+} from '@/data/prompts';
 import type { ScenarioPrompt } from '@/types';
+import { cn } from '@/lib/utils';
+
+const CATEGORY_ICONS: Record<PromptCategory, React.ReactNode> = {
+  'this-scenario': <Play className="h-4 w-4" />,
+  'getting-started': <Rocket className="h-4 w-4" />,
+  'all-scenarios': <List className="h-4 w-4" />,
+};
 
 const SKILL_COMMAND = 'npx skills add getAlby/alby-agent-skill';
 
-function GettingStarted() {
+function GettingStartedCard() {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -56,33 +77,75 @@ function GettingStarted() {
 }
 
 export function PromptsTab() {
+  const { promptCategory, setPromptCategory } = useUIStore();
   const { currentScenario } = useScenarioStore();
-  const prompts = currentScenario.prompts;
 
-  if (!prompts || prompts.length === 0) {
-    return (
-      <div className="flex h-full items-center justify-center text-muted-foreground">
-        <div className="text-center">
-          <MessageSquareText className="h-8 w-8 mx-auto mb-2 opacity-50" />
-          <p className="text-sm">No prompts available for this scenario.</p>
-        </div>
-      </div>
-    );
-  }
+  const isGettingStarted = promptCategory === 'getting-started';
+
+  const prompts: (ScenarioPrompt | PromptWithScenario)[] =
+    promptCategory === 'this-scenario'
+      ? currentScenario.prompts ?? []
+      : promptCategory === 'all-scenarios'
+        ? getAllPrompts()
+        : [];
 
   return (
-    <div className="h-full overflow-y-auto p-4">
-      <div className="space-y-4">
-        <GettingStarted />
-        {prompts.map((prompt, index) => (
-          <PromptCard key={index} prompt={prompt} />
-        ))}
+    <div className="flex h-full flex-col sm:flex-row">
+      {/* Category Sidebar */}
+      <div className="border-b sm:border-b-0 sm:border-r flex-shrink-0 sm:w-48 overflow-x-auto sm:overflow-x-hidden sm:overflow-y-auto">
+        <div className="flex sm:flex-col p-2 gap-1 sm:space-y-1 sm:gap-0">
+          {PROMPT_CATEGORIES.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setPromptCategory(category.id)}
+              className={cn(
+                'flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors text-left whitespace-nowrap flex-shrink-0',
+                promptCategory === category.id
+                  ? 'bg-primary text-primary-foreground'
+                  : 'hover:bg-muted'
+              )}
+            >
+              {CATEGORY_ICONS[category.id]}
+              <span>{category.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto p-4 min-h-0">
+        {isGettingStarted ? (
+          <GettingStartedCard />
+        ) : prompts.length === 0 ? (
+          <div className="flex h-full items-center justify-center text-muted-foreground">
+            <div className="text-center">
+              <MessageSquareText className="h-8 w-8 mx-auto mb-2 opacity-50" />
+              <p className="text-sm">No prompts available for this scenario.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {prompts.map((prompt, index) => (
+              <PromptCard
+                key={index}
+                prompt={prompt}
+                showScenario={promptCategory === 'all-scenarios'}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function PromptCard({ prompt }: { prompt: ScenarioPrompt }) {
+function PromptCard({
+  prompt,
+  showScenario,
+}: {
+  prompt: ScenarioPrompt | PromptWithScenario;
+  showScenario?: boolean;
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -95,11 +158,19 @@ function PromptCard({ prompt }: { prompt: ScenarioPrompt }) {
     }
   };
 
+  const scenarioInfo =
+    showScenario && 'scenarioTitle' in prompt ? prompt : null;
+
   return (
     <div className="border rounded-lg overflow-hidden">
       {/* Header */}
       <div className="flex items-start sm:items-center justify-between gap-2 p-3 bg-muted/30">
         <div className="min-w-0">
+          {scenarioInfo && (
+            <p className="text-xs text-muted-foreground mb-1">
+              {scenarioInfo.scenarioIcon} {scenarioInfo.scenarioTitle}
+            </p>
+          )}
           <h3 className="font-medium text-sm">{prompt.title}</h3>
           <p className="text-xs text-muted-foreground mt-0.5">
             {prompt.description}
