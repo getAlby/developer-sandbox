@@ -22,6 +22,7 @@ export function VisualizationPanel() {
 
   return (
     <Tabs
+      id="visualization-panel"
       value={visualizationTab}
       onValueChange={(value) =>
         setVisualizationTab(value as typeof visualizationTab)

@@ -1,4 +1,5 @@
 import type { Scenario, ScenarioComplexity } from "@/types";
+import type { SnippetId } from "@/data/code-snippets";
 
 const unorderedScenarios: Scenario[] = [
   {
@@ -11,6 +12,7 @@ const unorderedScenarios: Scenario[] = [
     complexity: "simplest",
     requiredWallets: ["alice", "bob"],
     icon: "💸",
+    snippetIds: ["make-invoice", "pay-invoice"] satisfies SnippetId[],
     prompts: [
       {
         title: "Pay-to-Continue Minesweeper",
@@ -44,6 +46,7 @@ The flow: Play → hit mine → pay invoice to continue or restart for free.`,
     complexity: "simple",
     requiredWallets: ["alice", "bob"],
     icon: "🔎",
+    snippetIds: ["make-invoice", "lookup-invoice", "pay-invoice"] satisfies SnippetId[],
     prompts: [
       {
         title: "Point of Sale Terminal",
@@ -75,6 +78,7 @@ The flow: Enter amount → charge → show QR → poll status → payment confir
     complexity: "medium",
     requiredWallets: ["alice", "bob"],
     icon: "🔎",
+    snippetIds: ["request-invoice-from-address", "pay-invoice", "lnurl-verify"] satisfies SnippetId[],
     prompts: [
       {
         title: "Tip Jar / Donation Page",
@@ -108,6 +112,7 @@ The flow: Choose amount → request invoice from Lightning Address → show QR �
     complexity: "simple",
     requiredWallets: ["alice", "bob"],
     icon: "🔌",
+    snippetIds: ["fetch-lightning-address", "request-invoice-from-address", "pay-lightning-address", "pay-invoice"] satisfies SnippetId[],
     prompts: [
       {
         title: "Rewards App",
@@ -139,6 +144,7 @@ The flow: Register Lightning Address → complete an action → receive sats pay
     complexity: "medium",
     requiredWallets: ["alice", "bob"],
     icon: "🔔",
+    snippetIds: ["subscribe-notifications", "request-invoice-from-address", "pay-lightning-address", "pay-invoice"] satisfies SnippetId[],
     prompts: [
       {
         title: "Streamer QR Donation Page",
@@ -233,6 +239,7 @@ The flow: Display goat pasture → subscribe to notifications → receive paymen
     complexity: "medium",
     requiredWallets: ["alice", "bob"],
     icon: "🔄",
+    snippetIds: ["subscribe-notifications", "request-invoice-from-address", "pay-lightning-address", "pay-invoice"] satisfies SnippetId[],
     prompts: [
       {
         title: "SaaS Subscription Manager",
@@ -299,6 +306,7 @@ The flow: Enter Lightning Address, amount, and frequency → start → auto-pay 
     complexity: "advanced",
     requiredWallets: ["alice", "bob"],
     icon: "🔒",
+    snippetIds: ["hold-invoice", "subscribe-hold-notifications", "hold-invoice-settle", "hold-invoice-cancel", "pay-invoice"] satisfies SnippetId[],
     prompts: [
       {
         title: "Coinflip Game",
@@ -377,6 +385,7 @@ The flow: Client requests channel → pays hold invoice fee → LSP attempts to 
     complexity: "medium",
     requiredWallets: [],
     icon: "🔍",
+    snippetIds: ["decode-invoice"] satisfies SnippetId[],
     prompts: [
       {
         title: "Invoice Inspector Tool",
@@ -434,6 +443,7 @@ The flow: Set expected payout amount → customer pastes invoice → decode → 
     complexity: "medium",
     requiredWallets: [],
     icon: "✅",
+    snippetIds: ["make-invoice", "pay-invoice", "validate-preimage"] satisfies SnippetId[],
     prompts: [
       {
         title: "Secret Exchange",
@@ -506,6 +516,7 @@ The flow: Seller encrypts secret with preimage, publishes ciphertext + plaintext
     complexity: "medium",
     requiredWallets: ["alice", "bob", "charlie"],
     icon: "🔀",
+    snippetIds: ["subscribe-notifications", "request-invoice-from-address", "pay-lightning-address", "pay-invoice"] satisfies SnippetId[],
     prompts: [
       {
         title: "Income Splitter",
@@ -557,6 +568,7 @@ The flow: Configure split → receive payment → calculate forward amount → p
     complexity: "advanced",
     requiredWallets: ["alice", "bob", "charlie", "david"],
     icon: "🔺",
+    snippetIds: ["subscribe-notifications", "request-invoice-from-address", "pay-lightning-address", "pay-invoice"] satisfies SnippetId[],
     prompts: [
       {
         title: "Band Revenue Splitter",
@@ -591,6 +603,7 @@ The flow: Configure members & splits → receive payment → calculate shares �
     complexity: "simple",
     requiredWallets: [],
     icon: "💱",
+    snippetIds: ["get-fiat-currencies", "sats-to-fiat", "fiat-to-sats", "get-btc-rate"] satisfies SnippetId[],
     prompts: [
       {
         title: "Bitcoin Price Converter",

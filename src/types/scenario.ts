@@ -1,3 +1,5 @@
+import type { SnippetId } from "@/data/code-snippets";
+
 export type ScenarioComplexity = "simplest" | "simple" | "medium" | "advanced";
 
 export interface ScenarioPrompt {
@@ -16,4 +18,5 @@ export interface Scenario {
   icon: string;
   howItWorks?: { title: string; description: string }[];
   prompts?: ScenarioPrompt[];
+  snippetIds?: SnippetId[];
 }

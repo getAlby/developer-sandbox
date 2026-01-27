@@ -9,18 +9,21 @@ import {
   Code,
   Copy,
   Check,
+  Play,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   CODE_SNIPPETS,
   SNIPPET_CATEGORIES,
+  getSnippetsById,
   type SnippetCategory,
   type CodeSnippet,
 } from '@/data/code-snippets';
-import { useUIStore } from '@/stores';
+import { useUIStore, useScenarioStore } from '@/stores';
 import { cn } from '@/lib/utils';
 
 const CATEGORY_ICONS: Record<SnippetCategory, React.ReactNode> = {
+  'this-scenario': <Play className="h-4 w-4" />,
   'getting-started': <Rocket className="h-4 w-4" />,
   basics: <Info className="h-4 w-4" />,
   payments: <Send className="h-4 w-4" />,
@@ -32,10 +35,16 @@ const CATEGORY_ICONS: Record<SnippetCategory, React.ReactNode> = {
 
 export function CodeSnippets() {
   const { snippetCategory, setSnippetCategory } = useUIStore();
+  const { currentScenario } = useScenarioStore();
 
-  const filteredSnippets = CODE_SNIPPETS.filter(
-    (snippet) => snippet.category === snippetCategory
-  );
+  const filteredSnippets =
+    snippetCategory === 'this-scenario'
+      ? currentScenario.snippetIds
+        ? getSnippetsById(currentScenario.snippetIds)
+        : []
+      : CODE_SNIPPETS.filter(
+          (snippet) => snippet.category === snippetCategory
+        );
 
   return (
     <div className="flex h-full flex-col sm:flex-row">

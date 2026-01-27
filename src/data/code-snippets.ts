@@ -1,4 +1,5 @@
 export type SnippetCategory =
+  | "this-scenario"
   | "getting-started"
   | "basics"
   | "payments"
@@ -59,6 +60,7 @@ export const SNIPPET_CATEGORIES: {
   label: string;
   icon: string;
 }[] = [
+  { id: "this-scenario", label: "This Scenario", icon: "play" },
   { id: "getting-started", label: "Getting Started", icon: "rocket" },
   { id: "basics", label: "Basics", icon: "info" },
   { id: "payments", label: "Payments", icon: "send" },
