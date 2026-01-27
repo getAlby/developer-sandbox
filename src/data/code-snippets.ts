@@ -82,7 +82,10 @@ export const CODE_SNIPPETS: CodeSnippet[] = [
     description:
       "Let your agent write the code for you, without making mistakes. Run the following command inside your project:",
     category: "getting-started",
-    code: "npx skills add getAlby/alby-agent-skill",
+    code: `npx skills add getAlby/alby-agent-skill
+
+// No need to follow the code examples below. Jump directly to the example prompts!
+`,
   },
   {
     id: "install-libraries",
