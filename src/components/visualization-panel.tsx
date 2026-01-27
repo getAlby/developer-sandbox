@@ -6,6 +6,7 @@ import {
   MessageSquareText,
   Rocket,
 } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   TransactionLog,
@@ -19,6 +20,18 @@ import { useUIStore } from "@/stores";
 
 export function VisualizationPanel() {
   const { visualizationTab, setVisualizationTab } = useUIStore();
+  const tabsListRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = tabsListRef.current;
+    if (!container) return;
+    const activeTab = container.querySelector<HTMLElement>(
+      '[data-state="active"]'
+    );
+    if (activeTab) {
+      activeTab.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }
+  }, [visualizationTab]);
 
   return (
     <Tabs
@@ -29,7 +42,7 @@ export function VisualizationPanel() {
       }
       className="flex h-full flex-col py-4"
     >
-      <div className="mx-4 overflow-x-auto">
+      <div ref={tabsListRef} className="mx-4 overflow-x-auto">
         <TabsList className="w-fit">
           <TabsTrigger value="log" className="gap-2">
             <FileText className="h-4 w-4 shrink-0" />
