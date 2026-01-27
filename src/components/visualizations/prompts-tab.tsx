@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { useScenarioStore, useUIStore } from '@/stores';
 import {
   PROMPT_CATEGORIES,
+  GETTING_STARTED_PROMPTS,
   getAllPrompts,
   type PromptCategory,
   type PromptWithScenario,
@@ -115,7 +116,12 @@ export function PromptsTab() {
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 min-h-0">
         {isGettingStarted ? (
-          <GettingStartedCard />
+          <div className="space-y-4">
+            <GettingStartedCard />
+            {GETTING_STARTED_PROMPTS.map((prompt, index) => (
+              <PromptCard key={index} prompt={prompt} />
+            ))}
+          </div>
         ) : prompts.length === 0 ? (
           <div className="flex h-full items-center justify-center text-muted-foreground">
             <div className="text-center">
