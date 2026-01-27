@@ -1,6 +1,7 @@
 export type SnippetCategory =
   | "this-scenario"
   | "getting-started"
+  | "repl"
   | "basics"
   | "payments"
   | "invoices"
@@ -14,6 +15,7 @@ export type SnippetCategory =
 export type SnippetId =
   // Getting Started
   | "agent-skill"
+  // REPL
   | "browser-console"
   | "available-globals"
   // Basics
@@ -62,6 +64,7 @@ export const SNIPPET_CATEGORIES: {
 }[] = [
   { id: "this-scenario", label: "This Scenario", icon: "play" },
   { id: "getting-started", label: "Getting Started", icon: "rocket" },
+  { id: "repl", label: "REPL", icon: "terminal" },
   { id: "basics", label: "Basics", icon: "info" },
   { id: "payments", label: "Payments", icon: "send" },
   { id: "invoices", label: "Invoices", icon: "receipt" },
@@ -75,11 +78,11 @@ export const CODE_SNIPPETS: CodeSnippet[] = [
     id: "agent-skill",
     title: "Alby Agent Skill",
     description:
-      "Let your agent write the code for you, without making mistakes",
+      "Let your agent write the code for you, without making mistakes. Run the following command inside your project:",
     category: "getting-started",
     code: "npx skills add getAlby/alby-agent-skill",
   },
-  // Getting Started
+  // REPL
   {
     id: "browser-console",
     title: "Using the Browser Console",
@@ -92,7 +95,7 @@ export const CODE_SNIPPETS: CodeSnippet[] = [
 // Try these commands after connecting a wallet:
 await alice.getBalance()
 await alice.getInfo()`,
-    category: "getting-started",
+    category: "repl",
   },
   {
     id: "available-globals",
@@ -113,7 +116,7 @@ getFiatBtcRate('USD')
 // Namespaced access:
 alby.wallets.alice
 alby.tools.LightningAddress`,
-    category: "getting-started",
+    category: "repl",
   },
 
   // Basics

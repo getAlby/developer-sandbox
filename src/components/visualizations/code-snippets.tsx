@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
   Rocket,
+  Terminal,
   Info,
   Send,
   Receipt,
@@ -25,6 +26,7 @@ import { cn } from '@/lib/utils';
 const CATEGORY_ICONS: Record<SnippetCategory, React.ReactNode> = {
   'this-scenario': <Play className="h-4 w-4" />,
   'getting-started': <Rocket className="h-4 w-4" />,
+  repl: <Terminal className="h-4 w-4" />,
   basics: <Info className="h-4 w-4" />,
   payments: <Send className="h-4 w-4" />,
   invoices: <Receipt className="h-4 w-4" />,
