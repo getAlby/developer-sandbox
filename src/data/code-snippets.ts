@@ -14,6 +14,8 @@ export type SnippetCategory =
  */
 export type SnippetId =
   // Getting Started
+  | "install-libraries"
+  | "init-wallet"
   | "agent-skill"
   // REPL
   | "browser-console"
@@ -81,6 +83,42 @@ export const CODE_SNIPPETS: CodeSnippet[] = [
       "Let your agent write the code for you, without making mistakes. Run the following command inside your project:",
     category: "getting-started",
     code: "npx skills add getAlby/alby-agent-skill",
+  },
+  {
+    id: "install-libraries",
+    title: "Manual Install",
+    description:
+      "Install the Alby SDK and Lightning Tools packages. The SDK provides wallet connectivity via Nostr Wallet Connect, while Lightning Tools offers utilities like invoice decoding, lightning address resolution, and fiat conversion.",
+    category: "getting-started",
+    code: `npm install @getalby/sdk @getalby/lightning-tools
+
+# README links:
+# @getalby/sdk: https://github.com/getAlby/js-sdk
+# @getalby/lightning-tools: https://github.com/getAlby/lightning-tools`,
+  },
+  {
+    id: "init-wallet",
+    title: "Initialize a Wallet",
+    description:
+      "Connect to a wallet using a Nostr Wallet Connect (NWC) connection string.",
+    category: "getting-started",
+    code: `import { nwc } from "@getalby/sdk"
+
+// Create a NWC client with your connection secret
+const client = new nwc.NWCClient({
+  nostrWalletConnectUrl: "nostr+walletconnect://...",
+})
+
+// Verify the connection
+const info = await client.getInfo()
+console.log('Connected to:', info.alias)
+
+const balance = await client.getBalance()
+console.log('Balance:', Math.floor(balance.balance / 1000), 'sats')
+
+// README links:
+// @getalby/sdk: https://github.com/getAlby/js-sdk
+// @getalby/lightning-tools: https://github.com/getAlby/lightning-tools`,
   },
   // REPL
   {
