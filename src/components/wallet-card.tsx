@@ -196,6 +196,13 @@ export function WalletCard({ wallet }: WalletCardProps) {
   };
 
   const handleDisconnect = () => {
+    if (
+      !confirm(
+        "Are you sure you wish to disconnect this wallet? the connection will be wiped from local storage. Make sure to copy the connection secret first if you still need it.",
+      )
+    ) {
+      return;
+    }
     disconnectWallet(wallet.id);
   };
 
