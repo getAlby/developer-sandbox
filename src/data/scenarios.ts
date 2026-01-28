@@ -388,6 +388,45 @@ The flow: Client requests channel → pays hold invoice fee → LSP attempts to 
     ],
   },
   {
+    id: "wrapped-invoices",
+    title: "Wrapped Invoices",
+    description:
+      "Act as a non-custodial payment intermediary by wrapping an invoice with a higher amount using the same payment hash.",
+    education:
+      "Wrapped invoices allow you to act as a non-custodial middleman in a payment flow. By creating a hold invoice with the same payment hash as another invoice (but a higher amount), you can collect a fee for facilitating the payment. Crucially, the payer's funds remain locked in the Lightning network - never in your wallet - until you settle. You must use your own liquidity to pay the original invoice first, receiving the preimage, which you then use to settle the held payment and claim your fee. This non-custodial pattern is the manual equivalent of how Lightning routing works.",
+    howItWorks: [
+      {
+        title: "Charlie Creates",
+        description:
+          "Charlie creates a regular invoice. Bob receives it and extracts the payment hash.",
+      },
+      {
+        title: "Bob Wraps",
+        description:
+          "Bob creates a hold invoice with the SAME payment hash but higher amount (adding his fee).",
+      },
+      {
+        title: "Alice Pays Bob",
+        description:
+          "Alice pays Bob's wrapped invoice. Funds are HELD in the network (not in Bob's wallet).",
+      },
+      {
+        title: "Bob Pays Charlie",
+        description:
+          "Bob pays Charlie's original invoice using his OWN funds. He receives the preimage.",
+      },
+      {
+        title: "Bob Settles",
+        description:
+          "Bob uses the preimage to settle Alice's held payment. Bob keeps the fee difference.",
+      },
+    ],
+    complexity: "advanced",
+    requiredWallets: ["alice", "bob", "charlie"],
+    icon: "🎁",
+    snippetIds: ["make-invoice", "wrapped-hold-invoice", "subscribe-hold-notifications", "pay-invoice", "hold-invoice-settle"] satisfies SnippetId[],
+  },
+  {
     id: "decode-bolt11-invoice",
     title: "Invoice Decoding",
     description:
