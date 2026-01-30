@@ -421,7 +421,7 @@ The flow: Client requests channel → pays hold invoice fee → LSP attempts to 
           "Bob uses the preimage to settle Alice's held payment. Bob keeps the fee difference.",
       },
     ],
-    complexity: "advanced",
+    complexity: "expert",
     requiredWallets: ["alice", "bob", "charlie"],
     icon: "🎁",
     snippetIds: ["make-invoice", "wrapped-hold-invoice", "subscribe-hold-notifications", "pay-invoice", "hold-invoice-settle"] satisfies SnippetId[],
@@ -693,6 +693,8 @@ export const scenarios = unorderedScenarios.sort((a, b) => {
         return 2;
       case "advanced":
         return 3;
+      case "expert":
+        return 4;
     }
   };
   return getComplexityIndex(a.complexity) - getComplexityIndex(b.complexity);
