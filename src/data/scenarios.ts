@@ -641,6 +641,43 @@ The flow: Enter amount → select currency → see converted value in real time.
       },
     ],
   },
+  {
+    id: "wrapped-invoice",
+    title: "Wrapped Invoice",
+    description:
+      "Charlie wraps Bob's invoice and forwards the payment, acting as a proxy/LSP service.",
+    education:
+      "Invoice wrapping is a pattern used by LSPs, privacy services, and payment processors. An intermediary creates a new invoice for the sender, then forwards the payment to the original recipient. This enables JIT liquidity, privacy, and atomic swaps.",
+    howItWorks: [
+      {
+        title: "Create",
+        description:
+          "Bob creates an invoice for his desired amount. Charlie receives it.",
+      },
+      {
+        title: "Wrap",
+        description:
+          "Charlie creates a wrapped invoice (original amount + fee) for Alice to pay.",
+      },
+      {
+        title: "Forward",
+        description:
+          "Alice pays Charlie → Charlie auto-pays Bob and keeps the fee.",
+      },
+    ],
+    complexity: "medium",
+    requiredWallets: ["alice", "bob", "charlie"],
+    icon: "📦",
+    snippetIds: ["make-invoice", "pay-invoice", "lookup-invoice", "subscribe-notifications"] satisfies SnippetId[],
+    prompts: [
+      {
+        title: "Privacy Proxy Service",
+        description:
+          "Build a Lightning proxy service that wraps invoices to hide the final recipient from the sender.",
+        prompt: `Build a privacy proxy service that wraps Lightning invoices to protect recipient privacy.\n\nRequirements:\n- A merchant interface where they paste an invoice they want to receive payment for\n- The proxy service wraps the invoice with an additional fee (e.g. 0.5%)\n- Display the wrapped invoice as a QR code for the customer to pay\n- The customer pays the wrapped invoice without seeing the original merchant invoice\n- As soon as the proxy receives payment, it automatically forwards to the original invoice\n- Show a transaction log from both perspectives: customer, proxy, and merchant\n- Display fee earnings for the proxy service\n- Use React and TypeScript\n- Write tests using vitest and playwright. Take screenshots and review the screenshots.\n\nThe flow: Merchant submits invoice → proxy wraps with fee → customer pays proxy → proxy forwards to merchant → all parties updated.`,
+      },
+    ],
+  },
 ];
 
 export const scenarios = unorderedScenarios.sort((a, b) => {

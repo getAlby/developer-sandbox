@@ -6,6 +6,7 @@ import {
   HelpCircleIcon,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { ModeToggle } from "@/components/ui/mode-toggle";
 import {
   Sidebar,
   SidebarContent,
@@ -52,14 +53,17 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="">
-        <div className="flex items-center gap-2">
-          <AlbyIcon className="size-6" />
-          <div>
-            <h1 className="font-semibold">Alby Sandbox</h1>
-            <p className="text-xs text-muted-foreground">
-              Explore Lightning App Scenarios
-            </p>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <AlbyIcon className="size-6" />
+            <div>
+              <h1 className="font-semibold">Alby Sandbox</h1>
+              <p className="text-xs text-muted-foreground">
+                Explore Lightning App Scenarios
+              </p>
+            </div>
           </div>
+          <ModeToggle />
         </div>
       </SidebarHeader>
 

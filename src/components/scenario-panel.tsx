@@ -13,6 +13,7 @@ import {
   PaymentForwardingScenario,
   PaymentPrismsScenario,
   LnurlVerifyScenario,
+  WrappedInvoiceScenario,
 } from "./scenarios";
 
 export function ScenarioPanel() {
@@ -45,6 +46,8 @@ export function ScenarioPanel() {
       return <PaymentPrismsScenario />;
     case "lnurl-verify":
       return <LnurlVerifyScenario />;
+    case "wrapped-invoice":
+      return <WrappedInvoiceScenario />;
     default:
       return null;
   }
