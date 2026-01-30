@@ -8,10 +8,17 @@ import {
   XCircle,
   ChevronDown,
   ChevronUp,
+  ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   useWalletStore,
   useTransactionStore,
@@ -49,6 +56,11 @@ export function HoldInvoiceScenario() {
 function AlicePanel() {
   const [amount, setAmount] = useState("1000");
   const [description, setDescription] = useState("");
+  const [expiry, setExpiry] = useState("");
+  const [metadata, setMetadata] = useState("");
+  const [customPaymentHash, setCustomPaymentHash] = useState("");
+  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [manualPreimage, setManualPreimage] = useState("");
   const [isCreating, setIsCreating] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -136,19 +148,46 @@ function AlicePanel() {
     try {
       const amountMsat = satoshi * 1000;
 
-      // Generate preimage and payment hash
-      const preimageBytes = crypto.getRandomValues(new Uint8Array(32));
-      const preimage = toHexString(preimageBytes);
+      let preimage: string;
+      let paymentHash: string;
 
-      const hashBuffer = await crypto.subtle.digest("SHA-256", preimageBytes);
-      const paymentHashBytes = new Uint8Array(hashBuffer);
-      const paymentHash = toHexString(paymentHashBytes);
+      // Use custom payment hash if provided, otherwise generate one
+      if (customPaymentHash.trim()) {
+        // Validate the custom payment hash (should be 64 hex characters)
+        const trimmedHash = customPaymentHash.trim();
+        if (!/^[0-9a-fA-F]{64}$/.test(trimmedHash)) {
+          throw new Error("Payment hash must be 64 hex characters");
+        }
+        paymentHash = trimmedHash.toLowerCase();
+        // When using custom payment hash, preimage is unknown
+        preimage = "(unknown - custom payment hash)";
+      } else {
+        // Generate preimage and payment hash
+        const preimageBytes = crypto.getRandomValues(new Uint8Array(32));
+        preimage = toHexString(preimageBytes);
+
+        const hashBuffer = await crypto.subtle.digest("SHA-256", preimageBytes);
+        const paymentHashBytes = new Uint8Array(hashBuffer);
+        paymentHash = toHexString(paymentHashBytes);
+      }
+
+      // Parse optional metadata JSON
+      let parsedMetadata: Record<string, unknown> | undefined;
+      if (metadata.trim()) {
+        try {
+          parsedMetadata = JSON.parse(metadata.trim());
+        } catch {
+          throw new Error("Invalid JSON metadata");
+        }
+      }
 
       // Create the hold invoice
       const response = await client.makeHoldInvoice({
         amount: amountMsat,
         description: description || "Hold invoice",
         payment_hash: paymentHash,
+        ...(expiry ? { expiry: parseInt(expiry) } : {}),
+        ...(parsedMetadata ? { metadata: parsedMetadata } : {}),
       });
 
       const newInvoiceData = {
@@ -168,7 +207,7 @@ function AlicePanel() {
       updateTransaction(txId, {
         status: "success",
         amount: satoshi,
-        description: `Hold invoice created for ${satoshi} sats: ${newInvoiceData.invoice}`,
+        description: `Hold invoice created for ${satoshi} sats: ${newInvoiceData.invoice} preimage: ${newInvoiceData.preimage} payment_hash: ${newInvoiceData.paymentHash}`,
       });
 
       addFlowStep({
@@ -205,11 +244,26 @@ function AlicePanel() {
     const client = getNWCClient("alice");
     if (!client) return;
 
+    // Determine which preimage to use
+    const isPreimageUnknown = invoiceData.preimage.startsWith("(unknown");
+    const preimageToUse = isPreimageUnknown ? manualPreimage.trim() : invoiceData.preimage;
+
+    if (!preimageToUse) {
+      setError("Please enter the preimage to settle");
+      return;
+    }
+
+    // Validate preimage format (64 hex characters)
+    if (!/^[0-9a-fA-F]{64}$/.test(preimageToUse)) {
+      setError("Preimage must be 64 hex characters");
+      return;
+    }
+
     setIsProcessing(true);
     setError(null);
 
     try {
-      await client.settleHoldInvoice({ preimage: invoiceData.preimage });
+      await client.settleHoldInvoice({ preimage: preimageToUse });
 
       setInvoiceState("settled");
 
@@ -329,6 +383,11 @@ function AlicePanel() {
     resetHoldInvoice();
     setAmount("1000");
     setDescription("");
+    setExpiry("");
+    setMetadata("");
+    setCustomPaymentHash("");
+    setAdvancedOpen(false);
+    setManualPreimage("");
     setError(null);
     heldTxIdRef.current = null;
     heldFlowStepIdRef.current = null;
@@ -420,6 +479,56 @@ function AlicePanel() {
               />
             </div>
 
+            <Collapsible open={advancedOpen} onOpenChange={setAdvancedOpen}>
+              <CollapsibleTrigger className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
+                <ChevronRight
+                  className={`h-3 w-3 transition-transform ${advancedOpen ? "rotate-90" : ""}`}
+                />
+                Advanced
+              </CollapsibleTrigger>
+              <CollapsibleContent className="space-y-3 pt-2">
+                <div className="space-y-1">
+                  <label className="text-xs text-muted-foreground">
+                    Expiry (seconds)
+                  </label>
+                  <Input
+                    type="number"
+                    value={expiry}
+                    onChange={(e) => setExpiry(e.target.value)}
+                    placeholder="3600"
+                    disabled={isCreating}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-muted-foreground">
+                    Payment Hash (hex, 64 chars)
+                  </label>
+                  <Input
+                    value={customPaymentHash}
+                    onChange={(e) => setCustomPaymentHash(e.target.value)}
+                    placeholder="Leave empty to auto-generate"
+                    disabled={isCreating}
+                    className="font-mono text-xs"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Specify a custom payment hash if you have the preimage
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-muted-foreground">
+                    Metadata (JSON)
+                  </label>
+                  <Textarea
+                    value={metadata}
+                    onChange={(e) => setMetadata(e.target.value)}
+                    placeholder={'{"key": "value"}'}
+                    disabled={isCreating}
+                    className="font-mono text-xs min-h-[60px]"
+                  />
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
+
             {error && <p className="text-sm text-destructive">{error}</p>}
 
             <Button
@@ -490,10 +599,27 @@ function AlicePanel() {
                 <p className="text-sm text-muted-foreground">
                   Payment is held. Choose an action:
                 </p>
+                {invoiceData.preimage.startsWith("(unknown") && (
+                  <div className="space-y-1">
+                    <label className="text-xs text-muted-foreground">
+                      Preimage (hex, 64 chars)
+                    </label>
+                    <Input
+                      value={manualPreimage}
+                      onChange={(e) => setManualPreimage(e.target.value)}
+                      placeholder="Enter the preimage to settle..."
+                      disabled={isProcessing}
+                      className="font-mono text-xs"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Required because you used a custom payment hash
+                    </p>
+                  </div>
+                )}
                 <div className="flex gap-2">
                   <Button
                     onClick={settleInvoice}
-                    disabled={isProcessing}
+                    disabled={isProcessing || (invoiceData.preimage.startsWith("(unknown") && !manualPreimage.trim())}
                     className="flex-1"
                     variant="default"
                   >
