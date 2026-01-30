@@ -1,6 +1,6 @@
 import type { SnippetId } from "@/data/code-snippets";
 
-export type ScenarioComplexity = "simplest" | "simple" | "medium" | "advanced";
+export type ScenarioComplexity = "simplest" | "simple" | "medium" | "advanced" | "expert";
 
 export interface ScenarioPrompt {
   title: string;

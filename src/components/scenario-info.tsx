@@ -113,11 +113,12 @@ export function ScenarioInfo() {
 }
 
 function ComplexityBadge({ complexity }: { complexity: string }) {
-  const variants: Record<string, "default" | "secondary" | "outline"> = {
+  const variants: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
     simplest: "default",
     simple: "default",
     medium: "secondary",
     advanced: "outline",
+    expert: "destructive",
   };
 
   return (
