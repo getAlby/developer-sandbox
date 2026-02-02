@@ -396,7 +396,7 @@ function BobPanel() {
       type: "invoice_created",
       status: "pending",
       description: `Bob creating wrapped hold invoice for ${totalAmount} sats...`,
-      snippetIds: ["hold-invoice"],
+      snippetIds: ["wrapped-hold-invoice"],
     });
 
     try {
@@ -446,7 +446,7 @@ function BobPanel() {
         label: `Wrapped: ${totalAmount} sats (${feeAmount} fee)`,
         direction: "left",
         status: "success",
-        snippetIds: ["hold-invoice"],
+        snippetIds: ["wrapped-hold-invoice"],
       });
 
       // Subscribe to notifications for when Alice pays
