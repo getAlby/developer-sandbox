@@ -11,3 +11,4 @@ export { FiatConversionScenario } from "./fiat-conversion";
 export { PaymentForwardingScenario } from "./payment-forwarding";
 export { PaymentPrismsScenario } from "./payment-prisms";
 export { LnurlVerifyScenario } from "./lnurl-verify";
+export { WrappedInvoicesScenario } from "./wrapped-invoices";

@@ -33,6 +33,8 @@ import type { Wallet as WalletType } from "@/types";
 import { useWalletStore, useTransactionStore } from "@/stores";
 import { useFiatValue } from "@/hooks/use-fiat";
 
+const FAUCET_URL = import.meta.env.VITE_FAUCET_URL || "https://faucet.nwc.dev";
+
 interface WalletCardProps {
   wallet: WalletType;
 }
@@ -129,7 +131,7 @@ export function WalletCard({ wallet }: WalletCardProps) {
       // Create test wallet via faucet API
       // Returns plaintext NWC connection secret with lud16 parameter
       for (let attempt = 0; ; attempt++) {
-        const response = await fetch("https://faucet.nwc.dev?balance=10000", {
+        const response = await fetch(`${FAUCET_URL}?balance=10000`, {
           method: "POST",
         });
 
@@ -175,7 +177,7 @@ export function WalletCard({ wallet }: WalletCardProps) {
 
     try {
       const response = await fetch(
-        `https://faucet.nwc.dev/wallets/${username}/topup?amount=10000`,
+        `${FAUCET_URL}/wallets/${username}/topup?amount=10000`,
         { method: "POST" },
       );
       if (!response.ok) {

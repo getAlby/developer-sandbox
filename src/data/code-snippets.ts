@@ -49,7 +49,8 @@ export type SnippetId =
   | "sign-message"
   | "hold-invoice"
   | "hold-invoice-settle"
-  | "hold-invoice-cancel";
+  | "hold-invoice-cancel"
+  | "wrapped-hold-invoice";
 
 export interface CodeSnippet {
   id: SnippetId;
@@ -561,6 +562,38 @@ console.log('Invoice settled! Payment received.')`,
 await client.cancelHoldInvoice({ payment_hash: paymentHash })
 
 console.log('Invoice cancelled! Payer refunded.')`,
+    category: "advanced",
+  },
+  {
+    id: "wrapped-hold-invoice",
+    title: "Wrapped Hold Invoice",
+    description:
+      "Create a hold invoice using another invoice's payment hash (for non-custodial intermediary patterns)",
+    code: `// First, decode another invoice to get its payment hash
+const originalInvoice = new Invoice({ pr: 'lnbc...' })
+const paymentHash = originalInvoice.paymentHash
+
+// Create a hold invoice with the SAME payment hash
+// but a higher amount (original + your fee)
+const feeAmount = 100 // sats
+const totalAmount = originalInvoice.satoshi + feeAmount
+
+const response = await bob.makeHoldInvoice({
+  amount: totalAmount * 1000, // millisats
+  description: 'Wrapped invoice',
+  payment_hash: paymentHash, // Use the original invoice's hash
+})
+
+console.log('Wrapped invoice:', response.invoice)
+
+// When someone pays your wrapped invoice:
+// 1. Their payment is HELD (not in your wallet)
+// 2. Pay the original invoice to get the preimage
+// 3. Use the preimage to settle your held payment
+// 4. You keep the fee difference!
+
+// This is non-custodial: you never hold the payer's funds.
+// They remain locked in the network until you settle.`,
     category: "advanced",
   },
 ];
