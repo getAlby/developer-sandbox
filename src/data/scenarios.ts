@@ -47,7 +47,11 @@ The flow: Play → hit mine → pay invoice to continue or restart for free.`,
     complexity: "simple",
     requiredWallets: ["alice", "bob"],
     icon: "🔎",
-    snippetIds: ["make-invoice", "lookup-invoice", "pay-invoice"] satisfies SnippetId[],
+    snippetIds: [
+      "make-invoice",
+      "lookup-invoice",
+      "pay-invoice",
+    ] satisfies SnippetId[],
     prompts: [
       {
         title: "Point of Sale Terminal",
@@ -80,7 +84,11 @@ The flow: Enter amount → charge → show QR → poll status → payment confir
     complexity: "medium",
     requiredWallets: ["alice", "bob"],
     icon: "🔎",
-    snippetIds: ["request-invoice-from-address", "pay-invoice", "lnurl-verify"] satisfies SnippetId[],
+    snippetIds: [
+      "request-invoice-from-address",
+      "pay-invoice",
+      "lnurl-verify",
+    ] satisfies SnippetId[],
     prompts: [
       {
         title: "Tip Jar / Donation Page",
@@ -115,7 +123,12 @@ The flow: Choose amount → request invoice from Lightning Address → show QR �
     complexity: "simple",
     requiredWallets: ["alice", "bob"],
     icon: "🔌",
-    snippetIds: ["fetch-lightning-address", "request-invoice-from-address", "pay-lightning-address", "pay-invoice"] satisfies SnippetId[],
+    snippetIds: [
+      "fetch-lightning-address",
+      "request-invoice-from-address",
+      "pay-lightning-address",
+      "pay-invoice",
+    ] satisfies SnippetId[],
     prompts: [
       {
         title: "Rewards App",
@@ -148,7 +161,12 @@ The flow: Register Lightning Address → complete an action → receive sats pay
     complexity: "medium",
     requiredWallets: ["alice", "bob"],
     icon: "🔔",
-    snippetIds: ["subscribe-notifications", "request-invoice-from-address", "pay-lightning-address", "pay-invoice"] satisfies SnippetId[],
+    snippetIds: [
+      "subscribe-notifications",
+      "request-invoice-from-address",
+      "pay-lightning-address",
+      "pay-invoice",
+    ] satisfies SnippetId[],
     prompts: [
       {
         title: "Streamer QR Donation Page",
@@ -246,7 +264,12 @@ The flow: Display goat pasture → subscribe to notifications → receive paymen
     complexity: "medium",
     requiredWallets: ["alice", "bob"],
     icon: "🔄",
-    snippetIds: ["subscribe-notifications", "request-invoice-from-address", "pay-lightning-address", "pay-invoice"] satisfies SnippetId[],
+    snippetIds: [
+      "subscribe-notifications",
+      "request-invoice-from-address",
+      "pay-lightning-address",
+      "pay-invoice",
+    ] satisfies SnippetId[],
     prompts: [
       {
         title: "SaaS Subscription Manager",
@@ -315,7 +338,13 @@ The flow: Enter Lightning Address, amount, and frequency → start → auto-pay 
     complexity: "advanced",
     requiredWallets: ["alice", "bob"],
     icon: "🔒",
-    snippetIds: ["hold-invoice", "subscribe-hold-notifications", "hold-invoice-settle", "hold-invoice-cancel", "pay-invoice"] satisfies SnippetId[],
+    snippetIds: [
+      "hold-invoice",
+      "subscribe-hold-notifications",
+      "hold-invoice-settle",
+      "hold-invoice-cancel",
+      "pay-invoice",
+    ] satisfies SnippetId[],
     prompts: [
       {
         title: "Coinflip Game",
@@ -424,7 +453,65 @@ The flow: Client requests channel → pays hold invoice fee → LSP attempts to 
     complexity: "expert",
     requiredWallets: ["alice", "bob", "charlie"],
     icon: "🎁",
-    snippetIds: ["make-invoice", "wrapped-hold-invoice", "subscribe-hold-notifications", "pay-invoice", "hold-invoice-settle"] satisfies SnippetId[],
+    snippetIds: [
+      "make-invoice",
+      "wrapped-hold-invoice",
+      "subscribe-hold-notifications",
+      "pay-invoice",
+      "hold-invoice-settle",
+    ] satisfies SnippetId[],
+    prompts: [
+      {
+        title: "Stacker News Clone",
+        description:
+          "Build a social news site where the platform earns revenue from zaps using wrapped invoices, while preventing sybil attacks.",
+        prompt: `Build a Stacker News-style social news site that uses wrapped invoices to earn platform revenue from zaps.
+
+Requirements:
+- A feed of user-submitted posts (title, link, author)
+- Users can zap (tip) posts with Lightning payments
+- When a user zaps a post:
+  - The post author creates an invoice for the zap amount
+  - The platform wraps that invoice, adding a platform fee (e.g. 10%)
+  - The zapper pays the wrapped invoice to the platform
+  - The platform pays the original invoice to the author, keeping the fee & preventing sybil attacks
+- Display zap counts and totals on each post
+- Show a leaderboard of top-zapped posts and top earners
+- Display platform revenue from fees
+- Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
+
+The flow: User submits post → another user zaps → platform wraps author's invoice with fee → zapper pays platform → platform pays author → platform keeps fee.`,
+      },
+      {
+        title: "Lightning Trampoline Service",
+        description:
+          "Build a privacy-preserving trampoline service that hides payment recipients in exchange for a fee.",
+        prompt: `Build a Lightning trampoline service that provides payment privacy by hiding the true recipient.
+
+Requirements:
+- A service where users can make payments without revealing the final destination
+- The flow:
+  - User provides the recipient's invoice they want to pay privately
+  - The trampoline service extracts the payment hash from the invoice
+  - The service creates a wrapped hold invoice with the same payment hash, adding a privacy fee (e.g. 5%)
+  - User pays the trampoline's wrapped invoice
+  - The trampoline pays the original recipient invoice using its own node, receiving the preimage
+  - The trampoline settles the user's payment with the preimage
+- Privacy benefits to explain to users:
+  - The recipient only sees the trampoline node, not the payer's node
+  - The payer's node only sees the trampoline, not the recipient
+  - Network observers cannot link payer to recipient
+- Display the payment flow visually showing the privacy barrier
+- Show service stats: payments processed, total fees earned
+- Include a fee calculator so users know the total cost before paying
+- Handle edge cases: expired invoices, failed payments (cancel and refund)
+- Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
+
+The flow: User pastes recipient invoice → service wraps it with fee → user pays service → service pays recipient privately → service settles user payment → privacy preserved.`,
+      },
+    ],
   },
   {
     id: "decode-bolt11-invoice",
@@ -496,7 +583,11 @@ The flow: Set expected payout amount → customer pastes invoice → decode → 
     complexity: "medium",
     requiredWallets: [],
     icon: "✅",
-    snippetIds: ["make-invoice", "pay-invoice", "validate-preimage"] satisfies SnippetId[],
+    snippetIds: [
+      "make-invoice",
+      "pay-invoice",
+      "validate-preimage",
+    ] satisfies SnippetId[],
     prompts: [
       {
         title: "Secret Exchange",
@@ -570,7 +661,12 @@ The flow: Seller encrypts secret with preimage, publishes ciphertext + plaintext
     complexity: "medium",
     requiredWallets: ["alice", "bob", "charlie"],
     icon: "🔀",
-    snippetIds: ["subscribe-notifications", "request-invoice-from-address", "pay-lightning-address", "pay-invoice"] satisfies SnippetId[],
+    snippetIds: [
+      "subscribe-notifications",
+      "request-invoice-from-address",
+      "pay-lightning-address",
+      "pay-invoice",
+    ] satisfies SnippetId[],
     prompts: [
       {
         title: "Income Splitter",
@@ -623,7 +719,12 @@ The flow: Configure split → receive payment → calculate forward amount → p
     complexity: "advanced",
     requiredWallets: ["alice", "bob", "charlie", "david"],
     icon: "🔺",
-    snippetIds: ["subscribe-notifications", "request-invoice-from-address", "pay-lightning-address", "pay-invoice"] satisfies SnippetId[],
+    snippetIds: [
+      "subscribe-notifications",
+      "request-invoice-from-address",
+      "pay-lightning-address",
+      "pay-invoice",
+    ] satisfies SnippetId[],
     prompts: [
       {
         title: "Band Revenue Splitter",
@@ -659,7 +760,12 @@ The flow: Configure members & splits → receive payment → calculate shares �
     complexity: "simple",
     requiredWallets: [],
     icon: "💱",
-    snippetIds: ["get-fiat-currencies", "sats-to-fiat", "fiat-to-sats", "get-btc-rate"] satisfies SnippetId[],
+    snippetIds: [
+      "get-fiat-currencies",
+      "sats-to-fiat",
+      "fiat-to-sats",
+      "get-btc-rate",
+    ] satisfies SnippetId[],
     prompts: [
       {
         title: "Bitcoin Price Converter",
