@@ -8,6 +8,9 @@ import {
   ChevronUp,
   Zap,
   ArrowRight,
+  XCircle,
+  AlertTriangle,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,16 +33,41 @@ export function WrappedInvoicesScenario() {
     reset();
   }, [reset]);
 
+  const previewBanner = (
+    <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg flex items-start gap-3">
+      <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+      <div className="text-sm text-amber-800 dark:text-amber-200">
+        <p className="font-medium">Preview</p>
+        <p className="mt-1">
+          This scenario is not fully supported by Alby Hub and NWC. If you need
+          this for your app usecase, please{" "}
+          <a
+            href="https://support.getalby.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline inline-flex items-center gap-1 hover:text-amber-900 dark:hover:text-amber-100"
+          >
+            contact Alby
+            <ExternalLink className="h-3 w-3" />
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+
   if (!allConnected) {
-    return null;
+    return previewBanner;
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-3">
-      <AlicePanel />
-      <BobPanel />
-      <CharliePanel />
-    </div>
+    <>
+      {previewBanner}
+      <div className="grid gap-4 md:grid-cols-3">
+        <AlicePanel />
+        <BobPanel />
+        <CharliePanel />
+      </div>
+    </>
   );
 }
 
@@ -52,8 +80,13 @@ function CharliePanel() {
   const { getNWCClient } = useWalletStore();
   const { addTransaction, updateTransaction, addFlowStep } =
     useTransactionStore();
-  const { state, charlieInvoice, setCharlieInvoice, setState } =
-    useWrappedInvoiceStore();
+  const {
+    state,
+    charlieInvoice,
+    setCharlieInvoice,
+    setState,
+    receivedPreimage,
+  } = useWrappedInvoiceStore();
 
   const createInvoice = async () => {
     const client = getNWCClient("charlie");
@@ -128,7 +161,11 @@ function CharliePanel() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const isPaid = state === "bob_paid_charlie" || state === "settled";
+  // Charlie is paid if Bob paid him, or if cancelled after paying (receivedPreimage means Bob paid Charlie)
+  const isPaid =
+    state === "bob_paid_charlie" ||
+    state === "settled" ||
+    (state === "cancelled" && !!receivedPreimage);
 
   return (
     <Card>
@@ -247,6 +284,7 @@ function BobPanel() {
   const [isWrapping, setIsWrapping] = useState(false);
   const [isPayingCharlie, setIsPayingCharlie] = useState(false);
   const [isSettling, setIsSettling] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const unsubRef = useRef<(() => void) | null>(null);
@@ -276,7 +314,7 @@ function BobPanel() {
   }, [bobWrapped]);
 
   const handleNotification = useCallback(
-    (notification: Nip47Notification) => {
+    async (notification: Nip47Notification) => {
       console.log("=== BOB RECEIVED NOTIFICATION ===");
       console.log("Type:", notification.notification_type);
       console.log("Full notification:", JSON.stringify(notification, null, 2));
@@ -292,6 +330,22 @@ function BobPanel() {
 
         if (currentBobWrapped) {
           setState("alice_paid");
+
+          // Update Alice's balance (funds are now locked)
+          const aliceClient = getNWCClient("alice");
+          if (aliceClient) {
+            try {
+              const aliceBalance = await aliceClient.getBalance();
+              const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
+              setWalletBalance("alice", aliceBalanceSats);
+              addBalanceSnapshot({
+                walletId: "alice",
+                balance: aliceBalanceSats,
+              });
+            } catch (err) {
+              console.error("Failed to update Alice's balance:", err);
+            }
+          }
 
           addTransaction({
             type: "payment_received",
@@ -313,7 +367,14 @@ function BobPanel() {
         }
       }
     },
-    [addTransaction, addFlowStep, setState],
+    [
+      addTransaction,
+      addFlowStep,
+      setState,
+      getNWCClient,
+      setWalletBalance,
+      addBalanceSnapshot,
+    ],
   );
 
   const createWrappedInvoice = async () => {
@@ -575,6 +636,71 @@ function BobPanel() {
     }
   };
 
+  const cancelAlicePayment = async () => {
+    if (!bobWrapped) return;
+
+    const client = getNWCClient("bob");
+    if (!client) return;
+
+    setIsCancelling(true);
+    setError(null);
+
+    const txId = addTransaction({
+      type: "payment_failed",
+      status: "pending",
+      toWallet: "bob",
+      amount: bobWrapped.totalAmount,
+      description: `Bob cancelling Alice's payment...`,
+      snippetIds: ["hold-invoice-cancel"],
+    });
+
+    try {
+      await client.cancelHoldInvoice({ payment_hash: bobWrapped.paymentHash });
+
+      setState("cancelled");
+
+      // Update Alice's balance (refunded)
+      const aliceClient = getNWCClient("alice");
+      if (aliceClient) {
+        const aliceBalance = await aliceClient.getBalance();
+        const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
+        setWalletBalance("alice", aliceBalanceSats);
+        addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
+      }
+
+      updateTransaction(txId, {
+        status: "error",
+        description: `Alice's payment cancelled - refunded ${bobWrapped.totalAmount} sats`,
+      });
+
+      addFlowStep({
+        fromWallet: "bob",
+        toWallet: "bob",
+        label: `❌ Cancelled! Alice refunded ${bobWrapped.totalAmount} sats`,
+        direction: "right",
+        status: "error",
+        snippetIds: ["hold-invoice-cancel"],
+      });
+
+      // Cleanup
+      if (unsubRef.current) {
+        unsubRef.current();
+        unsubRef.current = null;
+      }
+    } catch (err) {
+      console.error("Failed to cancel:", err);
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setError(errorMessage);
+
+      updateTransaction(txId, {
+        status: "error",
+        description: `Failed to cancel: ${errorMessage}`,
+      });
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -688,31 +814,48 @@ function BobPanel() {
                 🔒 Alice's payment HELD ({bobWrapped.totalAmount} sats)
               </p>
               <p className="text-xs mt-1">
-                Funds are locked in the network, NOT in your wallet.
+                Alice's funds are currently locked by Bob.
                 <br />
-                Now pay Charlie with YOUR funds to get the preimage.
+                Bob cannot settle Alice's payment without receiving the preimage
+                from paying Charlie.
+                <br />
+                Pay Charlie to continue, or cancel to refund Alice.
               </p>
             </div>
 
             {error && <p className="text-sm text-destructive">{error}</p>}
 
-            <Button
-              onClick={payCharlie}
-              disabled={isPayingCharlie}
-              className="w-full"
-            >
-              {isPayingCharlie ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Paying Charlie...
-                </>
-              ) : (
-                <>
-                  <ArrowRight className="mr-2 h-4 w-4" />
-                  Pay Charlie {charlieInvoice?.amount} sats
-                </>
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={payCharlie}
+                disabled={isPayingCharlie || isCancelling}
+                className="flex-1"
+              >
+                {isPayingCharlie ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <ArrowRight className="mr-1 h-4 w-4" />
+                    Pay Charlie
+                  </>
+                )}
+              </Button>
+              <Button
+                onClick={cancelAlicePayment}
+                disabled={isPayingCharlie || isCancelling}
+                variant="outline"
+                className="flex-1"
+              >
+                {isCancelling ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <XCircle className="mr-1 h-4 w-4" />
+                    Cancel (Refund)
+                  </>
+                )}
+              </Button>
+            </div>
           </>
         )}
 
@@ -721,29 +864,45 @@ function BobPanel() {
             <div className="p-3 bg-green-50 dark:bg-green-900/20 rounded-lg text-sm text-green-800 dark:text-green-200">
               <p className="font-medium">✅ Charlie Paid!</p>
               <p className="text-xs mt-1">
-                Preimage received. Now settle Alice's payment to claim your fee.
+                Preimage received. Now settle Alice's payment to claim your fee,
+                or cancel to refund Alice (But Bob already paid Charlie, so Bob
+                will be at a loss!).
               </p>
             </div>
 
             {error && <p className="text-sm text-destructive">{error}</p>}
 
-            <Button
-              onClick={settleAlicePayment}
-              disabled={isSettling}
-              className="w-full"
-            >
-              {isSettling ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Settling...
-                </>
-              ) : (
-                <>
-                  <Zap className="mr-2 h-4 w-4" />
-                  Settle & Claim {bobWrapped.fee} sats fee
-                </>
-              )}
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                onClick={settleAlicePayment}
+                disabled={isSettling || isCancelling}
+                className="flex-1"
+              >
+                {isSettling ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <Zap className="mr-1 h-4 w-4" />
+                    Settle (+{bobWrapped.fee})
+                  </>
+                )}
+              </Button>
+              <Button
+                onClick={cancelAlicePayment}
+                disabled={isSettling || isCancelling}
+                variant="outline"
+                className="flex-1"
+              >
+                {isCancelling ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    <XCircle className="mr-1 h-4 w-4" />
+                    Cancel (Refund)
+                  </>
+                )}
+              </Button>
+            </div>
           </>
         )}
 
@@ -755,6 +914,24 @@ function BobPanel() {
               <br />
               Fee earned:{" "}
               <span className="font-mono">{bobWrapped.fee} sats</span>
+            </p>
+          </div>
+        )}
+
+        {state === "cancelled" && bobWrapped && (
+          <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm text-red-800 dark:text-red-200">
+            <p className="font-medium text-lg">❌ Cancelled</p>
+            <p className="mt-1">
+              Alice's payment was refunded.
+              {receivedPreimage && (
+                <>
+                  <br />
+                  Note: You already paid Charlie{" "}
+                  <span className="font-mono">
+                    {bobWrapped.charlieAmount} sats
+                  </span>
+                </>
+              )}
             </p>
           </div>
         )}
@@ -818,7 +995,8 @@ function AlicePanel() {
   const hasPaid =
     state === "alice_paid" ||
     state === "bob_paid_charlie" ||
-    state === "settled";
+    state === "settled" ||
+    state === "cancelled";
 
   const handlePay = async () => {
     if (!invoiceToUse) return;
@@ -895,6 +1073,7 @@ function AlicePanel() {
 
   const getStatusText = () => {
     if (state === "settled") return "Payment Complete";
+    if (state === "cancelled") return "Cancelled (Refunded)";
     if (state === "bob_paid_charlie") return "Pending (Bob settling...)";
     if (state === "alice_paid") return "Pending (Held in network)";
     if (isPaying) return "Paying...";
@@ -903,6 +1082,7 @@ function AlicePanel() {
 
   const getStatusColor = () => {
     if (state === "settled") return "text-green-600 dark:text-green-400";
+    if (state === "cancelled") return "text-red-600 dark:text-red-400";
     if (hasPaid) return "text-orange-600 dark:text-orange-400";
     return "text-muted-foreground";
   };
@@ -1005,6 +1185,15 @@ function AlicePanel() {
             <p>
               <span className="text-lg mr-1">✅</span>
               Payment complete! Paid {bobWrapped.totalAmount} sats.
+            </p>
+          </div>
+        )}
+
+        {state === "cancelled" && bobWrapped && (
+          <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-sm text-red-800 dark:text-red-200">
+            <p>
+              <span className="text-lg mr-1">❌</span>
+              Payment cancelled. Your funds have been refunded.
             </p>
           </div>
         )}

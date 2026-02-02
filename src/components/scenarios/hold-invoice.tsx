@@ -93,7 +93,7 @@ function AlicePanel() {
   }, [invoiceData]);
 
   const handleNotification = useCallback(
-    (notification: Nip47Notification) => {
+    async (notification: Nip47Notification) => {
       const currentInvoiceData = invoiceDataRef.current;
       if (
         notification.notification_type === "hold_invoice_accepted" &&
@@ -102,6 +102,19 @@ function AlicePanel() {
           currentInvoiceData.paymentHash
       ) {
         setInvoiceState("held");
+
+        // Update Bob's balance (funds are now locked)
+        const bobClient = getNWCClient("bob");
+        if (bobClient) {
+          try {
+            const bobBalance = await bobClient.getBalance();
+            const bobBalanceSats = Math.floor(bobBalance.balance / 1000);
+            setWalletBalance("bob", bobBalanceSats);
+            addBalanceSnapshot({ walletId: "bob", balance: bobBalanceSats });
+          } catch (err) {
+            console.error("Failed to update Bob's balance:", err);
+          }
+        }
 
         const txId = addTransaction({
           type: "payment_received",
@@ -124,7 +137,7 @@ function AlicePanel() {
         heldFlowStepIdRef.current = flowStepId;
       }
     },
-    [addTransaction, addFlowStep, setInvoiceState],
+    [addTransaction, addFlowStep, setInvoiceState, getNWCClient, setWalletBalance, addBalanceSnapshot],
   );
 
   const createHoldInvoice = async () => {

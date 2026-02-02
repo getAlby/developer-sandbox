@@ -6,7 +6,8 @@ export type WrappedInvoiceState =
   | "bob_wrapped"
   | "alice_paid"
   | "bob_paid_charlie"
-  | "settled";
+  | "settled"
+  | "cancelled";
 
 export interface CharlieInvoiceData {
   invoice: string;
