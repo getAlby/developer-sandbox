@@ -39,8 +39,8 @@ export function WrappedInvoicesScenario() {
       <div className="text-sm text-amber-800 dark:text-amber-200">
         <p className="font-medium">Preview</p>
         <p className="mt-1">
-          This scenario is not fully supported by Alby Hub and NWC. If you need
-          this for your app usecase, please{" "}
+          This scenario is not fully supported by Alby Hub. If you need this for
+          your app usecase, please{" "}
           <a
             href="https://support.getalby.com"
             target="_blank"
