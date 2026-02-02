@@ -216,7 +216,7 @@ export function ProductionWallet() {
               </p>
               <Button asChild variant="outline" size="sm" className="gap-2">
                 <a
-                  href="https://rizful.com"
+                  href="https://rizful.com?utm_source=sandbox.albylabs.com"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -247,7 +247,7 @@ export function ProductionWallet() {
               </p>
               <Button asChild variant="outline" size="sm" className="gap-2">
                 <a
-                  href="https://coinos.io"
+                  href="https://coinos.io?utm_source=sandbox.albylabs.com"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
