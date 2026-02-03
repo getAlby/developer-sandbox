@@ -8,6 +8,9 @@ import {
   Trash2,
   HelpCircle,
 } from "lucide-react";
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
+import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Button } from "@/components/ui/button";
 import {
   useTransactionStore,
@@ -18,6 +21,8 @@ import {
 import type { FlowStep } from "@/types";
 import { WALLET_PERSONAS } from "@/types";
 import { getSnippetsById } from "@/data/code-snippets";
+
+SyntaxHighlighter.registerLanguage('javascript', javascript);
 
 export function FlowDiagram() {
   const { flowSteps, clearFlowSteps } = useTransactionStore();
@@ -293,9 +298,25 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
                 </Button>
               </div>
             </div>
-            <pre className="p-3 text-xs font-mono overflow-x-auto">
-              <code>{primarySnippet.code}</code>
-            </pre>
+            <div className="p-3 overflow-x-auto">
+              <SyntaxHighlighter
+                language="javascript"
+                style={github}
+                customStyle={{
+                  margin: 0,
+                  padding: 0,
+                  background: 'transparent',
+                  fontSize: '0.75rem',
+                }}
+                codeTagProps={{
+                  style: {
+                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                  },
+                }}
+              >
+                {primarySnippet.code}
+              </SyntaxHighlighter>
+            </div>
           </div>
         </div>
       )}
