@@ -4,6 +4,7 @@ import {
   DropletsIcon,
   ExternalLink,
   HelpCircleIcon,
+  LightbulbIcon,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -36,6 +37,11 @@ const externalLinks = [
     title: "Sandbox Source Code",
     url: "https://github.com/getAlby/sandbox",
     icon: <CodeIcon className="size-4" />,
+  },
+  {
+    title: "Feedback",
+    url: "https://feedback.getalby.com/-alby-sandbox-request-a-feature",
+    icon: <LightbulbIcon className="size-4" />,
   },
   {
     title: "Help",
