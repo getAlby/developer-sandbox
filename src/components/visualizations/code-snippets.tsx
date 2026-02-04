@@ -12,6 +12,9 @@ import {
   Check,
   Play,
 } from 'lucide-react';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
+import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Button } from '@/components/ui/button';
 import {
   CODE_SNIPPETS,
@@ -22,6 +25,8 @@ import {
 } from '@/data/code-snippets';
 import { useUIStore, useScenarioStore } from '@/stores';
 import { cn } from '@/lib/utils';
+
+SyntaxHighlighter.registerLanguage('javascript', javascript);
 
 const CATEGORY_ICONS: Record<SnippetCategory, React.ReactNode> = {
   'this-scenario': <Play className="h-4 w-4" />,
@@ -128,9 +133,23 @@ function SnippetCard({ snippet }: { snippet: CodeSnippet }) {
 
       {/* Code Block */}
       <div className="p-3 bg-muted/10">
-        <pre className="text-xs font-mono overflow-x-auto whitespace-pre-wrap">
-          <code>{snippet.code}</code>
-        </pre>
+        <SyntaxHighlighter
+          language="javascript"
+          style={github}
+          customStyle={{
+            margin: 0,
+            padding: 0,
+            background: 'transparent',
+            fontSize: '0.75rem',
+          }}
+          codeTagProps={{
+            style: {
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+            },
+          }}
+        >
+          {snippet.code}
+        </SyntaxHighlighter>
       </div>
     </div>
   );

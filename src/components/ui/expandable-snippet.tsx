@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, Copy, Check, Code2, HelpCircle } from 'lucide-react';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
+import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Button } from '@/components/ui/button';
 import { useUIStore } from '@/stores';
 import { cn } from '@/lib/utils';
+
+SyntaxHighlighter.registerLanguage('javascript', javascript);
 
 interface ExpandableSnippetProps {
   code: string;
@@ -57,9 +62,25 @@ export function ExpandableSnippet({
 
         {isExpanded && (
           <div className="mt-2 relative">
-            <pre className="bg-muted/50 border rounded-md p-3 pr-16 text-xs font-mono overflow-x-auto">
-              <code>{code}</code>
-            </pre>
+            <div className="bg-muted/50 border rounded-md p-3 pr-16 overflow-x-auto">
+              <SyntaxHighlighter
+                language="javascript"
+                style={github}
+                customStyle={{
+                  margin: 0,
+                  padding: 0,
+                  background: 'transparent',
+                  fontSize: '0.75rem',
+                }}
+                codeTagProps={{
+                  style: {
+                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                  },
+                }}
+              >
+                {code}
+              </SyntaxHighlighter>
+            </div>
             <div className="absolute top-1 right-1 flex gap-1">
               <Button
                 variant="ghost"
@@ -127,9 +148,25 @@ export function ExpandableSnippet({
 
       {isExpanded && (
         <div className="border-t px-3 pb-3">
-          <pre className="bg-muted/30 rounded-md p-3 text-xs font-mono overflow-x-auto mt-2">
-            <code>{code}</code>
-          </pre>
+          <div className="bg-muted/30 rounded-md p-3 overflow-x-auto mt-2">
+            <SyntaxHighlighter
+              language="javascript"
+              style={github}
+              customStyle={{
+                margin: 0,
+                padding: 0,
+                background: 'transparent',
+                fontSize: '0.75rem',
+              }}
+              codeTagProps={{
+                style: {
+                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                },
+              }}
+            >
+              {code}
+            </SyntaxHighlighter>
+          </div>
         </div>
       )}
     </div>
@@ -156,9 +193,25 @@ export function CodeBlock({ code, className }: CodeBlockProps) {
 
   return (
     <div className={cn('relative', className)}>
-      <pre className="bg-muted/50 border rounded-md p-3 text-xs font-mono overflow-x-auto">
-        <code>{code}</code>
-      </pre>
+      <div className="bg-muted/50 border rounded-md p-3 overflow-x-auto">
+        <SyntaxHighlighter
+          language="javascript"
+          style={github}
+          customStyle={{
+            margin: 0,
+            padding: 0,
+            background: 'transparent',
+            fontSize: '0.75rem',
+          }}
+          codeTagProps={{
+            style: {
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+            },
+          }}
+        >
+          {code}
+        </SyntaxHighlighter>
+      </div>
       <Button
         variant="ghost"
         size="sm"
