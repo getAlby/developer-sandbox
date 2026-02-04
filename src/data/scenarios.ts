@@ -1,4 +1,4 @@
-import type { Scenario, ScenarioComplexity } from "@/types";
+import type { Scenario, ScenarioComplexity, ScenarioSection } from "@/types";
 import type { SnippetId } from "@/data/code-snippets";
 
 const unorderedScenarios: Scenario[] = [
@@ -786,23 +786,47 @@ The flow: Enter amount → select currency → see converted value in real time.
       },
     ],
   },
+  // Bitcoin Connect items
+  {
+    id: "connect-wallet",
+    title: "Connect Wallet",
+    description:
+      "Use Bitcoin Connect to let users connect their Lightning wallet with a single click.",
+    education:
+      "Bitcoin Connect provides a universal wallet connection modal that supports multiple wallet types including NWC, browser extensions, and mobile apps. It abstracts away the complexity of wallet integration, making it easy to add Lightning payments to any web application.",
+    icon: "🔗",
+    section: "bitcoin-connect",
+    complexity: "simple",
+    snippetIds: ["bc-init", "bc-launch-modal", "bc-disconnect"],
+  },
 ];
 
+const getComplexityIndex = (complexity: ScenarioComplexity) => {
+  switch (complexity) {
+    case "simplest":
+      return 0;
+    case "simple":
+      return 1;
+    case "medium":
+      return 2;
+    case "advanced":
+      return 3;
+    case "expert":
+      return 4;
+  }
+};
+
+const getSectionIndex = (section?: ScenarioSection) => {
+  if (!section || section === "scenarios") return 0;
+  if (section === "bitcoin-connect") return 1;
+  return 2;
+};
+
 export const scenarios = unorderedScenarios.sort((a, b) => {
-  const getComplexityIndex = (complexity: ScenarioComplexity) => {
-    switch (complexity) {
-      case "simplest":
-        return 0;
-      case "simple":
-        return 1;
-      case "medium":
-        return 2;
-      case "advanced":
-        return 3;
-      case "expert":
-        return 4;
-    }
-  };
+  // First sort by section
+  const sectionDiff = getSectionIndex(a.section) - getSectionIndex(b.section);
+  if (sectionDiff !== 0) return sectionDiff;
+  // Then sort by complexity within each section
   return getComplexityIndex(a.complexity) - getComplexityIndex(b.complexity);
 });
 

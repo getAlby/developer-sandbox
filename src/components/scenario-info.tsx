@@ -14,7 +14,8 @@ export function ScenarioInfo() {
   const { areAllWalletsConnected } = useWalletStore();
 
   const [learnOpen, setLearnOpen] = useState(false);
-  const allConnected = areAllWalletsConnected(currentScenario.requiredWallets);
+  const requiredWallets = currentScenario.requiredWallets || [];
+  const allConnected = areAllWalletsConnected(requiredWallets);
   const hasSnippets =
     currentScenario.snippetIds && currentScenario.snippetIds.length > 0;
 
@@ -97,7 +98,7 @@ export function ScenarioInfo() {
         </p>
       </div>
 
-      {!allConnected && (
+      {requiredWallets.length > 0 && !allConnected && (
         <Alert
           variant="default"
           className="border-yellow-500/50 bg-yellow-500/10"

@@ -6,13 +6,20 @@ export function WalletGrid() {
   const { currentScenario } = useScenarioStore();
   const { wallets, initializeWallets } = useWalletStore();
 
-  useEffect(() => {
-    initializeWallets(currentScenario.requiredWallets);
-  }, [currentScenario.requiredWallets, initializeWallets]);
+  // Use the original array reference for stable dependency
+  const requiredWalletIds = currentScenario.requiredWallets;
 
-  const requiredWallets = currentScenario.requiredWallets
+  useEffect(() => {
+    initializeWallets(requiredWalletIds ?? []);
+  }, [requiredWalletIds, initializeWallets]);
+
+  const requiredWallets = (requiredWalletIds ?? [])
     .map((id) => wallets[id])
     .filter(Boolean);
+
+  if (requiredWallets.length === 0) {
+    return null;
+  }
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

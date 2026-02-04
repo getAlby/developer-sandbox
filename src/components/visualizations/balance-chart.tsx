@@ -21,7 +21,9 @@ export function BalanceChart() {
   const { balanceHistory } = useTransactionStore();
   const { currentScenario } = useScenarioStore();
 
-  const chartConfig: ChartConfig = currentScenario.requiredWallets.reduce(
+  const requiredWallets = currentScenario.requiredWallets || [];
+
+  const chartConfig: ChartConfig = requiredWallets.reduce(
     (acc, walletId) => ({
       ...acc,
       [walletId]: {
@@ -44,7 +46,7 @@ export function BalanceChart() {
   // Group balance snapshots by timestamp and transform for recharts
   const chartData = transformBalanceData(
     balanceHistory,
-    currentScenario.requiredWallets,
+    requiredWallets,
   );
 
   return (
@@ -69,7 +71,7 @@ export function BalanceChart() {
           />
           <ChartTooltip content={<ChartTooltipContent />} />
           <ChartLegend content={<ChartLegendContent />} />
-          {currentScenario.requiredWallets.map((walletId) => (
+          {requiredWallets.map((walletId) => (
             <Line
               key={walletId}
               type="monotone"

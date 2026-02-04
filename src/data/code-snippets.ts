@@ -7,7 +7,8 @@ export type SnippetCategory =
   | "invoices"
   | "lightning-address"
   | "fiat"
-  | "advanced";
+  | "advanced"
+  | "bitcoin-connect";
 
 /**
  * Valid snippet IDs - use this type for type-safe snippet references
@@ -50,7 +51,11 @@ export type SnippetId =
   | "hold-invoice"
   | "hold-invoice-settle"
   | "hold-invoice-cancel"
-  | "wrapped-hold-invoice";
+  | "wrapped-hold-invoice"
+  // Bitcoin Connect
+  | "bc-init"
+  | "bc-launch-modal"
+  | "bc-disconnect";
 
 export interface CodeSnippet {
   id: SnippetId;
@@ -74,6 +79,7 @@ export const SNIPPET_CATEGORIES: {
   { id: "lightning-address", label: "Lightning Address", icon: "at-sign" },
   { id: "fiat", label: "Fiat Conversion", icon: "dollar-sign" },
   { id: "advanced", label: "Advanced", icon: "code" },
+  { id: "bitcoin-connect", label: "Bitcoin Connect", icon: "link" },
 ];
 
 export const CODE_SNIPPETS: CodeSnippet[] = [
@@ -595,6 +601,60 @@ console.log('Wrapped invoice:', response.invoice)
 // This is non-custodial: you never hold the payer's funds.
 // They remain locked in the network until you settle.`,
     category: "advanced",
+  },
+
+  // Bitcoin Connect
+  {
+    id: "bc-init",
+    title: "Initialize Bitcoin Connect",
+    description:
+      "Initialize Bitcoin Connect in your app. Call this once at startup before rendering your app.",
+    code: `import { init } from '@getalby/bitcoin-connect-react'
+
+// Initialize once at app startup (e.g., in main.tsx)
+init({
+  appName: "My Lightning App",
+  showBalance: true, // Show balance in the connection UI
+})
+
+// README link:
+// https://github.com/getAlby/bitcoin-connect`,
+    category: "bitcoin-connect",
+  },
+  {
+    id: "bc-launch-modal",
+    title: "Launch Connection Modal",
+    description:
+      "Programmatically launch the Bitcoin Connect modal and subscribe to connection events.",
+    code: `import { launchModal, onConnected } from '@getalby/bitcoin-connect-react'
+
+// Subscribe to connection events
+const unsub = onConnected((provider) => {
+  console.log('Wallet connected!')
+  // provider.getInfo() - get wallet info
+  // provider.getBalance() - get wallet balance
+  // provider.makeInvoice() - create invoices
+  // provider.sendPayment() - pay invoices
+})
+
+// Launch the connection modal
+launchModal()
+
+// Later, to unsubscribe:
+// unsub()`,
+    category: "bitcoin-connect",
+  },
+  {
+    id: "bc-disconnect",
+    title: "Disconnect Wallet",
+    description: "Disconnect the currently connected wallet.",
+    code: `import { disconnect } from '@getalby/bitcoin-connect-react'
+
+// Disconnect the wallet
+disconnect()
+
+// The onDisconnected callback will be triggered if you subscribed to it`,
+    category: "bitcoin-connect",
   },
 ];
 

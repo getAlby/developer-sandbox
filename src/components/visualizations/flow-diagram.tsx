@@ -29,7 +29,7 @@ export function FlowDiagram() {
   const { currentScenario } = useScenarioStore();
   const { wallets } = useWalletStore();
 
-  const requiredWalletIds = currentScenario.requiredWallets;
+  const requiredWalletIds = currentScenario.requiredWallets || [];
   const walletList = requiredWalletIds.map((id) => ({
     id,
     name: WALLET_PERSONAS[id]?.name ?? id,

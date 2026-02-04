@@ -11,6 +11,7 @@ import {
   Copy,
   Check,
   Play,
+  Link,
 } from 'lucide-react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
@@ -38,6 +39,7 @@ const CATEGORY_ICONS: Record<SnippetCategory, React.ReactNode> = {
   'lightning-address': <AtSign className="h-4 w-4" />,
   fiat: <DollarSign className="h-4 w-4" />,
   advanced: <Code className="h-4 w-4" />,
+  'bitcoin-connect': <Link className="h-4 w-4" />,
 };
 
 export function CodeSnippets() {
