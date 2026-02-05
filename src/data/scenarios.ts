@@ -238,6 +238,132 @@ The flow: Display goat pasture → subscribe to notifications → receive paymen
     ],
   },
   {
+    id: "streaming-payments",
+    title: "Streaming Payments",
+    description:
+      "Pay continuously while consuming content - perfect for podcasts, music, and video streaming.",
+    education:
+      "Streaming payments enable continuous micropayments while you consume content. Instead of paying upfront for an entire podcast or song, you stream sats per minute as you listen. If you stop listening, payments stop automatically. This 'Value4Value' model is revolutionizing podcasting and content monetization.",
+    howItWorks: [
+      {
+        title: "Start Streaming",
+        description:
+          "Alice starts playing content and begins streaming sats per minute to Bob.",
+      },
+      {
+        title: "Continuous Payments",
+        description:
+          "Small payments are sent automatically at regular intervals (e.g., every 10 seconds).",
+      },
+      {
+        title: "Pause & Resume",
+        description:
+          "When Alice pauses, payments stop. Resume to continue streaming sats.",
+      },
+    ],
+    complexity: "medium",
+    requiredWallets: ["alice", "bob"],
+    icon: "🎵",
+    snippetIds: [
+      "subscribe-notifications",
+      "request-invoice-from-address",
+      "pay-lightning-address",
+      "pay-invoice",
+    ] satisfies SnippetId[],
+    prompts: [
+      {
+        title: "Podcasting 2.0 Player",
+        description:
+          "Build a podcast player that streams sats to creators as listeners play episodes.",
+        prompt: `Build a Podcasting 2.0 player with streaming payments (Value4Value).
+
+Requirements:
+- Display a podcast episode with title, creator, and artwork
+- Play/pause controls for the audio (simulated or real)
+- Set sats-per-minute streaming rate (e.g., 100, 500, 1000 sats/min)
+- While playing, automatically stream payments to the creator's Lightning Address
+- Payments sent every 10-15 seconds based on the streaming rate
+- Show real-time stats: time played, total sats streamed
+- A visual progress bar showing episode progress
+- Display recent payments sent to the creator
+- When paused, payments automatically stop
+- Support "boost" button to send a larger one-time payment
+- Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
+
+The flow: Select episode → press play → sats stream continuously → pause to stop payments → boost to tip extra.`,
+      },
+      {
+        title: "Music Streaming Platform",
+        description:
+          "Build a music streaming service where users pay sats per minute to artists.",
+        prompt: `Build a music streaming platform with pay-per-minute Lightning payments.
+
+Requirements:
+- A music player interface with album art, song title, and artist name
+- Play/pause/skip controls
+- Adjustable streaming rate: 50, 100, or 200 sats per minute
+- While a song plays, stream micropayments to the artist every 10 seconds
+- Visual equalizer or waveform animation
+- Current playback time and song duration
+- Running total of sats streamed to the artist
+- Payment history showing each micropayment sent
+- Artist dashboard showing total earnings from all listeners
+- Playlist support with automatic streaming to each artist
+- "Like" button that sends a bonus payment
+- Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
+
+The flow: Browse songs → play music → automatic streaming payments → artist earns in real-time → listener pays only for what they consume.`,
+      },
+      {
+        title: "Pay-Per-Minute Video Chat",
+        description:
+          "Build a video consultation platform where experts charge per minute via streaming payments.",
+        prompt: `Build a pay-per-minute video consultation service using streaming Lightning payments.
+
+Requirements:
+- Expert sets their rate (e.g., 100 sats/minute for consultations)
+- Client starts a video call (can simulate video with placeholder)
+- While connected, client automatically streams payments to the expert every 10 seconds
+- Display connection time and total payment so far
+- Both parties see the same timer and payment amount
+- "End Call" button stops the stream and shows final invoice
+- Client can pause payments if they need to step away (call on hold)
+- Expert dashboard showing active consultations and earnings
+- Payment history for both parties
+- Support session summary at the end
+- Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
+
+The flow: Client requests consultation → call starts → sats stream per minute → either party can end → final payment summary shown.`,
+      },
+      {
+        title: "Live Stream Donations",
+        description:
+          "Build a live streaming donation system where viewers stream sats while watching.",
+        prompt: `Build a live streaming platform where viewers automatically stream donations to streamers.
+
+Requirements:
+- Streamer view: goes live, displays Lightning Address for donations
+- Viewer view: watches stream, sets donation rate (sats per minute)
+- While watching, viewer automatically streams small payments every 10 seconds
+- Real-time donation feed showing all incoming streams from viewers
+- Donation leaderboard showing top supporters
+- Stream viewer count and total sats per minute being streamed
+- Viewer can adjust rate on the fly (increase/decrease without stopping)
+- "Boost" button for viewers to send large one-time tips
+- Streamer sees animated notifications when boosts arrive
+- Total earnings counter for the stream session
+- Viewer payment history and total donated
+- Use React and TypeScript
+- Write tests using vitest and playwright. Take screenshots and review the screenshots.
+
+The flow: Streamer goes live → viewers join → each viewer streams donations → streamer sees real-time earnings → boosted by tips.`,
+      },
+    ],
+  },
+  {
     id: "subscription-payments",
     title: "Subscription Payments",
     description:

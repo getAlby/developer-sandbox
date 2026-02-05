@@ -5,6 +5,7 @@ import {
   LightningAddressScenario,
   NotificationsScenario,
   SubscriptionPaymentsScenario,
+  StreamingPaymentsScenario,
   HoldInvoiceScenario,
   TransactionHistoryScenario,
   ProofOfPaymentScenario,
@@ -30,6 +31,8 @@ export function ScenarioPanel() {
       return <NotificationsScenario />;
     case "subscription-payments":
       return <SubscriptionPaymentsScenario />;
+    case "streaming-payments":
+      return <StreamingPaymentsScenario />;
     case "hold-invoice":
       return <HoldInvoiceScenario />;
     case "transaction-history":
