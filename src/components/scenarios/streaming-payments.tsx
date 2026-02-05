@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Loader2, Play, Pause, Zap, Music } from "lucide-react";
-import { LightningAddress } from "@getalby/lightning-tools";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useWalletStore, useTransactionStore } from "@/stores";
@@ -46,7 +45,7 @@ function AlicePanel() {
   const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timeRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const { getNWCClient, getWallet, setWalletBalance } = useWalletStore();
+  const { getNWCClient, setWalletBalance } = useWalletStore();
   const {
     addTransaction,
     updateTransaction,
@@ -54,8 +53,6 @@ function AlicePanel() {
     updateFlowStep,
     addBalanceSnapshot,
   } = useTransactionStore();
-
-  const bobWallet = getWallet("bob");
 
   // Calculate amount per payment interval
   const amountPerPayment = Math.floor(
@@ -65,10 +62,9 @@ function AlicePanel() {
   const sendStreamingPayment = useCallback(async () => {
     const aliceClient = getNWCClient("alice");
     const bobClient = getNWCClient("bob");
-    const bobAddress = bobWallet?.lightningAddress;
 
-    if (!aliceClient || !bobClient || !bobAddress) {
-      setError("Missing wallet connection or lightning address");
+    if (!aliceClient || !bobClient) {
+      setError("Missing wallet connection");
       return false;
     }
 
@@ -78,35 +74,57 @@ function AlicePanel() {
       fromWallet: "alice",
       toWallet: "bob",
       amount: amountPerPayment,
-      description: `Streaming payment: ${amountPerPayment} sats`,
+      description: `Streaming keysend: ${amountPerPayment} sats`,
       snippetIds: ["pay-lightning-address"],
     });
 
-    const requestFlowStepId = addFlowStep({
+    const flowStepId = addFlowStep({
       fromWallet: "alice",
       toWallet: "bob",
       label: `Streaming ${amountPerPayment} sats...`,
       direction: "right",
       status: "pending",
-      snippetIds: ["request-invoice-from-address", "pay-invoice"],
+      snippetIds: ["pay-invoice"],
     });
 
     try {
-      // Request invoice from Bob's lightning address
-      const ln = new LightningAddress(bobAddress);
-      await ln.fetch();
-      const invoice = await ln.requestInvoice({ satoshi: amountPerPayment });
+      const toHexString = (bytes: Uint8Array) =>
+        Array.from(bytes)
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
 
-      // Pay the invoice
-      await aliceClient.payInvoice({ invoice: invoice.paymentRequest });
+      const bobInfo = await bobClient.getInfo();
 
-      // Update Alice's balance
+      const metadata = {
+        podcast: "Lightning Podcast",
+        episode: "Episode #42",
+        action: "stream",
+        value_msat_total: amountPerPayment * 1000,
+      };
+
+      const tlv_records = [];
+
+        tlv_records.push({
+          type: 696969, 
+          value: toHexString(new TextEncoder().encode(bobClient.secret)), // what should be passed here?
+        });
+   
+      tlv_records.push({
+        type: 7629169, 
+        value: toHexString(new TextEncoder().encode(JSON.stringify(metadata))),
+      });
+
+      await aliceClient.payKeysend({
+        amount: amountPerPayment * 1000, 
+        pubkey: bobInfo.pubkey, 
+        tlv_records,
+      });
+
       const aliceBalance = await aliceClient.getBalance();
       const aliceBalanceSats = Math.floor(aliceBalance.balance / 1000);
       setWalletBalance("alice", aliceBalanceSats);
       addBalanceSnapshot({ walletId: "alice", balance: aliceBalanceSats });
 
-      // Update Bob's balance
       const bobBalance = await bobClient.getBalance();
       const bobBalanceSats = Math.floor(bobBalance.balance / 1000);
       setWalletBalance("bob", bobBalanceSats);
@@ -116,11 +134,11 @@ function AlicePanel() {
 
       updateTransaction(txId, {
         status: "success",
-        description: `Streamed ${amountPerPayment} sats`,
+        description: `Keysend: ${amountPerPayment} sats`,
       });
 
-      updateFlowStep(requestFlowStepId, {
-        label: `💸 ${amountPerPayment} sats`,
+      updateFlowStep(flowStepId, {
+        label: `⚡ ${amountPerPayment} sats`,
         status: "success",
       });
 
@@ -132,10 +150,10 @@ function AlicePanel() {
 
       updateTransaction(txId, {
         status: "error",
-        description: `Payment failed: ${errorMessage}`,
+        description: `Keysend failed: ${errorMessage}`,
       });
 
-      updateFlowStep(requestFlowStepId, {
+      updateFlowStep(flowStepId, {
         label: `Failed: ${errorMessage}`,
         status: "error",
       });
@@ -144,7 +162,6 @@ function AlicePanel() {
     }
   }, [
     amountPerPayment,
-    bobWallet?.lightningAddress,
     getNWCClient,
     setWalletBalance,
     addTransaction,
@@ -174,7 +191,6 @@ function AlicePanel() {
       snippetIds: ["subscribe-notifications"],
     });
 
-    // Send first payment immediately
     const success = await sendStreamingPayment();
 
     if (success) {
@@ -186,18 +202,16 @@ function AlicePanel() {
         description: `Streaming: ${streamingConfig.satsPerMinute} sats/min (${amountPerPayment} sats every ${streamingConfig.paymentInterval}s)`,
       });
 
-      //Set up interval for recurring payments
       intervalRef.current = setInterval(() => {
         sendStreamingPayment();
         setNextPaymentIn(streamingConfig.paymentInterval);
       }, streamingConfig.paymentInterval * 1000);
 
-      // Set up countdown timer
       countdownRef.current = setInterval(() => {
         setNextPaymentIn((prev) => (prev !== null && prev > 0 ? prev - 1 : null));
       }, 1000);
 
-      // Set up streaming time counter
+
       timeRef.current = setInterval(() => {
         setStreamingTime((prev) => prev + 1);
       }, 1000);
@@ -244,7 +258,6 @@ function AlicePanel() {
     });
   };
 
-  // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -268,7 +281,6 @@ function AlicePanel() {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Content Player Simulation */}
         <div className="p-4 bg-linear-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg">
           <div className="flex items-center gap-3 mb-3">
             <div className="h-12 w-12 bg-linear-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
@@ -280,7 +292,6 @@ function AlicePanel() {
             </div>
           </div>
 
-          {/* Progress Bar */}
           <div className="space-y-2">
             <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
               <div
@@ -298,7 +309,6 @@ function AlicePanel() {
             </div>
           </div>
 
-          {/* Play/Pause Button */}
           <div className="flex items-center justify-center mt-4">
             <Button
               size="lg"
@@ -317,7 +327,6 @@ function AlicePanel() {
           </div>
         </div>
 
-        {/* Streaming Stats */}
         <div className="grid grid-cols-2 gap-3">
           <div className="p-3 bg-muted rounded-lg">
             <p className="text-xs text-muted-foreground mb-1">Streaming Rate</p>
@@ -395,7 +404,6 @@ function BobPanel() {
           snippetIds: ["subscribe-notifications"],
         });
 
-        // Update Bob's balance
         const client = getNWCClient("bob");
         if (client) {
           client.getBalance().then((balance) => {
@@ -428,7 +436,6 @@ function BobPanel() {
     }
   };
 
-  // Auto-start listening
   useEffect(() => {
     startListening();
     return () => {
@@ -452,7 +459,6 @@ function BobPanel() {
           </div>
         )}
 
-        {/* Revenue Stats */}
         <div className="grid grid-cols-2 gap-3">
           <div className="p-3 bg-linear-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-lg">
             <p className="text-xs text-muted-foreground mb-1">Total Earned</p>
@@ -472,7 +478,6 @@ function BobPanel() {
           </div>
         </div>
 
-        {/* Recent Payments */}
         <div className="space-y-2">
           <label className="text-xs text-muted-foreground">Recent Streaming Payments</label>
           <div className="min-h-[180px] max-h-[180px] overflow-y-auto space-y-2">
