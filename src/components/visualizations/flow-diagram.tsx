@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
-import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { github, atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Button } from "@/components/ui/button";
 import {
   useTransactionStore,
@@ -21,6 +21,7 @@ import {
 import type { FlowStep } from "@/types";
 import { WALLET_PERSONAS } from "@/types";
 import { getSnippetsById } from "@/data/code-snippets";
+import { useDarkMode } from "@/hooks/use-dark-mode";
 
 SyntaxHighlighter.registerLanguage('javascript', javascript);
 
@@ -124,6 +125,7 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
   const { openCodeSnippetsHelp } = useUIStore();
+  const isDark = useDarkMode();
 
   if (!walletList.length) {
     return null;
@@ -301,7 +303,7 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
             <div className="p-3 overflow-x-auto">
               <SyntaxHighlighter
                 language="javascript"
-                style={github}
+                style={isDark ? atomOneDark : github}
                 customStyle={{
                   margin: 0,
                   padding: 0,
