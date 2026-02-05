@@ -1,1 +1,1 @@
-export { ConnectWalletScenario } from "./connect-wallet-scenario";
+export { ConnectWalletScenario } from "./connect-wallet";

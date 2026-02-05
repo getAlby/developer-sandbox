@@ -32,8 +32,7 @@ import {
 import type { Wallet as WalletType } from "@/types";
 import { useWalletStore, useTransactionStore } from "@/stores";
 import { useFiatValue } from "@/hooks/use-fiat";
-
-const FAUCET_URL = import.meta.env.VITE_FAUCET_URL || "https://faucet.nwc.dev";
+import { createTestWallet, topUpWallet } from "@/lib/faucet";
 
 interface WalletCardProps {
   wallet: WalletType;
@@ -125,49 +124,15 @@ export function WalletCard({ wallet }: WalletCardProps) {
   const handleCreateTestWallet = async () => {
     setIsCreatingWallet(true);
     setWalletStatus(wallet.id, "connecting");
-    let connectionSecret: string | undefined;
 
     try {
-      // Create test wallet via faucet API
-      // Returns plaintext NWC connection secret with lud16 parameter
-      for (let attempt = 0; ; attempt++) {
-        const response = await fetch(`${FAUCET_URL}?balance=10000`, {
-          method: "POST",
-        });
-
-        if (!response.ok) {
-          if (attempt < 3) {
-            continue;
-          }
-          throw new Error("Failed to create test wallet");
-        }
-
-        // Response is plaintext connection secret
-        connectionSecret = await response.text();
-        break;
-      }
-
-      if (
-        !connectionSecret ||
-        !connectionSecret.startsWith("nostr+walletconnect://")
-      ) {
-        connectionSecret = "";
-        throw new Error("Invalid connection secret received");
-      }
+      const connectionSecret = await createTestWallet();
+      await connectWithNWC(connectionSecret);
     } catch (error) {
       console.error("Failed to create test wallet:", error);
       setWalletStatus(wallet.id, "error", "Failed to create test wallet");
     } finally {
       setIsCreatingWallet(false);
-    }
-    if (!connectionSecret) {
-      return;
-    }
-    try {
-      await connectWithNWC(connectionSecret);
-    } catch (error) {
-      console.error("Failed to connect to test wallet:", error);
-      setWalletStatus(wallet.id, "error", "Failed to connect to test wallet");
     }
   };
 
@@ -176,13 +141,7 @@ export function WalletCard({ wallet }: WalletCardProps) {
     if (!username) return;
 
     try {
-      const response = await fetch(
-        `${FAUCET_URL}/wallets/${username}/topup?amount=10000`,
-        { method: "POST" },
-      );
-      if (!response.ok) {
-        throw new Error("Top-up request failed");
-      }
+      await topUpWallet(username);
 
       // Refresh balance from the NWC client
       const client = getNWCClient(wallet.id);

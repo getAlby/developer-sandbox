@@ -789,7 +789,7 @@ The flow: Enter amount → select currency → see converted value in real time.
   // Bitcoin Connect items
   {
     id: "connect-wallet",
-    title: "Connect Wallet",
+    title: "Connect Wallet Modal",
     description:
       "Use Bitcoin Connect to let users connect their Lightning wallet with a single click.",
     education:

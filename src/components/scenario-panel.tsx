@@ -15,7 +15,7 @@ import {
   LnurlVerifyScenario,
   WrappedInvoicesScenario,
 } from "./scenarios";
-import { ConnectWalletScenario } from "./bitcoin-connect/connect-wallet-scenario";
+import { ConnectWalletScenario } from "./bitcoin-connect/connect-wallet";
 
 export function ScenarioPanel() {
   const { currentScenario } = useScenarioStore();
