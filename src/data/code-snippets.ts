@@ -54,6 +54,7 @@ export type SnippetId =
   | "wrapped-hold-invoice"
   // Bitcoin Connect
   | "bc-init"
+  | "bc-button"
   | "bc-launch-modal"
   | "bc-disconnect";
 
@@ -619,6 +620,20 @@ init({
 
 // README link:
 // https://github.com/getAlby/bitcoin-connect`,
+    category: "bitcoin-connect",
+  },
+  {
+    id: "bc-button",
+    title: "Bitcoin Connect Button",
+    description:
+      "Add a connect button that opens the wallet connection modal when clicked.",
+    code: `import { Button } from '@getalby/bitcoin-connect-react'
+
+// Renders a button that opens the connection modal
+// After connecting, it shows the wallet balance
+function App() {
+  return <Button />
+}`,
     category: "bitcoin-connect",
   },
   {

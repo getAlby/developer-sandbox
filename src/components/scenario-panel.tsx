@@ -15,7 +15,10 @@ import {
   LnurlVerifyScenario,
   WrappedInvoicesScenario,
 } from "./scenarios";
-import { ConnectWalletScenario } from "./bitcoin-connect/connect-wallet";
+import {
+  BitcoinConnectButtonScenario,
+  ConnectWalletScenario,
+} from "./bitcoin-connect";
 
 export function ScenarioPanel() {
   const { currentScenario } = useScenarioStore();
@@ -49,6 +52,8 @@ export function ScenarioPanel() {
       return <LnurlVerifyScenario />;
     case "wrapped-invoices":
       return <WrappedInvoicesScenario />;
+    case "bitcoin-connect-button":
+      return <BitcoinConnectButtonScenario />;
     case "connect-wallet":
       return <ConnectWalletScenario />;
     default:

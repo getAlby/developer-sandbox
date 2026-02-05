@@ -8,9 +8,9 @@ import {
   Trash2,
   HelpCircle,
 } from "lucide-react";
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
-import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
+import javascript from "react-syntax-highlighter/dist/esm/languages/hljs/javascript";
+import { github } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { Button } from "@/components/ui/button";
 import {
   useTransactionStore,
@@ -22,7 +22,7 @@ import type { FlowStep } from "@/types";
 import { WALLET_PERSONAS } from "@/types";
 import { getSnippetsById } from "@/data/code-snippets";
 
-SyntaxHighlighter.registerLanguage('javascript', javascript);
+SyntaxHighlighter.registerLanguage("javascript", javascript);
 
 export function FlowDiagram() {
   const { flowSteps, clearFlowSteps } = useTransactionStore();
@@ -55,7 +55,9 @@ export function FlowDiagram() {
             ))}
           </div>
           <div className="mt-8 text-center text-muted-foreground">
-            No flow steps yet. Execute the scenario to see the payment flow.
+            {requiredWalletIds.length > 0
+              ? "No flow steps yet. Execute the scenario to see the payment flow."
+              : "This scenario doesn't need Alice & Bob"}
           </div>
         </div>
       </div>
@@ -305,12 +307,13 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
                 customStyle={{
                   margin: 0,
                   padding: 0,
-                  background: 'transparent',
-                  fontSize: '0.75rem',
+                  background: "transparent",
+                  fontSize: "0.75rem",
                 }}
                 codeTagProps={{
                   style: {
-                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+                    fontFamily:
+                      "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
                   },
                 }}
               >

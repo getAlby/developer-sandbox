@@ -788,10 +788,22 @@ The flow: Enter amount → select currency → see converted value in real time.
   },
   // Bitcoin Connect items
   {
-    id: "connect-wallet",
-    title: "Connect Wallet Modal",
+    id: "bitcoin-connect-button",
+    title: "Button",
     description:
-      "Use Bitcoin Connect to let users connect their Lightning wallet with a single click.",
+      "Add a single button component that handles wallet connection.",
+    education:
+      "The Bitcoin Connect Button is the simplest way to add Lightning wallet connectivity to your app. Just drop in the <Button /> component and it handles everything: showing a connect button, opening the wallet selection modal, and displaying the connected wallet's balance.",
+    icon: "⚡",
+    section: "bitcoin-connect",
+    complexity: "simplest",
+    snippetIds: ["bc-init", "bc-button"],
+  },
+  {
+    id: "connect-wallet",
+    title: "Connect Modal",
+    description:
+      "Programmatically launch a modal to let users connect their lightning wallet.",
     education:
       "Bitcoin Connect provides a universal wallet connection modal that supports multiple wallet types including NWC, browser extensions, and mobile apps. It abstracts away the complexity of wallet integration, making it easy to add Lightning payments to any web application.",
     icon: "🔗",
