@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { ChevronDown, ChevronRight, Copy, Check, Code2, HelpCircle } from 'lucide-react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
-import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { github, atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Button } from '@/components/ui/button';
 import { useUIStore } from '@/stores';
 import { cn } from '@/lib/utils';
+import { useDarkMode } from '@/hooks/use-dark-mode';
 
 SyntaxHighlighter.registerLanguage('javascript', javascript);
 
@@ -27,6 +28,7 @@ export function ExpandableSnippet({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [copied, setCopied] = useState(false);
   const { openCodeSnippetsHelp } = useUIStore();
+  const isDark = useDarkMode();
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -65,7 +67,7 @@ export function ExpandableSnippet({
             <div className="bg-muted/50 border rounded-md p-3 pr-16 overflow-x-auto">
               <SyntaxHighlighter
                 language="javascript"
-                style={github}
+                style={isDark ? atomOneDark : github}
                 customStyle={{
                   margin: 0,
                   padding: 0,
@@ -151,7 +153,7 @@ export function ExpandableSnippet({
           <div className="bg-muted/30 rounded-md p-3 overflow-x-auto mt-2">
             <SyntaxHighlighter
               language="javascript"
-              style={github}
+              style={isDark ? atomOneDark : github}
               customStyle={{
                 margin: 0,
                 padding: 0,
@@ -180,6 +182,7 @@ interface CodeBlockProps {
 
 export function CodeBlock({ code, className }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
+  const isDark = useDarkMode();
 
   const handleCopy = async () => {
     try {
@@ -196,7 +199,7 @@ export function CodeBlock({ code, className }: CodeBlockProps) {
       <div className="bg-muted/50 border rounded-md p-3 overflow-x-auto">
         <SyntaxHighlighter
           language="javascript"
-          style={github}
+          style={isDark ? atomOneDark : github}
           customStyle={{
             margin: 0,
             padding: 0,

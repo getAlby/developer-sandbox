@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
 import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
-import { github } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { github, atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Button } from '@/components/ui/button';
 import {
   CODE_SNIPPETS,
@@ -26,6 +26,7 @@ import {
 } from '@/data/code-snippets';
 import { useUIStore, useScenarioStore } from '@/stores';
 import { cn } from '@/lib/utils';
+import { useDarkMode } from '@/hooks/use-dark-mode';
 
 SyntaxHighlighter.registerLanguage('javascript', javascript);
 
@@ -92,6 +93,7 @@ export function CodeSnippets() {
 
 function SnippetCard({ snippet }: { snippet: CodeSnippet }) {
   const [copied, setCopied] = useState(false);
+  const isDark = useDarkMode();
 
   const handleCopy = async () => {
     try {
@@ -137,7 +139,7 @@ function SnippetCard({ snippet }: { snippet: CodeSnippet }) {
       <div className="p-3 bg-muted/10">
         <SyntaxHighlighter
           language="javascript"
-          style={github}
+          style={isDark ? atomOneDark : github}
           customStyle={{
             margin: 0,
             padding: 0,
