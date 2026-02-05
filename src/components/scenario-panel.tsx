@@ -18,6 +18,8 @@ import {
 import {
   BitcoinConnectButtonScenario,
   ConnectWalletScenario,
+  PayButtonScenario,
+  PaymentModalScenario,
 } from "./bitcoin-connect";
 
 export function ScenarioPanel() {
@@ -56,6 +58,10 @@ export function ScenarioPanel() {
       return <BitcoinConnectButtonScenario />;
     case "connect-wallet":
       return <ConnectWalletScenario />;
+    case "pay-button":
+      return <PayButtonScenario />;
+    case "payment-modal":
+      return <PaymentModalScenario />;
     default:
       return null;
   }

@@ -74,13 +74,13 @@ export function ConnectWalletScenario() {
       try {
         // Get wallet info
         const info = await provider.getInfo();
-        const balance = await provider.getBalance();
+        const balance = await provider.getBalance?.();
 
         const walletData: WalletInfo = {
           alias: info.node?.alias || "Connected Wallet",
           // WebLN returns balance in sats
           balance:
-            typeof balance.balance === "number"
+            typeof balance?.balance === "number"
               ? Math.floor(balance.balance)
               : undefined,
         };
@@ -174,11 +174,11 @@ export function ConnectWalletScenario() {
   const refreshAliceBalance = async () => {
     if (providerRef.current) {
       try {
-        const balance = await providerRef.current.getBalance();
+        const balance = await providerRef.current.getBalance?.();
         setWalletInfo((prev) => ({
           ...prev,
           balance:
-            typeof balance.balance === "number"
+            typeof balance?.balance === "number"
               ? Math.floor(balance.balance)
               : undefined,
         }));

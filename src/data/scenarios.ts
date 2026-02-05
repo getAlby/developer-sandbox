@@ -813,6 +813,32 @@ The flow: Enter amount → select currency → see converted value in real time.
     requiredWallets: ["bob"],
     snippetIds: ["bc-init", "bc-launch-modal", "bc-disconnect"],
   },
+  {
+    id: "pay-button",
+    title: "Pay Button",
+    description:
+      "A button component that launches the payment modal when clicked.",
+    education:
+      "The PayButton component provides a one-click payment experience. Pass an invoice and it handles everything: showing the payment modal with QR code, connecting wallet if needed, and completing the payment. Perfect for checkout flows and donation buttons.",
+    icon: "💸",
+    section: "bitcoin-connect",
+    complexity: "medium",
+    requiredWallets: ["bob"],
+    snippetIds: ["bc-init", "bc-pay-button"],
+  },
+  {
+    id: "payment-modal",
+    title: "Payment Modal",
+    description:
+      "Programmatically launch a modal to accept payments for an invoice.",
+    education:
+      "The launchPaymentModal function gives you programmatic control over the payment flow. It returns a setPaid function for marking external payments (like QR code scans), and fires callbacks when payment completes or is cancelled. Ideal for custom payment flows and dynamic invoice generation.",
+    icon: "🪟",
+    section: "bitcoin-connect",
+    complexity: "medium",
+    requiredWallets: ["bob"],
+    snippetIds: ["bc-init", "bc-launch-payment-modal"],
+  },
 ];
 
 const getComplexityIndex = (complexity: ScenarioComplexity) => {

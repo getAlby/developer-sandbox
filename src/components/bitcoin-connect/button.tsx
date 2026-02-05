@@ -52,9 +52,9 @@ export function BitcoinConnectButtonScenario() {
 
       // Get Alice's balance
       try {
-        const balance = await provider.getBalance();
+        const balance = await provider.getBalance?.();
         setAliceBalance(
-          typeof balance.balance === "number"
+          typeof balance?.balance === "number"
             ? Math.floor(balance.balance)
             : undefined,
         );
@@ -98,9 +98,9 @@ export function BitcoinConnectButtonScenario() {
   const refreshAliceBalance = async () => {
     if (providerRef.current) {
       try {
-        const balance = await providerRef.current.getBalance();
+        const balance = await providerRef.current.getBalance?.();
         setAliceBalance(
-          typeof balance.balance === "number"
+          typeof balance?.balance === "number"
             ? Math.floor(balance.balance)
             : undefined,
         );

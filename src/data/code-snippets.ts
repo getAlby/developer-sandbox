@@ -56,7 +56,9 @@ export type SnippetId =
   | "bc-init"
   | "bc-button"
   | "bc-launch-modal"
-  | "bc-disconnect";
+  | "bc-disconnect"
+  | "bc-pay-button"
+  | "bc-launch-payment-modal";
 
 export type CodeLanguage = 'javascript' | 'typescript' | 'bash';
 
@@ -674,6 +676,43 @@ launchModal()
 disconnect()
 
 // The onDisconnected callback will be triggered if you subscribed to it`,
+    category: "bitcoin-connect",
+  },
+  {
+    id: "bc-pay-button",
+    title: "Pay Button Component",
+    description: "A button that fetches an invoice on click and launches the payment modal.",
+    code: `import { PayButton } from '@getalby/bitcoin-connect-react'
+
+// onClick fetches the invoice on demand and returns it
+// The payment modal opens automatically after the invoice is returned
+<PayButton
+  onClick={async () => {
+    const invoice = await fetchInvoiceFromServer()
+    return invoice // Return the BOLT-11 invoice string
+  }}
+  onPaid={(response) => console.log('Paid!', response.preimage)}
+/>`,
+    category: "bitcoin-connect",
+  },
+  {
+    id: "bc-launch-payment-modal",
+    title: "Launch Payment Modal",
+    description: "Programmatically launch a payment modal for an invoice.",
+    code: `import { launchPaymentModal } from '@getalby/bitcoin-connect-react'
+
+const { setPaid } = launchPaymentModal({
+  invoice: 'lnbc...',
+  onPaid: (response) => {
+    console.log('Payment preimage:', response.preimage)
+  },
+  onCancelled: () => {
+    console.log('Payment cancelled')
+  },
+})
+
+// For external payments (QR scan):
+// setPaid({ preimage: '...' })`,
     category: "bitcoin-connect",
   },
 ];
