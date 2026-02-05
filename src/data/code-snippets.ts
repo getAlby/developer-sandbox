@@ -7,7 +7,8 @@ export type SnippetCategory =
   | "invoices"
   | "lightning-address"
   | "fiat"
-  | "advanced";
+  | "advanced"
+  | "bitcoin-connect";
 
 /**
  * Valid snippet IDs - use this type for type-safe snippet references
@@ -50,7 +51,14 @@ export type SnippetId =
   | "hold-invoice"
   | "hold-invoice-settle"
   | "hold-invoice-cancel"
-  | "wrapped-hold-invoice";
+  | "wrapped-hold-invoice"
+  // Bitcoin Connect
+  | "bc-init"
+  | "bc-button"
+  | "bc-launch-modal"
+  | "bc-disconnect"
+  | "bc-pay-button"
+  | "bc-launch-payment-modal";
 
 export type CodeLanguage = 'javascript' | 'typescript' | 'bash';
 
@@ -77,6 +85,7 @@ export const SNIPPET_CATEGORIES: {
   { id: "lightning-address", label: "Lightning Address", icon: "at-sign" },
   { id: "fiat", label: "Fiat Conversion", icon: "dollar-sign" },
   { id: "advanced", label: "Advanced", icon: "code" },
+  { id: "bitcoin-connect", label: "Bitcoin Connect", icon: "link" },
 ];
 
 export const CODE_SNIPPETS: CodeSnippet[] = [
@@ -600,6 +609,111 @@ console.log('Wrapped invoice:', response.invoice)
 // This is non-custodial: you never hold the payer's funds.
 // They remain locked in the network until you settle.`,
     category: "advanced",
+  },
+
+  // Bitcoin Connect
+  {
+    id: "bc-init",
+    title: "Initialize Bitcoin Connect",
+    description:
+      "Initialize Bitcoin Connect in your app. Call this once at startup before rendering your app.",
+    code: `import { init } from '@getalby/bitcoin-connect-react'
+
+// Initialize once at app startup (e.g., in main.tsx)
+init({
+  appName: "My Lightning App",
+  showBalance: true, // Show balance in the connection UI
+})
+
+// README link:
+// https://github.com/getAlby/bitcoin-connect`,
+    category: "bitcoin-connect",
+  },
+  {
+    id: "bc-button",
+    title: "Bitcoin Connect Button",
+    description:
+      "Add a connect button that opens the wallet connection modal when clicked.",
+    code: `import { Button } from '@getalby/bitcoin-connect-react'
+
+// Renders a button that opens the connection modal
+// After connecting, it shows the wallet balance
+function App() {
+  return <Button />
+}`,
+    category: "bitcoin-connect",
+  },
+  {
+    id: "bc-launch-modal",
+    title: "Launch Connection Modal",
+    description:
+      "Programmatically launch the Bitcoin Connect modal and subscribe to connection events.",
+    code: `import { launchModal, onConnected } from '@getalby/bitcoin-connect-react'
+
+// Subscribe to connection events
+const unsub = onConnected((provider) => {
+  console.log('Wallet connected!')
+  // provider.getInfo() - get wallet info
+  // provider.getBalance() - get wallet balance
+  // provider.makeInvoice() - create invoices
+  // provider.sendPayment() - pay invoices
+})
+
+// Launch the connection modal
+launchModal()
+
+// Later, to unsubscribe:
+// unsub()`,
+    category: "bitcoin-connect",
+  },
+  {
+    id: "bc-disconnect",
+    title: "Disconnect Wallet",
+    description: "Disconnect the currently connected wallet.",
+    code: `import { disconnect } from '@getalby/bitcoin-connect-react'
+
+// Disconnect the wallet
+disconnect()
+
+// The onDisconnected callback will be triggered if you subscribed to it`,
+    category: "bitcoin-connect",
+  },
+  {
+    id: "bc-pay-button",
+    title: "Pay Button Component",
+    description: "A button that fetches an invoice on click and launches the payment modal.",
+    code: `import { PayButton } from '@getalby/bitcoin-connect-react'
+
+// onClick fetches the invoice on demand and returns it
+// The payment modal opens automatically after the invoice is returned
+<PayButton
+  onClick={async () => {
+    const invoice = await fetchInvoiceFromServer()
+    return invoice // Return the BOLT-11 invoice string
+  }}
+  onPaid={(response) => console.log('Paid!', response.preimage)}
+/>`,
+    category: "bitcoin-connect",
+  },
+  {
+    id: "bc-launch-payment-modal",
+    title: "Launch Payment Modal",
+    description: "Programmatically launch a payment modal for an invoice.",
+    code: `import { launchPaymentModal } from '@getalby/bitcoin-connect-react'
+
+const { setPaid } = launchPaymentModal({
+  invoice: 'lnbc...',
+  onPaid: (response) => {
+    console.log('Payment preimage:', response.preimage)
+  },
+  onCancelled: () => {
+    console.log('Payment cancelled')
+  },
+})
+
+// For external payments (QR scan):
+// setPaid({ preimage: '...' })`,
+    category: "bitcoin-connect",
   },
 ];
 

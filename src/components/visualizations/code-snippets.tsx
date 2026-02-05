@@ -11,6 +11,7 @@ import {
   Copy,
   Check,
   Play,
+  Link,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CodeHighlight } from '@/components/ui/code-highlight';
@@ -34,6 +35,7 @@ const CATEGORY_ICONS: Record<SnippetCategory, React.ReactNode> = {
   'lightning-address': <AtSign className="h-4 w-4" />,
   fiat: <DollarSign className="h-4 w-4" />,
   advanced: <Code className="h-4 w-4" />,
+  'bitcoin-connect': <Link className="h-4 w-4" />,
 };
 
 export function CodeSnippets() {

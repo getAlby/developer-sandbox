@@ -538,6 +538,24 @@
   resolved "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.10.tgz"
   integrity sha512-aGTxbpbg8/b5JfU1HXSrbH3wXZuLPJcNEcZQFMxLs3oSzgtVu6nFPkbbGGUvBcUjKV2YyB9Wxxabo+HEH9tcRQ==
 
+"@getalby/bitcoin-connect-react@^3.12.1":
+  version "3.12.1"
+  resolved "https://registry.yarnpkg.com/@getalby/bitcoin-connect-react/-/bitcoin-connect-react-3.12.1.tgz#4b60608bc65cbbcd12cc294266be8026dbb36ed6"
+  integrity sha512-OIzR3Hscy2ld0S2pcuPkTfiq50FpFSCqYMB7c8LsXD8h9nBLLCFgGkeuoLvW1mqCAGJjmNE2ArplQFsfoy2L6A==
+  dependencies:
+    "@getalby/bitcoin-connect" "^3.12.1"
+
+"@getalby/bitcoin-connect@^3.12.1":
+  version "3.12.1"
+  resolved "https://registry.yarnpkg.com/@getalby/bitcoin-connect/-/bitcoin-connect-3.12.1.tgz#fa5f9ab6b53de0d93ac64b6b3dd0b21b4794aabf"
+  integrity sha512-wFcQkGABkUvzZphsVAVC9b0l3OHk5M+SjLYwaxNWqta8QblGrwWYlnRS0A7jAbeHdiOyjOvoC9GbAdBlsevUgg==
+  dependencies:
+    "@getalby/lightning-tools" "^6.1.0"
+    "@getalby/sdk" "^6.0.2"
+    "@lightninglabs/lnc-web" "^0.3.4-alpha"
+    qrcode-generator "1.4.4"
+    zustand "^4.5.7"
+
 "@getalby/lightning-tools@^6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@getalby/lightning-tools/-/lightning-tools-6.0.0.tgz#07c19cdf29ed8e3d51f125fba780d31a29ba0864"
@@ -547,6 +565,14 @@
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@getalby/lightning-tools/-/lightning-tools-6.1.0.tgz#558b90a83b961cb6aa760e62de69f5b5ceeb2fe9"
   integrity sha512-rGurar9X4Gm+9xwoNYS8s9YLK7ZYqvbqv4KbHLYV0LEeB0HxZHRgmxblGqg+fYfp6iiYHx+edIgUpt9rS3VwFw==
+
+"@getalby/sdk@^6.0.2":
+  version "6.0.2"
+  resolved "https://registry.yarnpkg.com/@getalby/sdk/-/sdk-6.0.2.tgz#4f3b987cc8a9da4fd755917a7de4499380114ee2"
+  integrity sha512-Q7fKMlHXFdbT8w1O+khOVhg4FnPwdB1ltvmeoYI6Ec6RKc4qUVwx6vEM6xl8NumOboUMmA1YO5WDxm6WLTJ52w==
+  dependencies:
+    "@getalby/lightning-tools" "^6.0.0"
+    nostr-tools "^2.17.0"
 
 "@getalby/sdk@^7.0.0":
   version "7.0.0"
@@ -666,6 +692,19 @@
   dependencies:
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
+
+"@lightninglabs/lnc-core@0.3.4-alpha":
+  version "0.3.4-alpha"
+  resolved "https://registry.yarnpkg.com/@lightninglabs/lnc-core/-/lnc-core-0.3.4-alpha.tgz#0e8cc872c3739158a8480317e76c35679b5d0f72"
+  integrity sha512-S/L1gNHqF8jW3DVXBvzVX8zyJO4O2FRfKFNE5U3rtRBaczX+fSVpK3yz/CdgBqhBzyZ+1un6nVZE/tftnfjQwA==
+
+"@lightninglabs/lnc-web@^0.3.4-alpha":
+  version "0.3.4-alpha"
+  resolved "https://registry.yarnpkg.com/@lightninglabs/lnc-web/-/lnc-web-0.3.4-alpha.tgz#6388325be7b314c128b591c7abd5b34bbff404f4"
+  integrity sha512-ARTsCm71ewJ3sWaW4DEauEXr9wG4qPpCMWGGVjbjvvo5Jvd3svLO610JLYoV7LvQhyW6dKLlAooLxYws2y9FLA==
+  dependencies:
+    "@lightninglabs/lnc-core" "0.3.4-alpha"
+    crypto-js "4.2.0"
 
 "@modelcontextprotocol/sdk@^1.17.2":
   version "1.25.2"
@@ -1909,6 +1948,11 @@
     "@types/babel__core" "^7.20.5"
     react-refresh "^0.18.0"
 
+"@webbtc/webln-types@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@webbtc/webln-types/-/webln-types-3.0.0.tgz#448b2138423865087ba8859e9e6430fc2463b864"
+  integrity sha512-aXfTHLKz5lysd+6xTeWl+qHNh/p3qVYbeLo+yDN5cUDmhie2ZoGvkppfWxzbGkcFBzb6dJyQ2/i2cbmDHas+zQ==
+
 accepts@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/accepts/-/accepts-2.0.0.tgz"
@@ -2260,6 +2304,11 @@ cross-spawn@^7.0.3, cross-spawn@^7.0.5, cross-spawn@^7.0.6:
     path-key "^3.1.0"
     shebang-command "^2.0.0"
     which "^2.0.1"
+
+crypto-js@4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
+  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
 
 cssesc@^3.0.0:
   version "3.0.0"
@@ -4050,6 +4099,11 @@ punycode@^2.1.0:
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
 
+qrcode-generator@1.4.4:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/qrcode-generator/-/qrcode-generator-1.4.4.tgz#63f771224854759329a99048806a53ed278740e7"
+  integrity sha512-HM7yY8O2ilqhmULxGMpcHSF1EhJJ9yBj8gvDEuZ6M+KGJ0YY2hKpnXvRD+hZPLrDVck3ExIGhmPtSdcjC+guuw==
+
 qs@^6.14.0, qs@^6.14.1:
   version "6.14.1"
   resolved "https://registry.npmjs.org/qs/-/qs-6.14.1.tgz"
@@ -4770,6 +4824,11 @@ use-sidecar@^1.1.3:
     detect-node-es "^1.1.0"
     tslib "^2.0.0"
 
+use-sync-external-store@^1.2.2:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.6.0.tgz#b174bfa65cb2b526732d9f2ac0a408027876f32d"
+  integrity sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==
+
 util-deprecate@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
@@ -4941,6 +5000,13 @@ zod@^3.24.1:
   version "4.3.5"
   resolved "https://registry.npmjs.org/zod/-/zod-4.3.5.tgz"
   integrity sha512-k7Nwx6vuWx1IJ9Bjuf4Zt1PEllcwe7cls3VNzm4CQ1/hgtFUK2bRNG3rvnpPUhFjmqJKAKtjV576KnUkHocg/g==
+
+zustand@^4.5.7:
+  version "4.5.7"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-4.5.7.tgz#7d6bb2026a142415dd8be8891d7870e6dbe65f55"
+  integrity sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==
+  dependencies:
+    use-sync-external-store "^1.2.2"
 
 zustand@^5.0.10:
   version "5.0.10"

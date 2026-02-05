@@ -13,6 +13,7 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -55,6 +56,13 @@ export function AppSidebar() {
   // Extract scenarioId from pathname (e.g., "/simple-payment" or "/#/simple-payment")
   const scenarioId = location.pathname.split("/").filter(Boolean)[0];
 
+  const regularScenarios = scenarios.filter(
+    (s) => !s.section || s.section === "scenarios"
+  );
+  const bitcoinConnectScenarios = scenarios.filter(
+    (s) => s.section === "bitcoin-connect"
+  );
+
   return (
     <Sidebar>
       <SidebarHeader className="">
@@ -86,7 +94,29 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {scenarios.map((scenario) => (
+              {regularScenarios.map((scenario) => (
+                <SidebarMenuItem key={scenario.id}>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={scenarioId === scenario.id}
+                  >
+                    <Link to={`/${scenario.id}`}>
+                      <span>{scenario.icon}</span>
+                      <span>{scenario.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        {/* Bitcoin Connect Section */}
+        <SidebarGroup>
+          <SidebarGroupLabel>Bitcoin Connect</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {bitcoinConnectScenarios.map((scenario) => (
                 <SidebarMenuItem key={scenario.id}>
                   <SidebarMenuButton
                     asChild

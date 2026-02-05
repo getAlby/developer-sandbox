@@ -1,4 +1,4 @@
-import type { Scenario, ScenarioComplexity } from "@/types";
+import type { Scenario, ScenarioComplexity, ScenarioSection } from "@/types";
 import type { SnippetId } from "@/data/code-snippets";
 
 const unorderedScenarios: Scenario[] = [
@@ -786,23 +786,87 @@ The flow: Enter amount → select currency → see converted value in real time.
       },
     ],
   },
+  // Bitcoin Connect items
+  {
+    id: "bitcoin-connect-button",
+    title: "Button",
+    description:
+      "Add a single button component that handles wallet connection.",
+    education:
+      "The Bitcoin Connect Button is the simplest way to add Lightning wallet connectivity to your app. Just drop in the <Button /> component and it handles everything: showing a connect button, opening the wallet selection modal, and displaying the connected wallet's balance.",
+    icon: "⚡",
+    section: "bitcoin-connect",
+    complexity: "simplest",
+    requiredWallets: ["bob"],
+    snippetIds: ["bc-init", "bc-button"],
+  },
+  {
+    id: "connect-wallet",
+    title: "Connect Modal",
+    description:
+      "Programmatically launch a modal to let users connect their lightning wallet.",
+    education:
+      "Bitcoin Connect provides a universal wallet connection modal that supports multiple wallet types including NWC, browser extensions, and mobile apps. It abstracts away the complexity of wallet integration, making it easy to add Lightning payments to any web application.",
+    icon: "🔗",
+    section: "bitcoin-connect",
+    complexity: "simple",
+    requiredWallets: ["bob"],
+    snippetIds: ["bc-init", "bc-launch-modal", "bc-disconnect"],
+  },
+  {
+    id: "pay-button",
+    title: "Pay Button",
+    description:
+      "A button component that launches the payment modal when clicked.",
+    education:
+      "The PayButton component provides a one-click payment experience. Pass an invoice and it handles everything: showing the payment modal with QR code, connecting wallet if needed, and completing the payment. Perfect for checkout flows and donation buttons.",
+    icon: "💸",
+    section: "bitcoin-connect",
+    complexity: "medium",
+    requiredWallets: ["bob"],
+    snippetIds: ["bc-init", "bc-pay-button"],
+  },
+  {
+    id: "payment-modal",
+    title: "Payment Modal",
+    description:
+      "Programmatically launch a modal to accept payments for an invoice.",
+    education:
+      "The launchPaymentModal function gives you programmatic control over the payment flow. It returns a setPaid function for marking external payments (like QR code scans), and fires callbacks when payment completes or is cancelled. Ideal for custom payment flows and dynamic invoice generation.",
+    icon: "🪟",
+    section: "bitcoin-connect",
+    complexity: "medium",
+    requiredWallets: ["bob"],
+    snippetIds: ["bc-init", "bc-launch-payment-modal"],
+  },
 ];
 
+const getComplexityIndex = (complexity: ScenarioComplexity) => {
+  switch (complexity) {
+    case "simplest":
+      return 0;
+    case "simple":
+      return 1;
+    case "medium":
+      return 2;
+    case "advanced":
+      return 3;
+    case "expert":
+      return 4;
+  }
+};
+
+const getSectionIndex = (section?: ScenarioSection) => {
+  if (!section || section === "scenarios") return 0;
+  if (section === "bitcoin-connect") return 1;
+  return 2;
+};
+
 export const scenarios = unorderedScenarios.sort((a, b) => {
-  const getComplexityIndex = (complexity: ScenarioComplexity) => {
-    switch (complexity) {
-      case "simplest":
-        return 0;
-      case "simple":
-        return 1;
-      case "medium":
-        return 2;
-      case "advanced":
-        return 3;
-      case "expert":
-        return 4;
-    }
-  };
+  // First sort by section
+  const sectionDiff = getSectionIndex(a.section) - getSectionIndex(b.section);
+  if (sectionDiff !== 0) return sectionDiff;
+  // Then sort by complexity within each section
   return getComplexityIndex(a.complexity) - getComplexityIndex(b.complexity);
 });
 

@@ -25,7 +25,7 @@ export function FlowDiagram() {
   const { currentScenario } = useScenarioStore();
   const { wallets } = useWalletStore();
 
-  const requiredWalletIds = currentScenario.requiredWallets;
+  const requiredWalletIds = currentScenario.requiredWallets || [];
   const walletList = requiredWalletIds.map((id) => ({
     id,
     name: WALLET_PERSONAS[id]?.name ?? id,
@@ -51,7 +51,9 @@ export function FlowDiagram() {
             ))}
           </div>
           <div className="mt-8 text-center text-muted-foreground">
-            No flow steps yet. Execute the scenario to see the payment flow.
+            {requiredWalletIds.length > 0
+              ? "No flow steps yet. Execute the scenario to see the payment flow."
+              : "This scenario doesn't need Alice & Bob"}
           </div>
         </div>
       </div>
@@ -295,7 +297,10 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
               </div>
             </div>
             <div className="p-3 overflow-x-auto">
-              <CodeHighlight code={primarySnippet.code} language={primarySnippet.language} />
+              <CodeHighlight
+                code={primarySnippet.code}
+                language={primarySnippet.language}
+              />
             </div>
           </div>
         </div>
