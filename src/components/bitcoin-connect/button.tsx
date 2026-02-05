@@ -3,6 +3,7 @@ import {
   Button as BitcoinConnectButton,
   onConnected,
   onDisconnected,
+  refreshBalance,
 } from "@getalby/bitcoin-connect-react";
 import { LightningAddress } from "@getalby/lightning-tools";
 import type { WebLNProvider } from "@webbtc/webln-types";
@@ -55,7 +56,7 @@ export function BitcoinConnectButtonScenario() {
         setAliceBalance(
           typeof balance.balance === "number"
             ? Math.floor(balance.balance)
-            : undefined
+            : undefined,
         );
       } catch (error) {
         console.error("Failed to get balance:", error);
@@ -101,7 +102,7 @@ export function BitcoinConnectButtonScenario() {
         setAliceBalance(
           typeof balance.balance === "number"
             ? Math.floor(balance.balance)
-            : undefined
+            : undefined,
         );
       } catch (error) {
         console.error("Failed to refresh Alice balance:", error);
@@ -311,6 +312,7 @@ function PayBobSection({
       });
 
       await provider.sendPayment(invoice.paymentRequest);
+      refreshBalance();
 
       // Update Bob's balance
       const bobClient = getNWCClient("bob");
