@@ -25,7 +25,7 @@ import {
 } from '@/data/code-snippets';
 import { useUIStore, useScenarioStore } from '@/stores';
 import { cn } from '@/lib/utils';
-import { useDarkMode } from '@/hooks/use-dark-mode';
+import { useTheme } from '@/components/theme-provider';
 
 SyntaxHighlighter.registerLanguage('javascript', javascript);
 
@@ -91,7 +91,7 @@ export function CodeSnippets() {
 
 function SnippetCard({ snippet }: { snippet: CodeSnippet }) {
   const [copied, setCopied] = useState(false);
-  const isDark = useDarkMode();
+  const { isDark } = useTheme();
 
   const handleCopy = async () => {
     try {

@@ -21,7 +21,7 @@ import {
 import type { FlowStep } from "@/types";
 import { WALLET_PERSONAS } from "@/types";
 import { getSnippetsById } from "@/data/code-snippets";
-import { useDarkMode } from "@/hooks/use-dark-mode";
+import { useTheme } from "@/components/theme-provider";
 
 SyntaxHighlighter.registerLanguage('javascript', javascript);
 
@@ -125,7 +125,7 @@ function FlowStepRow({ step, index, walletList }: FlowStepRowProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [copied, setCopied] = useState(false);
   const { openCodeSnippetsHelp } = useUIStore();
-  const isDark = useDarkMode();
+  const { isDark } = useTheme();
 
   if (!walletList.length) {
     return null;

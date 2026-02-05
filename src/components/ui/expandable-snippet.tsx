@@ -6,7 +6,7 @@ import { github, atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hl
 import { Button } from '@/components/ui/button';
 import { useUIStore } from '@/stores';
 import { cn } from '@/lib/utils';
-import { useDarkMode } from '@/hooks/use-dark-mode';
+import { useTheme } from '@/components/theme-provider';
 
 SyntaxHighlighter.registerLanguage('javascript', javascript);
 
@@ -28,7 +28,7 @@ export function ExpandableSnippet({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [copied, setCopied] = useState(false);
   const { openCodeSnippetsHelp } = useUIStore();
-  const isDark = useDarkMode();
+  const { isDark } = useTheme();
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -182,7 +182,7 @@ interface CodeBlockProps {
 
 export function CodeBlock({ code, className }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
-  const isDark = useDarkMode();
+  const { isDark } = useTheme();
 
   const handleCopy = async () => {
     try {
