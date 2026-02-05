@@ -797,6 +797,7 @@ The flow: Enter amount → select currency → see converted value in real time.
     icon: "⚡",
     section: "bitcoin-connect",
     complexity: "simplest",
+    requiredWallets: ["bob"],
     snippetIds: ["bc-init", "bc-button"],
   },
   {
@@ -809,6 +810,7 @@ The flow: Enter amount → select currency → see converted value in real time.
     icon: "🔗",
     section: "bitcoin-connect",
     complexity: "simple",
+    requiredWallets: ["bob"],
     snippetIds: ["bc-init", "bc-launch-modal", "bc-disconnect"],
   },
 ];
