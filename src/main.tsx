@@ -1,19 +1,30 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'
-import { init } from '@getalby/bitcoin-connect-react'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { HashRouter } from "react-router-dom";
+import { PostHogProvider } from "posthog-js/react";
+import { init } from "@getalby/bitcoin-connect-react";
+import "./index.css";
+import App from "./App.tsx";
 
 init({
   appName: "Alby Sandbox",
   showBalance: true,
 });
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <HashRouter>
-      <App />
-    </HashRouter>
+    <PostHogProvider
+      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+      options={{
+        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+        defaults: "2025-05-24",
+        capture_exceptions: true,
+        debug: import.meta.env.MODE === "development",
+      }}
+    >
+      <HashRouter>
+        <App />
+      </HashRouter>
+    </PostHogProvider>
   </StrictMode>,
-)
+);
