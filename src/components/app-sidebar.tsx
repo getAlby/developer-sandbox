@@ -86,7 +86,7 @@ export function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton
                   asChild
-                  isActive={scenarioId === "getting-started"}
+                  isActive={!scenarioId}
                 >
                   <Link to="/">
                     <span>👋</span>

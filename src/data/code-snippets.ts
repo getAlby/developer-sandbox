@@ -58,12 +58,15 @@ export type SnippetId =
   | "bc-launch-modal"
   | "bc-disconnect";
 
+export type CodeLanguage = 'javascript' | 'typescript' | 'bash';
+
 export interface CodeSnippet {
   id: SnippetId;
   title: string;
   description: string;
   code: string;
   category: SnippetCategory;
+  language?: CodeLanguage; // defaults to 'typescript'
 }
 
 export const SNIPPET_CATEGORIES: {
@@ -90,9 +93,10 @@ export const CODE_SNIPPETS: CodeSnippet[] = [
     description:
       "Let your agent write the code for you, without making mistakes. Run the following command inside your project:",
     category: "getting-started",
+    language: "bash",
     code: `npx skills add getAlby/alby-agent-skill
 
-// No need to follow the code examples below. Jump directly to the example prompts!
+# No need to follow the code examples below. Jump directly to the example prompts!
 `,
   },
   {
@@ -101,6 +105,7 @@ export const CODE_SNIPPETS: CodeSnippet[] = [
     description:
       "Install the Alby SDK and Lightning Tools packages. The SDK provides wallet connectivity via Nostr Wallet Connect, while Lightning Tools offers utilities like invoice decoding, lightning address resolution, and fiat conversion.",
     category: "getting-started",
+    language: "bash",
     code: `npm install @getalby/sdk @getalby/lightning-tools
 
 # README links:

@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { HashRouter } from "react-router-dom";
 import { PostHogProvider } from "posthog-js/react";
 import { init } from "@getalby/bitcoin-connect-react";
+import { ThemeProvider } from "./components/theme-provider";
 import "./index.css";
 import App from "./App.tsx";
 
@@ -22,9 +23,11 @@ createRoot(document.getElementById("root")!).render(
         debug: import.meta.env.MODE === "development",
       }}
     >
-      <HashRouter>
-        <App />
-      </HashRouter>
+      <ThemeProvider>
+        <HashRouter>
+          <App />
+        </HashRouter>
+      </ThemeProvider>
     </PostHogProvider>
   </StrictMode>,
 );

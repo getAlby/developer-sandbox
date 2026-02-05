@@ -13,10 +13,8 @@ import {
   Play,
   Link,
 } from 'lucide-react';
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
-import { github, atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Button } from '@/components/ui/button';
+import { CodeHighlight } from '@/components/ui/code-highlight';
 import {
   CODE_SNIPPETS,
   SNIPPET_CATEGORIES,
@@ -26,9 +24,6 @@ import {
 } from '@/data/code-snippets';
 import { useUIStore, useScenarioStore } from '@/stores';
 import { cn } from '@/lib/utils';
-import { useDarkMode } from '@/hooks/use-dark-mode';
-
-SyntaxHighlighter.registerLanguage('javascript', javascript);
 
 const CATEGORY_ICONS: Record<SnippetCategory, React.ReactNode> = {
   'this-scenario': <Play className="h-4 w-4" />,
@@ -93,7 +88,6 @@ export function CodeSnippets() {
 
 function SnippetCard({ snippet }: { snippet: CodeSnippet }) {
   const [copied, setCopied] = useState(false);
-  const isDark = useDarkMode();
 
   const handleCopy = async () => {
     try {
@@ -137,23 +131,7 @@ function SnippetCard({ snippet }: { snippet: CodeSnippet }) {
 
       {/* Code Block */}
       <div className="p-3 bg-muted/10">
-        <SyntaxHighlighter
-          language="javascript"
-          style={isDark ? atomOneDark : github}
-          customStyle={{
-            margin: 0,
-            padding: 0,
-            background: 'transparent',
-            fontSize: '0.75rem',
-          }}
-          codeTagProps={{
-            style: {
-              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-            },
-          }}
-        >
-          {snippet.code}
-        </SyntaxHighlighter>
+        <CodeHighlight code={snippet.code} language={snippet.language} />
       </div>
     </div>
   );

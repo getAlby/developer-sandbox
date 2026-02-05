@@ -1,18 +1,14 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, Copy, Check, Code2, HelpCircle } from 'lucide-react';
-import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
-import javascript from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
-import { github, atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { Button } from '@/components/ui/button';
+import { CodeHighlight, type CodeLanguage } from '@/components/ui/code-highlight';
 import { useUIStore } from '@/stores';
 import { cn } from '@/lib/utils';
-import { useDarkMode } from '@/hooks/use-dark-mode';
-
-SyntaxHighlighter.registerLanguage('javascript', javascript);
 
 interface ExpandableSnippetProps {
   code: string;
   title?: string;
+  language?: CodeLanguage;
   defaultExpanded?: boolean;
   variant?: 'inline' | 'card';
   className?: string;
@@ -21,6 +17,7 @@ interface ExpandableSnippetProps {
 export function ExpandableSnippet({
   code,
   title,
+  language,
   defaultExpanded = false,
   variant = 'inline',
   className,
@@ -28,7 +25,6 @@ export function ExpandableSnippet({
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   const [copied, setCopied] = useState(false);
   const { openCodeSnippetsHelp } = useUIStore();
-  const isDark = useDarkMode();
 
   const handleCopy = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -65,23 +61,7 @@ export function ExpandableSnippet({
         {isExpanded && (
           <div className="mt-2 relative">
             <div className="bg-muted/50 border rounded-md p-3 pr-16 overflow-x-auto">
-              <SyntaxHighlighter
-                language="javascript"
-                style={isDark ? atomOneDark : github}
-                customStyle={{
-                  margin: 0,
-                  padding: 0,
-                  background: 'transparent',
-                  fontSize: '0.75rem',
-                }}
-                codeTagProps={{
-                  style: {
-                    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-                  },
-                }}
-              >
-                {code}
-              </SyntaxHighlighter>
+              <CodeHighlight code={code} language={language} />
             </div>
             <div className="absolute top-1 right-1 flex gap-1">
               <Button
@@ -151,23 +131,7 @@ export function ExpandableSnippet({
       {isExpanded && (
         <div className="border-t px-3 pb-3">
           <div className="bg-muted/30 rounded-md p-3 overflow-x-auto mt-2">
-            <SyntaxHighlighter
-              language="javascript"
-              style={isDark ? atomOneDark : github}
-              customStyle={{
-                margin: 0,
-                padding: 0,
-                background: 'transparent',
-                fontSize: '0.75rem',
-              }}
-              codeTagProps={{
-                style: {
-                  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-                },
-              }}
-            >
-              {code}
-            </SyntaxHighlighter>
+            <CodeHighlight code={code} language={language} />
           </div>
         </div>
       )}
@@ -177,12 +141,12 @@ export function ExpandableSnippet({
 
 interface CodeBlockProps {
   code: string;
+  language?: CodeLanguage;
   className?: string;
 }
 
-export function CodeBlock({ code, className }: CodeBlockProps) {
+export function CodeBlock({ code, language, className }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
-  const isDark = useDarkMode();
 
   const handleCopy = async () => {
     try {
@@ -197,23 +161,7 @@ export function CodeBlock({ code, className }: CodeBlockProps) {
   return (
     <div className={cn('relative', className)}>
       <div className="bg-muted/50 border rounded-md p-3 overflow-x-auto">
-        <SyntaxHighlighter
-          language="javascript"
-          style={isDark ? atomOneDark : github}
-          customStyle={{
-            margin: 0,
-            padding: 0,
-            background: 'transparent',
-            fontSize: '0.75rem',
-          }}
-          codeTagProps={{
-            style: {
-              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
-            },
-          }}
-        >
-          {code}
-        </SyntaxHighlighter>
+        <CodeHighlight code={code} language={language} />
       </div>
       <Button
         variant="ghost"
